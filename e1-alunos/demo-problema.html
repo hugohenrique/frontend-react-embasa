@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Central de Chamados</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; background: #F1F4F7; color: #1D2733; }
+
+    .topo { display: flex; justify-content: space-between; align-items: center; background: #123B5A; color: #fff; padding: 14px 32px; }
+    .marca { font-size: 20px; font-weight: 700; }
+    .marca::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: #5CC8E6; margin-right: 10px; }
+    .usuario { font-size: 14px; opacity: .85; }
+
+    .menu { display: flex; background: #fff; border-bottom: 1px solid #DCE3EA; padding: 0 32px; }
+    .menu ul { list-style: none; margin: 0; padding: 0; display: flex; }
+    .menu span, .menu a { display: inline-block; padding: 14px 4px; margin-right: 24px; color: #4A5868; text-decoration: none; font-size: 15px; border-bottom: 3px solid transparent; cursor: pointer; }
+    .menu span:hover, .menu a:hover { color: #123B5A; }
+    .menu .ativo { color: #123B5A; font-weight: 600; border-bottom-color: #1F7AB8; }
+
+    .conteudo { max-width: 640px; margin: 40px auto; padding: 0 20px; }
+    .cartao { background: #fff; border-radius: 10px; box-shadow: 0 1px 2px rgba(16,40,64,.08), 0 8px 24px rgba(16,40,64,.06); padding: 32px; }
+    .titulo { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+    .subtitulo { color: #5B6878; margin-bottom: 24px; }
+
+    .campo { margin-bottom: 18px; }
+    .rotulo { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    input, textarea { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid #C5CFD9; border-radius: 6px; background: #fff; }
+    textarea { min-height: 110px; resize: vertical; }
+    input:focus, textarea:focus { outline: 3px solid #8CC4EB; border-color: #1F7AB8; }
+
+    .botao { display: inline-block; background: #1F7AB8; color: #fff; font-weight: 600; padding: 12px 28px; border-radius: 6px; cursor: pointer; user-select: none; }
+    .botao:hover { background: #17679D; }
+
+    .aviso { position: fixed; right: 24px; bottom: 24px; background: #1E7B4F; color: #fff; padding: 14px 20px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.18); opacity: 0; transform: translateY(8px); transition: opacity .25s, transform .25s; }
+    .aviso.visivel { opacity: 1; transform: none; }
+
+    .rodape { text-align: center; color: #7A8796; font-size: 13px; padding: 8px 24px 32px; }
+  </style>
+</head>
+<body>
+  <div class="topo">
+    <div class="marca">Central de Chamados</div>
+    <div class="usuario">Minha conta</div>
+  </div> <!-- fim do topo -->
+
+  <div class="menu">
+    <span>Início</span>
+    <span class="ativo">Abrir chamado</span>
+    <span>Chamados recentes</span>
+  </div>
+
+  <div class="conteudo">
+    <label class="cartao">
+      <div class="titulo">Abrir chamado</div>
+      <div class="subtitulo">Descreva o problema e a equipe responsável entrará em contato.</div>
+
+      <form method="get" action="/enviar">
+
+          <fieldset>
+              <label for="nome" class="campo">
+                  Nome
+                  <input id="nome" name="nome" type="text" placeholder="Nome" required>
+              </label>
+              <label for="identidade" class="campo">
+                  RG
+                  <input id="identidade" name="identidade" type="text" placeholder="RG" required>
+              </label>
+          </fieldset>
+
+          <label for="data" class="campo">
+              <div class="rotulo">Data</div>
+              <input id="data" name="data" type="date">
+          </label>
+          <div class="campo"">
+              <label for="email" class="rotulo">E-mail</label>
+              <input id="email" name="email" type="email" required>
+          </div>
+          <label class="campo">
+          <div class="campo"><div class="rotulo">Descrição</div><textarea></textarea></div>
+
+          <button type="submit" class="botao">Submit</button>
+          <button type="reset" class="botao">Reset</button>
+          <button type="button" class="botao">Botão simples</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="rodape">© 2026 Central de Chamados</div>
+
+  <div class="aviso" id="aviso">Chamado enviado com sucesso.</div>
+</body>
+</html>
