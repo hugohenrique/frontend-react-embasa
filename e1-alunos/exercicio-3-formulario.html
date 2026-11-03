@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Exercício 3 — Formulário</title>
+</head>
+<body>
+  <!--
+    EXERCÍCIO 3
+    Este formulário tem 4 problemas de acessibilidade e semântica.
+    Encontre e corrija todos.
+  -->
+
+  <form>
+    <p>Nome completo</p>
+    <input type="text" placeholder="Digite seu nome">
+
+    <p>E-mail</p>
+    <input type="text">
+
+    <p>Prioridade</p>
+    <input type="radio" name="prioridade"> Baixa
+    <input type="radio" name="prioridade"> Média
+    <input type="radio" name="prioridade"> Alta
+
+    <div onclick="alert('Enviado!')">Enviar</div>
+  </form>
+</body>
+</html>
