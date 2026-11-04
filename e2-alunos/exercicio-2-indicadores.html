@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercícios 2 e 3 — Indicadores</title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #EEF1F4;
+        color: #1D2733;
+        margin: 0;
+        padding: 24px;
+    }
+
+    .indicador { background: #fff; border: 1px solid #C5CFD9; border-radius: 8px; padding: 16px; }
+    .indicador h2 { font-size: 1rem; margin: 0 0 8px; color: #4A5868; }
+    .indicador p { font-size: 2rem; font-weight: bold; margin: 0; }
+
+    .resumo {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+    }
+
+    @media (min-width: 768px) {
+        .resumo {
+            flex-direction: row;
+        }
+        .indicador {
+            flex: 1;
+        }
+    }
+
+    /* EXERCÍCIO 2: escreva aqui as regras do Flexbox */
+
+
+    /* EXERCÍCIO 3: escreva aqui a versão mobile first, com media query */
+
+  </style>
+</head>
+<body>
+  <!--
+    EXERCÍCIO 2 — FLEXBOX (8 minutos)
+    Coloque os três indicadores lado a lado, com a mesma largura
+    e 16px de espaço entre eles, usando Flexbox.
+    Desafio: depois, faça o mesmo com Grid.
+
+    EXERCÍCIO 3 — MOBILE FIRST (7 minutos, depois do intervalo)
+    No celular, os indicadores ficam um embaixo do outro.
+    A partir de 768px de largura, ficam lado a lado.
+    Teste com o modo dispositivo: Ctrl + Shift + M.
+  -->
+
+  <main>
+    <h1>Resumo de chamados</h1>
+
+    <div class="resumo">
+      <article class="indicador">
+        <h2>Abertos</h2>
+        <p>12</p>
+      </article>
+      <article class="indicador">
+        <h2>Em andamento</h2>
+        <p>5</p>
+      </article>
+      <article class="indicador">
+        <h2>Concluídos</h2>
+        <p>30</p>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

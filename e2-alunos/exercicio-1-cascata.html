@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercício 1 — Cascata e box model</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #EEF1F4; color: #1D2733; padding: 24px; }
+
+    .lista { width: 360px; background: #fff; padding: 16px; border: 1px solid #C5CFD9; }
+
+    .cartao {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #1B6CA8;
+      margin-bottom: 12px;
+    }
+
+    .cartao h3 { color: #6B7684; margin: 0 0 4px; }
+    .titulo-chamado { color: #1B6CA8; }
+
+    /* TAREFA 3: escreva aqui a regra .prioridade-alta */
+
+  </style>
+</head>
+<body>
+  <!--
+    EXERCÍCIO 1 — CASCATA E BOX MODEL (8 minutos)
+
+    TAREFA 1. Os cartões estão passando da borda direita da lista.
+              Use a aba Elementos (F12) para descobrir por quê
+              e corrija com UMA linha de CSS.
+
+    TAREFA 2. Os títulos dos chamados deveriam estar azuis
+              (regra .titulo-chamado), mas estão cinza.
+              Por que a regra azul perde? Corrija SEM usar !important.
+
+    TAREFA 3. Destaque a prioridade alta com a classe .prioridade-alta:
+              fundo #B3261E, texto branco, espaçamento interno de
+              2px 8px e cantos arredondados de 4px.
+  -->
+
+  <section class="lista">
+    <h2>Chamados recentes</h2>
+
+    <article class="cartao">
+      <h3 class="titulo-chamado">Impressora sem conexão</h3>
+      <p>Aberto em 02/11/2026 · Prioridade <span class="prioridade prioridade-alta">alta</span></p>
+    </article>
+
+    <article class="cartao">
+      <h3 class="titulo-chamado">Acesso ao sistema de RH</h3>
+      <p>Aberto em 01/11/2026 · Prioridade <span class="prioridade">média</span></p>
+    </article>
+  </section>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abrir chamado — Central de Chamados</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/ajustes.css">
+</head>
+<body>
+  <!--
+    PRÁTICA DO ENCONTRO 2 — TRILHA B: BOOTSTRAP
+    O HTML é a solução de ontem, com alguns <div> a mais para agrupar
+    os campos. Você não escreve CSS: só acrescenta classes do Bootstrap.
+    Requisitos (os mesmos da trilha A):
+
+    1. Cabeçalho: nome do sistema e menu lado a lado no computador;
+       no celular, o menu pode ir para a linha de baixo.
+    2. Conteúdo com largura máxima no computador e margem lateral no celular.
+    3. Campos ocupando a largura disponível. A partir de 768px:
+       Nome e E-mail lado a lado; Setor e Data lado a lado.
+    4. Foco sempre visível, em toda a página. Teste o foco no menu escuro:
+       o que o Bootstrap não resolver sozinho, ajuste em css/ajustes.css.
+    5. Botão de envio com pelo menos 44px de altura.
+    6. Tabela de chamados recentes: no celular, rola na horizontal
+       sem alargar a página.
+    7. "Pular para o conteúdo": invisível até receber o foco.
+
+    CLASSES QUE VOCÊ VAI USAR
+    Estrutura:   container, card card-body, mb-4
+    Cabeçalho:   d-flex flex-wrap justify-content-between align-items-center
+                 gap-2 px-3 py-2 bg-dark text-white
+    Menu:        nav (na ul) e nav-link text-white (nos links)
+    Grid:        row g-3 (no .campos), col-12 col-md-6, col-12
+    Formulário:  form-label, form-control, form-select,
+                 form-check form-check-inline, form-check-input, form-check-label
+    Botão:       btn btn-primary btn-lg
+    Tabela:      table-responsive (no div), table table-striped caption-top
+    Acesso:      visually-hidden-focusable (no link "Pular para o conteúdo")
+    Ajustes:     css/ajustes.css, carregado DEPOIS do Bootstrap
+
+    Teste final: modo dispositivo (Ctrl + Shift + M) em 375px e 1280px,
+    e a página inteira só com a tecla Tab.
+  -->
+
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <p class="marca">Central de Chamados</p>
+    <nav aria-label="Principal">
+      <ul class="menu">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#abrir" aria-current="page">Abrir chamado</a></li>
+        <li><a href="#recentes">Chamados recentes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo" class="pagina">
+    <section id="abrir" class="cartao">
+      <h1>Abrir chamado</h1>
+      <p>Preencha os dados abaixo. Campos marcados como opcionais podem ficar em branco.</p>
+
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Seus dados</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" name="nome" autocomplete="name" required>
+            </div>
+            <div class="campo">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+            <div class="campo">
+              <label for="telefone">Telefone (opcional)</label>
+              <input type="tel" id="telefone" name="telefone" autocomplete="tel">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes do chamado</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="setor">Setor</label>
+              <select id="setor" name="setor" required>
+                <option value="">Selecione o setor</option>
+                <option value="atendimento">Atendimento</option>
+                <option value="financeiro">Financeiro</option>
+                <option value="rh">Recursos Humanos</option>
+                <option value="ti">Tecnologia da Informação</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="data-ocorrencia">Data da ocorrência</label>
+              <input type="date" id="data-ocorrencia" name="dataOcorrencia" required>
+            </div>
+
+            <fieldset class="campo campo-inteiro">
+              <legend>Prioridade</legend>
+              <div class="opcoes">
+                <div class="opcao">
+                  <input type="radio" id="prioridade-baixa" name="prioridade" value="baixa" required>
+                  <label for="prioridade-baixa">Baixa</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-media" name="prioridade" value="media">
+                  <label for="prioridade-media">Média</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-alta" name="prioridade" value="alta">
+                  <label for="prioridade-alta">Alta</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="campo campo-inteiro">
+              <label for="descricao">Descrição do problema</label>
+              <textarea id="descricao" name="descricao" rows="5" required></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit">Enviar chamado</button>
+      </form>
+    </section>
+
+    <section id="recentes" class="cartao">
+      <h2 id="titulo-recentes">Chamados recentes</h2>
+      <!-- tabindex="0" permite rolar esta área pelo teclado -->
+      <div class="tabela-rolagem" tabindex="0" role="region" aria-labelledby="titulo-recentes">
+        <table>
+          <caption>Últimos chamados abertos</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nº</th>
+              <th scope="col">Assunto</th>
+              <th scope="col">Setor</th>
+              <th scope="col">Prioridade</th>
+              <th scope="col">Abertura</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1042</td>
+              <td>Impressora sem conexão</td>
+              <td>Tecnologia da Informação</td>
+              <td>Alta</td>
+              <td><time datetime="2026-11-02">02/11/2026</time></td>
+            </tr>
+            <tr>
+              <td>1041</td>
+              <td>Acesso ao sistema de RH</td>
+              <td>Recursos Humanos</td>
+              <td>Média</td>
+              <td><time datetime="2026-11-01">01/11/2026</time></td>
+            </tr>
+            <tr>
+              <td>1040</td>
+              <td>Segunda via de comprovante</td>
+              <td>Financeiro</td>
+              <td>Baixa</td>
+              <td><time datetime="2026-10-30">30/10/2026</time></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Central de Chamados — projeto do curso Desenvolvimento Front-end com React</p>
+  </footer>
+</body>
+</html>

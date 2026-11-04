@@ -1,0 +1,35 @@
+/*
+  PRÁTICA DO ENCONTRO 2 — TRILHA A: CSS PRÓPRIO
+  Escreva mobile first: primeiro o celular, fora da media query;
+  depois, dentro da media query, só o que muda em telas maiores.
+  Os requisitos estão no comentário do index.html.
+*/
+
+/* 1. Base: box-sizing, fonte, cores da página */
+
+
+/* 2. Foco sempre visível */
+
+
+/* 3. Pular para o conteúdo: escondido até receber o foco */
+
+
+/* 4. Cabeçalho e menu */
+
+
+/* 5. Conteúdo e cartões */
+
+
+/* 6. Formulário: fieldsets, campos, opções e botão */
+
+
+/* 7. Tabela de chamados recentes */
+
+
+/* 8. Rodapé */
+
+
+/* 9. A partir de 768px */
+@media (min-width: 768px) {
+
+}

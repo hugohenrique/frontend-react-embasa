@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flexbox e Grid na prática</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: #F1F4F7; color: #1D2733; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 1.75rem; }
+  .sub { margin: 0 0 24px; color: #5B6878; }
+  section { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(16,40,64,.12); }
+  h2 { margin: 0 0 12px; font-size: 1.35rem; }
+
+  .controles { display: flex; flex-wrap: wrap; gap: 16px 28px; margin-bottom: 16px; }
+  .grupo b { display: block; font-size: .85rem; margin-bottom: 6px; font-family: Consolas, monospace; color: #1B6CA8; }
+  .grupo button { font: inherit; font-size: .9rem; padding: 6px 12px; margin: 0 4px 4px 0; border: 1px solid #A9B6C3; border-radius: 6px; background: #fff; cursor: pointer; }
+  .grupo button[aria-pressed="true"] { background: #1B6CA8; border-color: #1B6CA8; color: #fff; }
+  button:focus-visible { outline: 3px solid #1B6CA8; outline-offset: 2px; }
+
+  .palco { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+  .caixa { min-height: 260px; border: 3px dashed #1B6CA8; border-radius: 8px; padding: 12px; background: #EEF4FA; position: relative; }
+  .caixa::before { content: "contêiner (o pai)"; position: absolute; top: -12px; left: 12px; background: #fff; padding: 0 6px; font-size: .8rem; color: #1B6CA8; font-weight: 600; }
+  .item { background: #123B5A; color: #fff; font-weight: 700; padding: 14px 18px; border-radius: 6px; text-align: center; }
+  .item.alto { padding-top: 34px; padding-bottom: 34px; }
+  pre { margin: 0; background: #1D2733; color: #E7ECF3; padding: 16px; border-radius: 8px; font: .9rem/1.6 Consolas, monospace; white-space: pre-wrap; }
+  pre .p { color: #F2C46B; } pre .v { color: #8EDDC1; }
+
+  @media (max-width: 760px) { .palco { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Flexbox e Grid na prática</h1>
+  <p class="sub">Clique nas opções e veja o resultado e o CSS ao mesmo tempo.</p>
+
+  <section aria-labelledby="t-flex">
+    <h2 id="t-flex">Flexbox: uma fila</h2>
+    <div class="controles" id="ctl-flex"></div>
+    <div class="palco">
+      <div class="caixa" id="flex">
+        <div class="item">Início</div>
+        <div class="item alto">Abrir chamado</div>
+        <div class="item">Chamados recentes</div>
+      </div>
+      <pre id="css-flex" aria-live="polite"></pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-grid">
+    <h2 id="t-grid">Grid: uma planilha</h2>
+    <div class="controles" id="ctl-grid"></div>
+    <div class="palco">
+      <div class="caixa" id="grid">
+        <div class="item">Nome</div>
+        <div class="item">E-mail</div>
+        <div class="item">Setor</div>
+        <div class="item">Data</div>
+        <div class="item" id="desc">Descrição</div>
+      </div>
+      <pre id="css-grid" aria-live="polite"></pre>
+    </div>
+  </section>
+</main>
+
+<script>
+const flex = {
+  sel: ".contêiner",
+  opts: {
+    "display": ["block", "flex"],
+    "flex-direction": ["row", "column"],
+    "justify-content": ["flex-start", "center", "space-between"],
+    "align-items": ["stretch", "flex-start", "center"],
+    "gap": ["0", "24px"]
+  },
+  state: { "display": "block", "flex-direction": "row", "justify-content": "flex-start", "align-items": "stretch", "gap": "0" }
+};
+const grid = {
+  opts: {
+    "display": ["block", "grid"],
+    "grid-template-columns": ["1fr", "1fr 1fr", "2fr 1fr", "1fr 1fr 1fr"],
+    "gap": ["0", "16px"],
+    "Descrição: grid-column": ["auto", "1 / -1"]
+  },
+  state: { "display": "block", "grid-template-columns": "1fr", "gap": "0", "Descrição: grid-column": "auto" }
+};
+
+function montar(cfg, ctlId, render) {
+  const ctl = document.getElementById(ctlId);
+  Object.entries(cfg.opts).forEach(([prop, vals]) => {
+    const g = document.createElement("div"); g.className = "grupo";
+    g.innerHTML = "<b>" + prop + "</b>";
+    vals.forEach(v => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = v;
+      b.setAttribute("aria-pressed", cfg.state[prop] === v);
+      b.addEventListener("click", () => {
+        cfg.state[prop] = v;
+        g.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+        render();
+      });
+      g.appendChild(b);
+    });
+    ctl.appendChild(g);
+  });
+  render();
+}
+const linha = (p, v) => '  <span class="p">' + p + '</span>: <span class="v">' + v + '</span>;';
+
+function renderFlex() {
+  const s = flex.state, el = document.getElementById("flex");
+  el.style.display = s.display;
+  el.style.flexDirection = s["flex-direction"];
+  el.style.justifyContent = s["justify-content"];
+  el.style.alignItems = s["align-items"];
+  el.style.gap = s.gap;
+  el.querySelectorAll(".item").forEach(i => i.style.marginBottom = s.display === "block" ? "8px" : "0");
+  let css = ".menu {\n" + linha("display", s.display);
+  if (s.display === "flex") {
+    css += "\n" + linha("flex-direction", s["flex-direction"]) + "\n" + linha("justify-content", s["justify-content"]) +
+           "\n" + linha("align-items", s["align-items"]) + "\n" + linha("gap", s.gap);
+  } else {
+    css += "\n  /* sem flex: fluxo normal, um embaixo do outro */";
+  }
+  document.getElementById("css-flex").innerHTML = css + "\n}";
+}
+function renderGrid() {
+  const s = grid.state, el = document.getElementById("grid");
+  el.style.display = s.display;
+  el.style.gridTemplateColumns = s["grid-template-columns"];
+  el.style.gap = s.gap;
+  document.getElementById("desc").style.gridColumn = s["Descrição: grid-column"];
+  el.querySelectorAll(".item").forEach(i => i.style.marginBottom = s.display === "block" ? "8px" : "0");
+  let css = ".campos {\n" + linha("display", s.display);
+  if (s.display === "grid") {
+    css += "\n" + linha("grid-template-columns", s["grid-template-columns"]) + "\n" + linha("gap", s.gap) + "\n}";
+    css += "\n.descricao {\n" + linha("grid-column", s["Descrição: grid-column"]) + "\n}";
+  } else {
+    css += "\n  /* sem grid: fluxo normal */\n}";
+  }
+  document.getElementById("css-grid").innerHTML = css;
+}
+montar(flex, "ctl-flex", renderFlex);
+montar(grid, "ctl-grid", renderGrid);
+</script>
+</body>
+</html>

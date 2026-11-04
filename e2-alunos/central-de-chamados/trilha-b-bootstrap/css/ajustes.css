@@ -1,0 +1,6 @@
+/*
+  AJUSTES PRÓPRIOS DA TRILHA B
+  Este arquivo é carregado DEPOIS do Bootstrap. Em empate de
+  especificidade, a regra que vem por último vence: é a cascata.
+  Use-o só para o que o Bootstrap não resolve sozinho.
+*/

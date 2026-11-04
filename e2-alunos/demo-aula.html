@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abrir chamado — Central de Chamados</title>
+  <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        font-size: 1rem;
+        background: #EEF1F4;
+        color: #1D2733;
+    }
+
+    .pagina {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 16px;
+    }
+
+    /* Cabeçalho */
+    .topo {
+        overflow: hidden;
+        background: #123B5A;
+        color: #fff;
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .marca {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /*.topo nav { float: right; }*/
+
+    .menu {
+        display: flex;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .menu li { display: inline-block; margin-left: 24px; line-height: 24px; }
+    .menu a { color: #fff; text-decoration: none; }
+
+    /* Conteúdo */
+    main { background: #fff; margin: 24px 0; padding: 24px 32px; }
+    h1 { margin: 0 0 4px; font-size: 24px; }
+    .campo { display: inline-block; width: 440px; margin: 0 20px 16px 0; vertical-align: top; }
+    .campo-inteiro { display: block; width: auto; margin-right: 0; }
+    label { display: block; font-weight: bold; margin-bottom: 4px; }
+
+    input:focus, button:focus, textarea:focus {
+        outline-style: solid;
+        outline-width: 1px;
+        outline-color: red;
+    }
+
+    /*
+    a:focus, input:focus, textarea:focus {
+        outline: 2px solid #1B6CA8;
+    }
+    */
+
+    .campos {
+        display: grid;
+        gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .campos {
+          grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #A9B6C3;
+        font: inherit;
+    }
+    textarea { height: 90px; }
+    button { background: #1B6CA8; color: #fff; border: 0; padding: 4px 12px; font-size: 12px; cursor: pointer; }
+
+    footer { text-align: center; color: #5B6878; padding-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+    <header class="topo">
+      <p class="marca">Central de Chamados</p>
+      <nav aria-label="Principal">
+        <ul class="menu">
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#abrir" aria-current="page">Abrir chamado</a></li>
+          <li><a href="#recentes">Chamados recentes</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Abrir chamado</h1>
+      <p>Descreva o problema e a equipe responsável entrará em contato.</p>
+
+      <form action="#" method="get">
+        <div class="campos">
+          <div class="campo">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" name="nome" autocomplete="name" required>
+          </div>
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+          </div>
+        </div>
+
+        <div class="campo campo-inteiro">
+          <label for="descricao">Descrição do problema</label>
+          <textarea id="descricao" name="descricao" required></textarea>
+        </div>
+
+        <button type="submit">Enviar chamado</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>© 2026 Central de Chamados</p>
+    </footer>
+  </div>
+</body>
+</html>
