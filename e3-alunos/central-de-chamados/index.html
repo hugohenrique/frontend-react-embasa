@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abrir chamado — Central de Chamados</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <!--
+    PRÁTICA DO ENCONTRO 3 — CENTRAL DE CHAMADOS INTERATIVA
+    O HTML e o CSS estão prontos. Você trabalha só em js/app.js.
+    As tarefas estão nos comentários de js/app.js.
+  -->
+
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <p class="marca">Central de Chamados</p>
+    <nav aria-label="Principal">
+      <ul class="menu">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#abrir" aria-current="page">Abrir chamado</a></li>
+        <li><a href="#recentes">Chamados recentes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo" class="pagina">
+    <section id="abrir" class="cartao">
+      <h1>Abrir chamado</h1>
+      <p>Preencha os dados abaixo. Campos marcados como opcionais podem ficar em branco.</p>
+
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Seus dados</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" name="nome" autocomplete="name" required>
+            </div>
+            <div class="campo">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+            <div class="campo">
+              <label for="telefone">Telefone (opcional)</label>
+              <input type="tel" id="telefone" name="telefone" autocomplete="tel">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes do chamado</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="setor">Setor</label>
+              <select id="setor" name="setor" required>
+                <option value="">Selecione o setor</option>
+                <option value="atendimento">Atendimento</option>
+                <option value="financeiro">Financeiro</option>
+                <option value="rh">Recursos Humanos</option>
+                <option value="ti">Tecnologia da Informação</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="data-ocorrencia">Data da ocorrência</label>
+              <input type="date" id="data-ocorrencia" name="dataOcorrencia" required>
+            </div>
+
+            <fieldset class="campo campo-inteiro">
+              <legend>Prioridade</legend>
+              <div class="opcoes">
+                <div class="opcao">
+                  <input type="radio" id="prioridade-baixa" name="prioridade" value="baixa" required>
+                  <label for="prioridade-baixa">Baixa</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-media" name="prioridade" value="media">
+                  <label for="prioridade-media">Média</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-alta" name="prioridade" value="alta">
+                  <label for="prioridade-alta">Alta</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="campo campo-inteiro">
+              <label for="descricao">Descrição do problema</label>
+              <textarea id="descricao" name="descricao" rows="5" maxlength="500" aria-describedby="contador-descricao" required></textarea>
+              <p id="contador-descricao" class="contador">0 de 500 caracteres</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit">Enviar chamado</button>
+        <p id="mensagem" class="mensagem" role="status"></p>
+      </form>
+    </section>
+
+    <section id="recentes" class="cartao">
+      <h2 id="titulo-recentes">Chamados recentes</h2>
+
+      <div class="filtros">
+        <div class="campo">
+          <label for="filtro-prioridade">Prioridade</label>
+          <select id="filtro-prioridade">
+            <option value="todas">Todas</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="busca">Buscar por assunto</label>
+          <input type="search" id="busca">
+        </div>
+      </div>
+      <p id="total-exibido" class="total"></p>
+
+      <!-- tabindex="0" permite rolar esta área pelo teclado -->
+      <div class="tabela-rolagem" tabindex="0" role="region" aria-labelledby="titulo-recentes">
+        <table>
+          <caption>Chamados</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nº</th>
+              <th scope="col">Assunto</th>
+              <th scope="col">Setor</th>
+              <th scope="col">Prioridade</th>
+              <th scope="col">Abertura</th>
+            </tr>
+          </thead>
+          <!-- As linhas agora são criadas pelo JavaScript, a partir da lista de chamados -->
+          <tbody id="corpo-tabela"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Central de Chamados — projeto do curso Desenvolvimento Front-end com React</p>
+  </footer>
+</body>
+</html>

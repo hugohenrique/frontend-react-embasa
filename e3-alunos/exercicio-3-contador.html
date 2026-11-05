@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercício 3 — Contador de caracteres</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { max-width: 640px; margin: 0 auto; padding: 24px 16px; font-family: "Segoe UI", system-ui, Arial, sans-serif; line-height: 1.5; color: #1D2733; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    textarea { width: 100%; padding: 10px 12px; border: 1px solid #A9B6C3; border-radius: 6px; font: inherit; }
+    textarea:focus-visible { outline: 3px solid #1B6CA8; outline-offset: 2px; }
+    .contador { margin: 4px 0 0; color: #5B6878; font-size: .875rem; text-align: right; }
+    .alerta { color: #B3261E; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>Exercício 3: contador de caracteres</h1>
+
+  <label for="descricao">Descrição do problema</label>
+  <textarea id="descricao" rows="6" maxlength="500" aria-describedby="contador"></textarea>
+  <p id="contador" class="contador">0 de 500 caracteres</p>
+
+  <script>
+    // EXERCÍCIO 3 — EVENTOS (8 minutos)
+
+    // 1. Encontre o textarea e o parágrafo do contador com document.querySelector.
+
+    // 2. Quando a pessoa digitar (evento "input"), atualize o texto do contador
+    //    neste formato: "37 de 500 caracteres".
+    //    Dica: o texto digitado está em descricao.value, e o tamanho em .length
+
+    // DESAFIO. A partir de 450 caracteres, acrescente a classe "alerta" ao contador;
+    //          abaixo disso, retire. Dica: contador.classList.toggle("alerta", condição)
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de eventos</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: #F1F4F7; color: #1D2733; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 1.75rem; }
+  .sub { margin: 0 0 20px; color: #5B6878; }
+  .palco { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .painel { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(16,40,64,.12); }
+  .painel h2 { margin: 0 0 14px; font-size: 1.1rem; }
+  label { display: block; font-weight: 600; margin: 0 0 6px; }
+  input, select { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid #A9B6C3; border-radius: 6px; margin-bottom: 16px; background: #fff; }
+  button { font: inherit; font-weight: 600; padding: 10px 22px; border: 0; border-radius: 6px; background: #1B6CA8; color: #fff; cursor: pointer; }
+  button.sec { background: #fff; color: #1D2733; border: 1px solid #A9B6C3; font-weight: 400; }
+  :focus-visible { outline: 3px solid #1B6CA8; outline-offset: 2px; }
+  .chave { display: flex; align-items: center; gap: 10px; margin: 18px 0 0; padding: 12px; background: #FFF6E0; border-radius: 8px; }
+  .chave input { width: 20px; height: 20px; margin: 0; }
+  .chave label { margin: 0; font-weight: 600; }
+  ol#log { list-style: none; margin: 0; padding: 0; max-height: 440px; overflow: auto; font: .95rem/1.5 Consolas, monospace; }
+  ol#log li { padding: 6px 10px; border-bottom: 1px solid #EEF1F4; display: grid; grid-template-columns: 90px 1fr; gap: 8px; }
+  ol#log li b { color: #1B6CA8; }
+  ol#log li.submit b { color: #1E7B4F; }
+  .cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cab h2 { margin: 0; }
+  @media (max-width: 860px) { .palco { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Laboratório de eventos</h1>
+  <p class="sub">Use o formulário. À direita aparece cada evento que o navegador dispara, na ordem.</p>
+
+  <div class="palco">
+    <section class="painel" aria-labelledby="t-form">
+      <h2 id="t-form">Formulário</h2>
+      <form id="form">
+        <label for="nome">Nome</label>
+        <input id="nome" name="nome" required>
+        <label for="prioridade">Prioridade</label>
+        <select id="prioridade" name="prioridade">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+        </select>
+        <button type="submit">Enviar</button>
+      </form>
+      <div class="chave">
+        <input type="checkbox" id="prevenir" checked>
+        <label for="prevenir">Usar <code>evento.preventDefault()</code> no envio</label>
+      </div>
+    </section>
+
+    <section class="painel" aria-labelledby="t-log">
+      <div class="cab"><h2 id="t-log">Eventos disparados</h2><button type="button" class="sec" id="limpar">Limpar</button></div>
+      <ol id="log"></ol>
+    </section>
+  </div>
+</main>
+
+<script>
+const log = document.getElementById("log");
+function registrar(tipo, detalhe) {
+  const li = document.createElement("li"); li.className = tipo;
+  const b = document.createElement("b"); b.textContent = tipo;
+  const s = document.createElement("span"); s.textContent = detalhe;
+  li.append(b, s); log.prepend(li);
+}
+const nome = document.getElementById("nome");
+const prioridade = document.getElementById("prioridade");
+const form = document.getElementById("form");
+
+nome.addEventListener("focus", () => registrar("focus", "o campo Nome recebeu o foco"));
+nome.addEventListener("input", () => registrar("input", `valor agora: "${nome.value}"`));
+nome.addEventListener("blur", () => registrar("blur", "o campo Nome perdeu o foco"));
+prioridade.addEventListener("change", () => registrar("change", `prioridade escolhida: "${prioridade.value}"`));
+form.querySelector("button").addEventListener("click", () => registrar("click", "clique no botão Enviar"));
+form.addEventListener("submit", (evento) => {
+  if (document.getElementById("prevenir").checked) {
+    evento.preventDefault();
+    registrar("submit", "envio interceptado: a página NÃO recarregou");
+  }
+});
+document.getElementById("limpar").addEventListener("click", () => { log.textContent = ""; });
+</script>
+</body>
+</html>

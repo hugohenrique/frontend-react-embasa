@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercício 2 — Listas</title>
+  <style>
+    body { max-width: 720px; margin: 0 auto; padding: 24px 16px; font-family: "Segoe UI", system-ui, Arial, sans-serif; line-height: 1.5; color: #1D2733; }
+  </style>
+</head>
+<body>
+  <h1>Exercício 2: filtrar e transformar uma lista</h1>
+  <p>Escreva o código no <code>&lt;script&gt;</code> deste arquivo. Veja os resultados no console (F12, aba Console).</p>
+
+  <script>
+    const chamados = [
+      { numero: 1046, assunto: "Monitor piscando", setor: "ti", prioridade: "media", status: "aberto" },
+      { numero: 1045, assunto: "Troca de senha do e-mail", setor: "ti", prioridade: "baixa", status: "concluido" },
+      { numero: 1044, assunto: "Ar-condicionado da recepção parado", setor: "atendimento", prioridade: "alta", status: "aberto" },
+      { numero: 1043, assunto: "Reembolso de despesa de viagem", setor: "financeiro", prioridade: "media", status: "andamento" },
+      { numero: 1042, assunto: "Impressora sem conexão", setor: "ti", prioridade: "alta", status: "aberto" },
+      { numero: 1041, assunto: "Acesso ao sistema de RH", setor: "rh", prioridade: "media", status: "aberto" },
+      { numero: 1040, assunto: "Segunda via de comprovante", setor: "financeiro", prioridade: "baixa", status: "concluido" },
+      { numero: 1039, assunto: "Atualização de dados cadastrais", setor: "rh", prioridade: "alta", status: "concluido" },
+    ];
+
+    // EXERCÍCIO 2 — LISTAS (12 minutos)
+
+    // TAREFA 1. Crie "abertos": só os chamados com status "aberto".
+    //           Mostre no console quantos são (abertos.length).
+
+
+    // TAREFA 2. Crie "assuntos": uma lista só com o assunto de cada chamado.
+
+
+    // TAREFA 3. Crie "urgentesAbertos": prioridade "alta" E status "aberto".
+    //           Dica: o "e" do JavaScript é &&
+
+
+    // TAREFA 4. Encontre o chamado de número 1043 e mostre o assunto dele.
+
+
+    // DESAFIO.  Crie uma lista de textos só dos chamados abertos, neste formato:
+    //           "Nº 1046 — Monitor piscando"
+    //           Dica: primeiro filter, depois map.
+
+  </script>
+</body>
+</html>

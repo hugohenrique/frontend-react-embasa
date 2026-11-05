@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de listas</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: #F1F4F7; color: #1D2733; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 1.75rem; }
+  .sub { margin: 0 0 20px; color: #5B6878; }
+  .botoes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .botoes button { font: inherit; font-size: .95rem; padding: 8px 14px; border: 1px solid #A9B6C3; border-radius: 6px; background: #fff; cursor: pointer; }
+  .botoes button[aria-pressed="true"] { background: #1B6CA8; border-color: #1B6CA8; color: #fff; }
+  button:focus-visible { outline: 3px solid #1B6CA8; outline-offset: 2px; }
+  .palco { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .painel { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(16,40,64,.12); }
+  .painel h2 { margin: 0 0 12px; font-size: 1rem; color: #5B6878; font-weight: 600; }
+  pre { margin: 0 0 16px; background: #1D2733; color: #E7ECF3; padding: 16px; border-radius: 8px; font: 1rem/1.6 Consolas, monospace; white-space: pre-wrap; min-height: 64px; }
+  pre .m { color: #F2C46B; font-weight: 700; } pre .s { color: #8EDDC1; }
+  .lista { display: grid; gap: 8px; }
+  .card { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 2px solid #DCE3EA; border-radius: 8px; background: #fff; transition: opacity .2s, border-color .2s; }
+  .card .n { font: 700 1rem Consolas, monospace; color: #1B6CA8; }
+  .card .tags { display: flex; gap: 6px; }
+  .tag { font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: #EEF1F4; }
+  .tag.alta { background: #FBE3E1; color: #8C1D16; }
+  .tag.aberto { background: #E3F1FB; color: #124E78; }
+  .card.fora { opacity: .25; }
+  .card.dentro { border-color: #1B6CA8; }
+  .resultado { font: 1rem/1.6 Consolas, monospace; }
+  .resultado .num { font-size: 2.5rem; font-weight: 700; color: #1B6CA8; }
+  .resultado ol { margin: 0; padding-left: 28px; }
+  .vazio { color: #5B6878; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+  @media (max-width: 860px) { .palco { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Laboratório de listas</h1>
+  <p class="sub">Escolha uma operação. À esquerda, a lista original; à direita, o código e o que ele devolve.</p>
+
+  <div class="botoes" id="botoes"></div>
+
+  <div class="palco">
+    <section class="painel" aria-labelledby="t-orig">
+      <h2 id="t-orig">A lista: <code>chamados</code></h2>
+      <div class="lista" id="original"></div>
+    </section>
+    <section class="painel" aria-labelledby="t-res">
+      <h2 id="t-res">O código e o resultado</h2>
+      <pre id="codigo"></pre>
+      <div class="resultado" id="resultado" aria-live="polite"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+const chamados = [
+  { numero: 1046, assunto: "Monitor piscando", prioridade: "media", status: "aberto" },
+  { numero: 1045, assunto: "Troca de senha do e-mail", prioridade: "baixa", status: "concluido" },
+  { numero: 1044, assunto: "Ar-condicionado da recepção parado", prioridade: "alta", status: "aberto" },
+  { numero: 1043, assunto: "Reembolso de despesa de viagem", prioridade: "media", status: "andamento" },
+  { numero: 1042, assunto: "Impressora sem conexão", prioridade: "alta", status: "aberto" },
+  { numero: 1041, assunto: "Acesso ao sistema de RH", prioridade: "media", status: "aberto" },
+  { numero: 1040, assunto: "Segunda via de comprovante", prioridade: "baixa", status: "concluido" },
+  { numero: 1039, assunto: "Atualização de dados cadastrais", prioridade: "alta", status: "concluido" },
+];
+
+const operacoes = [
+  { rotulo: "length", codigo: 'chamados.<m>length</m>', executar: () => chamados.length },
+  { rotulo: "filter: abertos", codigo: 'chamados.<m>filter</m>((c) => c.status === <s>"aberto"</s>)', executar: () => chamados.filter((c) => c.status === "aberto") },
+  { rotulo: "filter: alta", codigo: 'chamados.<m>filter</m>((c) => c.prioridade === <s>"alta"</s>)', executar: () => chamados.filter((c) => c.prioridade === "alta") },
+  { rotulo: "filter: alta e aberto", codigo: 'chamados.<m>filter</m>(\n  (c) => c.prioridade === <s>"alta"</s> && c.status === <s>"aberto"</s>\n)', executar: () => chamados.filter((c) => c.prioridade === "alta" && c.status === "aberto") },
+  { rotulo: "map: assuntos", codigo: 'chamados.<m>map</m>((c) => c.assunto)', executar: () => chamados.map((c) => c.assunto) },
+  { rotulo: "map: textos", codigo: 'chamados.<m>map</m>((c) => `Nº ${c.numero} — ${c.assunto}`)', executar: () => chamados.map((c) => `Nº ${c.numero} — ${c.assunto}`) },
+  { rotulo: "find: nº 1043", codigo: 'chamados.<m>find</m>((c) => c.numero === 1043)', executar: () => chamados.find((c) => c.numero === 1043) },
+  { rotulo: "filter + map", codigo: 'chamados\n  .<m>filter</m>((c) => c.status === <s>"aberto"</s>)\n  .<m>map</m>((c) => c.assunto)', executar: () => chamados.filter((c) => c.status === "aberto").map((c) => c.assunto) },
+];
+
+function card(c) {
+  const d = document.createElement("div"); d.className = "card"; d.dataset.numero = c.numero;
+  const n = document.createElement("span"); n.className = "n"; n.textContent = c.numero;
+  const a = document.createElement("span"); a.textContent = c.assunto;
+  const t = document.createElement("span"); t.className = "tags";
+  [c.prioridade, c.status].forEach((v) => { const s = document.createElement("span"); s.className = "tag " + v; s.textContent = v; t.append(s); });
+  d.append(n, a, t); return d;
+}
+const original = document.getElementById("original");
+chamados.forEach((c) => original.append(card(c)));
+
+function marcar(numeros) {
+  original.querySelectorAll(".card").forEach((el) => {
+    const n = Number(el.dataset.numero);
+    el.classList.toggle("fora", numeros !== null && !numeros.includes(n));
+    el.classList.toggle("dentro", numeros !== null && numeros.includes(n));
+  });
+}
+
+function mostrar(op) {
+  document.getElementById("codigo").innerHTML = op.codigo
+    .replace(/<m>/g, '<span class="m">').replace(/<\/m>/g, "</span>")
+    .replace(/<s>/g, '<span class="s">').replace(/<\/s>/g, "</span>");
+  const res = op.executar();
+  const alvo = document.getElementById("resultado");
+  alvo.textContent = "";
+  if (typeof res === "number") {
+    alvo.innerHTML = '<div class="num"></div><div class="vazio">um número</div>';
+    alvo.querySelector(".num").textContent = res;
+    marcar(null);
+  } else if (Array.isArray(res) && typeof res[0] === "object") {
+    const p = document.createElement("p"); p.className = "vazio"; p.textContent = `Uma lista nova, com ${res.length} chamados:`;
+    const l = document.createElement("div"); l.className = "lista";
+    res.forEach((c) => l.append(card(c)));
+    alvo.append(p, l);
+    marcar(res.map((c) => c.numero));
+  } else if (Array.isArray(res)) {
+    const p = document.createElement("p"); p.className = "vazio"; p.textContent = `Uma lista nova, com ${res.length} textos:`;
+    const ol = document.createElement("ol");
+    res.forEach((s) => { const li = document.createElement("li"); li.textContent = `"${s}"`; ol.append(li); });
+    alvo.append(p, ol);
+    marcar(null);
+  } else {
+    const p = document.createElement("p"); p.className = "vazio"; p.textContent = "Um objeto só, não uma lista:";
+    alvo.append(p, card(res));
+    marcar([res.numero]);
+  }
+}
+
+const botoes = document.getElementById("botoes");
+operacoes.forEach((op, i) => {
+  const b = document.createElement("button"); b.type = "button"; b.textContent = op.rotulo;
+  b.setAttribute("aria-pressed", "false");
+  b.addEventListener("click", () => {
+    botoes.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    mostrar(op);
+  });
+  botoes.append(b);
+});
+document.getElementById("codigo").textContent = "// escolha uma operação";
+</script>
+</body>
+</html>
