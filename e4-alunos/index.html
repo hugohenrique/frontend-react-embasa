@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de TypeScript</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: #F1F4F7; color: #1D2733; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 12px 20px; background: #123B5A; color: #fff; }
+  header h1 { margin: 0; font-size: 1.15rem; }
+  header label { font-size: .9rem; }
+  header select { font: inherit; font-size: .95rem; padding: 6px 10px; border-radius: 6px; border: 0; min-width: 300px; }
+  .estado { margin-left: auto; font-size: .85rem; opacity: .85; }
+  main { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr); gap: 16px; padding: 16px 20px 24px; }
+  .painel { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(16,40,64,.12); padding: 14px 16px; min-width: 0; }
+  .instrucoes { grid-column: 1 / -1; }
+  .instrucoes p { margin: 4px 0; }
+  .desafio { color: #5B6878; font-size: .92rem; }
+  code { font-family: Consolas, "Courier New", monospace; background: #EEF1F4; padding: 0 4px; border-radius: 3px; }
+  .barra { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .barra button { font: inherit; font-size: .9rem; padding: 7px 14px; border-radius: 6px; border: 1px solid #A9B6C3; background: #fff; cursor: pointer; }
+  .barra button.principal { background: #1B6CA8; border-color: #1B6CA8; color: #fff; font-weight: 600; }
+  .barra button[hidden] { display: none; }
+  button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #5CC8E6; outline-offset: 2px; }
+  .editor { display: grid; grid-template-columns: auto 1fr; border: 1px solid #C5CFD9; border-radius: 8px; overflow: hidden; height: 62vh; min-height: 360px; background: #fff; }
+  .linhas { margin: 0; padding: 12px 8px 12px 12px; background: #F4F6F9; color: #8A96A3; text-align: right; font: 15px/1.55 Consolas, "Courier New", monospace; overflow: hidden; user-select: none; }
+  .linhas .erro { color: #B3261E; font-weight: 700; }
+  textarea { border: 0; resize: none; padding: 12px; font: 15px/1.55 Consolas, "Courier New", monospace; color: #1D2733; white-space: pre; overflow: auto; tab-size: 2; }
+  textarea:focus-visible { outline-offset: -3px; }
+  h2 { margin: 0 0 8px; font-size: 1rem; }
+  .contagem { font-weight: 700; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; }
+  .contagem.ok { background: #E8F5EE; color: #14532D; }
+  .contagem.ruim { background: #FBE3E1; color: #8C1D16; }
+  ol.erros { list-style: none; margin: 0; padding: 0; max-height: 30vh; overflow: auto; }
+  ol.erros li { margin-bottom: 6px; }
+  ol.erros button { all: unset; display: block; width: 100%; box-sizing: border-box; padding: 8px 10px; border-left: 4px solid #B3261E; background: #FDF3F2; border-radius: 4px; cursor: pointer; }
+  ol.erros button:focus-visible { outline: 3px solid #1B6CA8; }
+  ol.erros b { color: #8C1D16; }
+  ol.erros span, ol.erros small { white-space: pre-line; }
+  ol.erros small { display: block; color: #6B7684; margin-top: 2px; }
+  pre.saida { margin: 0; min-height: 80px; max-height: 26vh; overflow: auto; background: #1D2733; color: #E7ECF3; padding: 12px; border-radius: 8px; font: 14px/1.5 Consolas, monospace; white-space: pre-wrap; }
+  .lado h2 + * { margin-top: 0; }
+  .bloco { margin-top: 16px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } header select { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Laboratório de TypeScript</h1>
+  <label for="escolha">Exercício</label>
+  <select id="escolha"></select>
+  <span class="estado" id="estado" aria-live="polite">Carregando o TypeScript…</span>
+</header>
+
+<main>
+  <section class="painel instrucoes" aria-labelledby="titulo"><h2 id="titulo"></h2><div id="instrucoes"></div></section>
+
+  <section class="painel" aria-label="Editor">
+    <div class="barra">
+      <button type="button" class="principal" id="executar">Executar</button>
+      <button type="button" id="ver-js">Ver o JavaScript gerado</button>
+      <button type="button" id="resposta">Ver uma resposta</button>
+      <button type="button" id="restaurar">Restaurar o original</button>
+    </div>
+    <div class="editor">
+      <pre class="linhas" id="linhas" aria-hidden="true"></pre>
+      <textarea id="codigo" spellcheck="false" autocomplete="off" aria-label="Código TypeScript" aria-describedby="contagem"></textarea>
+    </div>
+  </section>
+
+  <section class="painel lado" aria-label="Resultado">
+    <h2>Erros encontrados pelo TypeScript</h2>
+    <div class="contagem" id="contagem" aria-live="polite">Verificando…</div>
+    <ol class="erros" id="erros"></ol>
+    <div class="bloco">
+      <h2 id="titulo-saida">Saída</h2>
+      <pre class="saida" id="saida" aria-labelledby="titulo-saida"></pre>
+    </div>
+  </section>
+</main>
+
+<script src="js/typescript.js"></script>
+<script src="js/ts-libs.js"></script>
+<script src="js/ts-ptbr.js"></script>
+<script src="js/exercicios.js"></script>
+<script src="js/laboratorio.js"></script>
+</body>
+</html>
