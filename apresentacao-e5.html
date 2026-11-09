@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encontro 5 — Ambiente e primeiros componentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6F9; --ink:#141C26; --muted:#5A6575; --line:#D3DAE3;
+  --cobalt:#2E46F0; --cobalt-ink:#FFFFFF; --soft:#E6EAF7; --fail:#B3261E;
+  --code-bg:#141C26; --code-ink:#E7ECF3; --tag:#8FA2FF; --attr:#F2C46B; --str:#8EDDC1; --cmt:#7D8899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0E131A;overflow:hidden}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.viewport{position:fixed;inset:0;display:grid;place-items:center}
+.stage{width:1280px;height:720px;position:relative;transform-origin:center center;background:var(--paper);overflow:hidden}
+.slide{position:absolute;inset:0;padding:72px 96px 80px;display:none;flex-direction:column}
+.slide.on{display:flex}
+.num{position:absolute;right:40px;bottom:28px;font:600 18px "Atkinson Hyperlegible",sans-serif;color:var(--muted);font-variant-numeric:tabular-nums}
+.num b{color:var(--ink)}
+.course{position:absolute;left:96px;bottom:30px;font-size:16px;color:var(--muted)}
+
+h1,h2{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.025em;line-height:1.02}
+h1{font-size:96px;font-weight:800}
+h2{font-size:58px;font-weight:700;margin-bottom:36px;max-width:1000px}
+p,li{font-size:30px;line-height:1.38}
+.lead{font-size:34px;line-height:1.35;max-width:980px}
+.muted{color:var(--muted)}
+ul.plain{list-style:none}
+ul.plain li{padding:14px 0;border-bottom:2px solid var(--line)}
+ul.plain li:last-child{border-bottom:0}
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:64px 1fr;align-items:baseline;padding:12px 0}
+ol.steps li::before{content:counter(s);font:800 40px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.small{font-size:24px}
+.ex-time{display:inline-block;font-weight:700;font-size:24px;color:var(--cobalt);margin-bottom:14px}
+
+/* Capa */
+.cover{justify-content:flex-end;padding-bottom:120px}
+.cover .kicker{font-size:28px;color:var(--muted);margin-bottom:24px}
+.cover h1{font-size:148px;letter-spacing:-.04em;max-width:1100px}
+.cover .date{font-size:28px;margin-top:36px}
+.cover .bar{position:absolute;left:0;top:0;bottom:0;width:22px;background:var(--cobalt)}
+
+/* Divisores de fase do ciclo */
+.phase{background:var(--cobalt);color:var(--cobalt-ink);justify-content:center}
+.phase .step{font:700 30px "Atkinson Hyperlegible",sans-serif;opacity:.8;margin-bottom:8px}
+.phase h1{font-size:190px;letter-spacing:-.05em;line-height:.9}
+.phase p{font-size:36px;margin-top:30px;max-width:1000px}
+.phase .num,.phase .num b,.phase .course{color:rgba(255,255,255,.75)}
+.phase ol{margin-top:26px}
+.phase ol li{font-size:34px;padding:6px 0}
+.phase ol.steps li::before{color:#fff;opacity:.7}
+
+/* Grades */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.col h3{font:700 36px "Bricolage Grotesque",sans-serif;margin-bottom:10px;letter-spacing:-.01em}
+.col p{font-size:26px}
+.rule-top{border-top:6px solid var(--ink);padding-top:18px}
+
+/* Etapas */
+.weeks{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:8px}
+.weeks div{padding:18px 16px 0 0;border-top:6px solid var(--line)}
+.weeks div:first-child{border-top-color:var(--cobalt)}
+.weeks b{display:block;font:800 52px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.weeks span{display:block;font-size:22px;font-weight:700;line-height:1.25;margin:6px 0 8px}
+.weeks small{font-size:18px;color:var(--muted)}
+
+/* Ciclo */
+.cycle{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:20px}
+.cycle div{background:var(--soft);padding:22px 18px;min-height:220px;display:flex;flex-direction:column;justify-content:space-between}
+.cycle b{font:800 44px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.cycle span{font-size:26px;font-weight:700;line-height:1.2}
+.cycle small{font-size:19px;color:var(--muted)}
+
+/* Fluxo */
+.flow{display:flex;align-items:stretch;gap:0;margin-top:30px}
+.flow div{flex:1;border:3px solid var(--ink);padding:22px 14px;text-align:center;font-size:24px;font-weight:700;background:#fff;display:grid;place-items:center;min-height:130px}
+.flow i{width:36px;display:grid;place-items:center;font-style:normal;font-size:30px;color:var(--cobalt)}
+.flow div.hl{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+.flow-note{display:flex;gap:0;margin-top:14px}
+.flow-note span{flex:1;font-size:19px;color:var(--muted);text-align:center}
+
+/* Status */
+table.status{border-collapse:collapse;width:100%}
+table.status td{font-size:28px;padding:14px 0;border-bottom:2px solid var(--line)}
+table.status td:first-child{font:800 40px "Bricolage Grotesque",sans-serif;color:var(--cobalt);width:140px}
+
+/* Página-esquema */
+.wire{display:grid;grid-template-rows:80px 56px 1fr 64px;gap:10px;height:440px;width:560px}
+.wire div{border:3px solid var(--ink);display:flex;align-items:center;padding:0 18px;font:600 24px "JetBrains Mono",monospace;background:#fff}
+.wire .main{flex-direction:column;align-items:stretch;justify-content:flex-start;padding:16px 18px;gap:10px}
+.wire .main span{border:2px dashed var(--muted);padding:10px;font-size:20px;color:var(--muted)}
+.wire .main em{font-style:normal}
+.wire .hl{border-color:var(--cobalt);color:var(--cobalt)}
+
+/* Títulos */
+.heads{font:600 28px "JetBrains Mono",monospace;line-height:2}
+.heads div:nth-child(2),.heads div:nth-child(3){padding-left:48px}
+.heads div:nth-child(4),.heads div:nth-child(5){padding-left:96px}
+.heads b{color:var(--cobalt)}
+
+/* Código */
+pre.code{background:var(--code-bg);color:var(--code-ink);font:400 22px/1.5 "JetBrains Mono",monospace;padding:26px 30px;white-space:pre;overflow:hidden}
+pre.code.sm{font-size:19px}
+pre.code .t{color:var(--tag);font-weight:600}
+pre.code .a{color:var(--attr)}
+pre.code .s{color:var(--str)}
+pre.code .c{color:var(--cmt);font-style:italic}
+.url{font:600 26px "JetBrains Mono",monospace;background:#fff;border:3px solid var(--ink);padding:18px 22px;margin:20px 0;word-break:break-all}
+.url b{color:var(--cobalt)}
+
+/* Grandes regras */
+.rule{font:700 44px/1.18 "Bricolage Grotesque",sans-serif;letter-spacing:-.015em;padding:28px 0;border-bottom:3px solid var(--line)}
+.rule code{font:600 40px "JetBrains Mono",monospace;color:var(--cobalt)}
+.rule:last-child{border-bottom:0}
+
+/* Checklist */
+.check{columns:2;column-gap:56px}
+.check li{list-style:none;font-size:25px;padding:8px 0 8px 44px;position:relative;break-inside:avoid}
+.check li::before{content:"";position:absolute;left:0;top:13px;width:24px;height:24px;border:3px solid var(--ink)}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em}
+
+.break{justify-content:center;align-items:flex-start}
+.break h1{font-size:170px;letter-spacing:-.05em}
+
+/* Pessoas e resultado */
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:6px}
+.people > div{border-top:6px solid var(--ink);padding-top:20px}
+.people b{display:block;font:800 60px "Bricolage Grotesque",sans-serif;letter-spacing:-.025em;margin-bottom:10px}
+.people p{font-size:26px}
+.people .tag-r{display:inline-block;font-weight:700;font-size:22px;padding:4px 12px;margin-bottom:14px}
+.people .ok{border-top-color:var(--cobalt)}
+.people .ok .tag-r{background:var(--cobalt);color:#fff}
+.people .fail{border-top-color:var(--fail)}
+.people .fail .tag-r{background:var(--fail);color:#fff}
+
+/* Teclado e foco */
+.kbd-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:center}
+.keys > div{display:grid;grid-template-columns:270px 1fr;align-items:center;padding:14px 0;border-bottom:2px solid var(--line);font-size:26px}
+.keys > div:last-child{border-bottom:0}
+kbd{display:inline-block;font:700 22px "JetBrains Mono",monospace;border:3px solid var(--ink);border-bottom-width:6px;border-radius:7px;padding:3px 12px;background:#fff;color:var(--ink)}
+.lbl-demo{display:block;font-size:26px;font-weight:700;margin-bottom:8px}
+.fake-input{display:block;height:64px;background:#fff;border:3px solid var(--muted);border-radius:4px;outline:5px solid var(--cobalt);outline-offset:5px}
+.fake-input.plain{outline:0}
+.focus-demo p{font-size:26px;margin-top:30px}
+
+/* Leitor de tela */
+.hear{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:40px;align-items:start}
+.hear small{display:block;font-size:22px;color:var(--muted);margin-bottom:14px}
+.voice{font:700 46px/1.15 "Bricolage Grotesque",sans-serif;color:var(--cobalt);letter-spacing:-.015em}
+
+/* Pergunta */
+.question{justify-content:center}
+.question h2{font-size:84px;font-weight:800;letter-spacing:-.035em}
+.question .lead{font-size:40px;max-width:1050px}
+
+/* Controles */
+.ctrl{position:fixed;right:14px;top:12px;display:flex;gap:6px;opacity:.25;transition:opacity .2s}
+.ctrl:hover,.ctrl:focus-within{opacity:1}
+.ctrl button{background:#fff;border:0;font:700 14px "Atkinson Hyperlegible",sans-serif;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.ctrl button:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.progress{position:fixed;left:0;top:0;height:4px;background:var(--cobalt);transition:width .2s}
+@media (prefers-reduced-motion:reduce){.progress{transition:none}}
+
+/* ===== Encontro 2 ===== */
+.people .new{border-top-color:var(--cobalt)}
+pre.code.xs{font-size:17px;padding:18px 20px;white-space:pre}
+pre.code .p{color:var(--attr)}
+pre.code .v{color:var(--str)}
+pre.code .k{color:var(--tag);font-weight:600}
+pre.code.strike{position:relative;opacity:.75}
+pre.code.strike::after{content:"";position:absolute;left:18px;right:18px;top:50%;height:4px;background:var(--fail);transform:rotate(-4deg)}
+
+.phone-row{display:grid;grid-template-columns:270px 1fr;gap:64px;align-items:center}
+.phone{width:250px;height:470px;border:10px solid var(--ink);border-radius:34px;overflow:hidden;background:#fff;position:relative}
+.phone img{width:100%;display:block}
+.phone::after{content:"";position:absolute;right:0;top:0;bottom:0;width:30px;background:linear-gradient(90deg,transparent,rgba(179,38,30,.35))}
+
+.anatomy{display:grid;grid-template-columns:1.5fr 1fr;gap:56px;align-items:center}
+.an-code{font:600 32px/1.6 "JetBrains Mono",monospace;background:var(--code-bg);color:var(--code-ink);padding:30px 36px}
+.an-sel{color:var(--tag)} .an-prop{color:var(--attr)} .an-val{color:var(--str)}
+.an-legend b.an-sel{color:#2E46F0} .an-legend b.an-prop{color:#9A6400} .an-legend b.an-val{color:#0F7A5C}
+
+table.status.sel td:first-child{font:600 26px "JetBrains Mono",monospace;color:var(--cobalt);width:400px;padding-right:20px}
+table.status.sel td{font-size:26px;padding:12px 0}
+table.status.sel code{color:var(--cobalt)}
+table.status.bp td:first-child{width:160px}
+
+.boxrow{display:grid;grid-template-columns:560px 1fr;gap:56px;align-items:center}
+.bm-margin,.bm-border,.bm-padding{position:relative;padding:44px 34px 30px}
+.bm-margin{border:3px dashed var(--muted);background:#fff}
+.bm-border{border:8px solid var(--ink);background:var(--soft)}
+.bm-padding{background:#D5DCF9}
+.bm-content{background:var(--cobalt);color:#fff;font:700 26px "Atkinson Hyperlegible",sans-serif;padding:30px;text-align:center}
+.boxrow span{position:absolute;left:14px;top:10px;font:600 19px "JetBrains Mono",monospace;color:var(--ink)}
+
+.sum{display:flex;align-items:center;gap:14px}
+.sum div{border:3px solid var(--ink);background:#fff;padding:16px 22px;text-align:center;min-width:150px}
+.sum b{display:block;font:800 40px "Bricolage Grotesque",sans-serif}
+.sum span{font-size:20px;color:var(--muted)}
+.sum i{font:800 44px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+.sum .hl{background:var(--fail);border-color:var(--fail);color:#fff}
+.sum .hl span{color:#fff}
+
+.flowdemo{border:3px solid var(--line);background:#fff;padding:14px;margin:6px 0 16px;min-height:200px}
+.flowdemo span{font:600 22px "JetBrains Mono",monospace;background:var(--soft);border:2px solid var(--cobalt);color:var(--cobalt);padding:10px 14px}
+.flowdemo.block span{display:block;margin-bottom:10px}
+.flowdemo.inline span{display:inline-block;margin-right:10px}
+
+.axes{position:relative;padding:20px 0 70px 70px}
+.ax-row{display:flex;gap:16px;border:3px solid var(--ink);padding:16px;background:#fff}
+.ax-row span{flex:1;background:var(--cobalt);color:#fff;font:700 22px "Atkinson Hyperlegible",sans-serif;padding:64px 0;text-align:center}
+.ax-main{position:absolute;left:70px;right:0;bottom:22px;border-top:4px solid var(--cobalt);font:700 20px "Atkinson Hyperlegible",sans-serif;color:var(--cobalt);padding-top:6px}
+.ax-main::after{content:"";position:absolute;right:-2px;top:-12px;border:10px solid transparent;border-left:16px solid var(--cobalt)}
+.ax-cross{position:absolute;left:24px;top:20px;bottom:70px;border-left:4px solid var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);font:700 20px "Atkinson Hyperlegible",sans-serif;color:var(--muted);text-align:center;padding-right:6px}
+
+.gridd{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:3px solid var(--ink);padding:14px;background:#fff}
+.gridd span{background:var(--soft);border:2px solid var(--cobalt);font:700 22px "Atkinson Hyperlegible",sans-serif;color:var(--cobalt);padding:20px 14px}
+.gridd .wide{grid-column:1 / -1}
+
+.mf{display:flex;align-items:flex-end;gap:20px;margin-top:10px}
+.mf div{border:4px solid var(--ink);background:#fff;padding:18px;display:flex;flex-direction:column;justify-content:flex-end}
+.mf-1{width:200px;height:300px;border-color:var(--cobalt)!important;background:var(--soft)!important}
+.mf-2{width:330px;height:240px}
+.mf-3{width:460px;height:200px}
+.mf b{font:800 38px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.mf span{font-size:24px;font-weight:700}
+.mf small{font-size:19px;color:var(--muted)}
+
+.tap{display:flex;gap:24px;align-items:center;margin-top:26px}
+.tap span{background:#1B6CA8;color:#fff;font-weight:700}
+.tap-small{font-size:13px;padding:3px 9px;opacity:.85}
+.tap-ok{font-size:24px;padding:12px 26px;min-height:56px;display:inline-flex;align-items:center}
+
+.cols12{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:6px;background:repeating-linear-gradient(90deg,var(--soft) 0 calc((100% - 110px)/12),transparent calc((100% - 110px)/12) calc((100% - 110px)/12 + 10px));padding:10px 0}
+.cols12 .lbl-row{background:var(--cobalt);color:#fff;font-size:22px;font-weight:700;padding:16px 14px;white-space:nowrap;overflow:hidden}
+.cols12 .lbl-row code{color:#fff}
+.c12{grid-column:span 12}.c6{grid-column:span 6}.c4{grid-column:span 4}
+
+table.compare{border-collapse:collapse;width:100%}
+table.compare th{font:700 30px "Bricolage Grotesque",sans-serif;text-align:left;padding:10px 0;border-bottom:4px solid var(--ink)}
+table.compare th:nth-child(3){color:var(--cobalt)}
+table.compare td{font-size:25px;padding:12px 0;border-bottom:2px solid var(--line);vertical-align:top}
+table.compare td:first-child{color:var(--muted);width:280px}
+table.compare td:nth-child(2){width:380px}
+
+/* ===== Encontro 3 ===== */
+.msgbox{display:inline-block;margin-top:18px;padding:12px 18px;border-left:6px solid var(--fail);background:#FBE3E1;color:#8C1D16;font:700 28px "Atkinson Hyperlegible",sans-serif}
+.weeks.four{grid-template-columns:repeat(4,1fr)}
+.weeks.four span{font-size:26px}
+table.compare.passos td:last-child{font:800 30px "Bricolage Grotesque",sans-serif;color:var(--cobalt);width:170px}
+table.compare.passos td:first-child{width:120px}
+table.compare.passos td:nth-child(2){width:auto}
+pre.code .k{color:var(--tag);font-weight:600}
+.bignum{font:800 120px/1 "Bricolage Grotesque",sans-serif;color:var(--cobalt);margin:8px 0}
+.h2code{font:700 54px "JetBrains Mono",monospace;color:var(--cobalt)}
+.arr{display:flex;align-items:center;gap:24px;margin-top:6px}
+.arr>div{display:flex;gap:10px;border:3px solid var(--ink);background:#fff;padding:14px}
+.arr span{font:700 22px "Atkinson Hyperlegible",sans-serif;background:var(--soft);border:2px solid var(--line);padding:16px 14px;min-width:84px;text-align:center}
+.arr .c-a{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.arr .arr-out{border-color:var(--cobalt)}
+.arr .txt span{font-family:"JetBrains Mono",monospace;font-size:19px;background:#fff;border-color:var(--cobalt);color:var(--cobalt)}
+.arr i{font:800 54px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+
+/* ===== Encontro 5 ===== */
+.weeks.five{grid-template-columns:repeat(5,1fr)}
+.weeks.five div:first-child{border-top-color:var(--line)}
+.weeks.five div.hl{border-top-color:var(--cobalt)}
+.weeks.five span{font-size:25px}
+.weeks.five small{font-size:19px}
+.fromto{display:grid;grid-template-columns:1fr 60px 1fr;align-items:stretch;margin-top:10px}
+.fromto>div{border-top:6px solid var(--line);padding-top:20px}
+.fromto .new{border-top-color:var(--cobalt)}
+.fromto small{display:block;font-size:22px;color:var(--muted);margin-bottom:8px}
+.fromto b{display:block;font:800 48px/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;margin-bottom:16px}
+.fromto .new b{color:var(--cobalt)}
+.fromto .old b{color:var(--muted)}
+.fromto p{font-size:27px}
+.fromto i{font:800 60px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt);display:grid;place-items:center}
+.base-bar{margin-top:30px;background:var(--soft);border-left:8px solid var(--cobalt);padding:20px 24px;font-size:26px}
+.lts{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.lts div{border-top:6px solid var(--line);padding:18px 20px 0 0}
+.lts .hl{border-top-color:var(--cobalt)}
+.lts b{display:block;font:800 72px "Bricolage Grotesque",sans-serif;color:var(--ink)}
+.lts .hl b{color:var(--cobalt)}
+.lts .dim b{color:var(--muted)}
+.lts span{display:block;font-size:28px;font-weight:700}
+.lts small{display:block;font-size:21px;color:var(--muted);margin-top:6px}
+.term{background:var(--code-bg);color:var(--code-ink);font:400 26px/1.55 "JetBrains Mono",monospace;padding:24px 30px;white-space:pre-wrap;word-break:break-word}
+.term.sm{font-size:21px}
+.term .pr{color:var(--tag);font-weight:700}
+.term .out{color:var(--cmt)}
+.term .c{color:var(--attr)}
+.term b{color:var(--str)}
+table.parts{border-collapse:collapse;width:100%;margin-top:18px}
+table.parts td{font-size:23px;padding:8px 0;border-bottom:2px solid var(--line);vertical-align:baseline}
+table.parts td:first-child{width:330px;padding-right:18px}
+table.parts code{font-weight:700;color:var(--cobalt)}
+.kbd-line{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:28px}
+.kbd-line i{font:800 34px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+.kbd-line span{color:var(--muted)}
+.kbd-line b{font-weight:700}
+.msgbox.long{font-size:25px;line-height:1.35;max-width:1060px}
+.tree{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.tree div{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:2px solid var(--line)}
+.tree div>code{font:700 21px "JetBrains Mono",monospace;color:var(--ink)}
+.tree div.hl>code{color:var(--cobalt)}
+.tree span{font-size:21px;line-height:1.3;color:var(--muted)}
+.tree span code{font-size:19px;color:var(--ink)}
+.screens{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.screens div{border:3px solid var(--ink);background:#fff;padding:16px 18px;min-height:260px;display:flex;flex-direction:column;gap:10px}
+.screens small{font:700 24px "Atkinson Hyperlegible",sans-serif;padding-bottom:6px;border-bottom:3px solid var(--ink)}
+.screens span{height:30px;background:var(--soft);border-left:6px solid var(--cobalt)}
+.screens em{margin-top:auto;font-style:normal;font-size:21px;color:var(--muted)}
+.ctree{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:4px}
+.ctree>div.root{font:700 28px "JetBrains Mono",monospace;background:var(--ink);color:#fff;padding:12px 34px}
+.ctree .kids{display:grid;grid-template-columns:1fr 2.2fr 1fr;gap:26px;width:100%;margin-top:34px;border-top:4px solid var(--ink);padding-top:26px;position:relative}
+.ctree .kids::before{content:"";position:absolute;left:50%;top:-38px;height:34px;border-left:4px solid var(--ink)}
+.ctree .kids>div{font:700 26px "JetBrains Mono",monospace;border:3px solid var(--ink);background:#fff;padding:16px;text-align:center;align-self:start}
+.ctree .kids>div.hl{border-color:var(--cobalt);color:var(--cobalt)}
+.ctree small{display:block;font:400 19px "Atkinson Hyperlegible",sans-serif;color:var(--muted);margin-top:4px}
+.ctree .sub{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ctree .sub span{font:600 18px "JetBrains Mono",monospace;background:var(--soft);border:2px solid var(--cobalt);padding:10px 4px;color:var(--cobalt)}
+pre.code .tg{color:var(--tag);font-weight:600}
+pre.code .at{color:var(--attr)}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="viewport"><div class="stage" id="stage">
+
+<!-- 1 -->
+<section class="slide cover">
+  <div class="bar"></div>
+  <p class="kicker">Desenvolvimento Front-end com React · Etapa 2</p>
+  <h1>Ambiente e primeiros componentes</h1>
+  <p class="date">Encontro 5 de 27, segunda-feira, 9 de novembro de 2026</p>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <h2>Esta semana: React</h2>
+  <div class="weeks five">
+    <div class="hl"><b>Seg</b><span>JSX, componentes e Props</span><small>hoje, com o ambiente</small></div>
+    <div><b>Ter</b><span>Estado e eventos</span><small>a tela reage</small></div>
+    <div><b>Qua</b><span>Listas e condições</span><small>map, lista vazia</small></div>
+    <div><b>Qui</b><span>Hooks e formulários</span><small>cadastro</small></div>
+    <div><b>Sex</b><span>Organização</span><small>entrega da etapa 2</small></div>
+  </div>
+  <p class="lead" style="margin-top:48px">Cada dia usa só o que já vimos. O projeto cresce junto com o conteúdo.</p>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <h2>O projeto muda de assunto</h2>
+  <div class="fromto">
+    <div class="old"><small>Até sexta</small><b>Central de Chamados</b><p>Chamados internos: projetor, senha, ar-condicionado. Setor e assunto.</p></div>
+    <i>›</i>
+    <div class="new"><small>A partir de hoje</small><b>Central de Solicitações de Serviço</b><p>Vazamento, falta d'água, religação. Município, bairro, prioridade.</p></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <h2>Por que mudamos</h2>
+  <div class="three">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Perto do trabalho</h3><p>Saneamento é o dia a dia de vocês. Os exemplos passam a falar a mesma língua.</p></div>
+    <div class="col rule-top"><h3>Vocês sabem mais</h3><p>Das regras do negócio, vocês entendem mais do que eu. Vão ver erros que eu não veria.</p></div>
+    <div class="col rule-top"><h3>Mesmos conceitos</h3><p>O CSS, os tipos e as funções da etapa 1 continuam. Muda só o assunto.</p></div>
+  </div>
+  <p class="lead muted" style="margin-top:44px">Os dados são fictícios e não representam nenhum sistema real.</p>
+</section>
+
+<!-- 5 -->
+<section class="slide phase">
+  <p class="step">Primeira parte, até o intervalo</p>
+  <h1>O ambiente</h1>
+  <p>Montamos juntos, passo a passo. A cada passo, confirme no chat.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <h2>Quem faz o quê</h2>
+  <div class="flow">
+    <div>VS Code</div><i>›</i>
+    <div class="hl">Vite</div><i>›</i>
+    <div>Chrome</div>
+  </div>
+  <div class="flow-note">
+    <span>você escreve TypeScript e JSX</span><span style="flex:0 0 36px"></span>
+    <span>transforma em JavaScript e serve a página</span><span style="flex:0 0 36px"></span>
+    <span>mostra a página</span>
+  </div>
+  <div class="base-bar"><b>Node.js</b> faz o Vite rodar · <b>npm</b> traz o React, o TypeScript e o próprio Vite</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <h2>Cinco passos</h2>
+  <ol class="steps">
+    <li><span>Node.js, na versão LTS</span></li>
+    <li><span>Visual Studio Code</span></li>
+    <li><span>Criar o projeto com o Vite</span></li>
+    <li><span>Rodar no Chrome</span></li>
+    <li><span>TypeScript no editor</span></li>
+  </ol>
+  <p class="lead muted" style="margin-top:20px">O Git fica para a etapa 5, quando ele for necessário.</p>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <span class="ex-time">Passo 1</span>
+  <h2>Node.js: JavaScript fora do navegador</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>O que é</h3><p>Um programa que roda JavaScript no seu computador, sem navegador.</p></div>
+    <div class="col rule-top"><h3>Por que precisamos</h3><p>As ferramentas de front-end são escritas em JavaScript. Sem o Node, elas não rodam.</p></div>
+  </div>
+  <p class="lead" style="margin-top:44px">Junto vem o <b>npm</b>: ele baixa ferramentas e bibliotecas.</p>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <h2>LTS: a versão para trabalho</h2>
+  <div class="lts">
+    <div><b>v24</b><span>LTS em manutenção</span><small>só correções</small></div>
+    <div class="hl"><b>v26</b><span>LTS ativa</span><small>desde 28/10/2026, suporte até abril de 2029</small></div>
+    <div class="dim"><b>v27</b><span>Em desenvolvimento</span><small>novidades em teste</small></div>
+  </div>
+  <p class="lead" style="margin-top:44px"><i>Long Term Support</i>: estável, com correções por anos. Para trabalho, sempre a LTS.</p>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>Instalou? Confira</h2>
+  <div class="term"><span class="pr">&gt;</span> node -v
+<span class="out">v26.13.0</span>
+<span class="pr">&gt;</span> npm -v
+<span class="out">(um número de versão)</span></div>
+  <p class="lead" style="margin-top:30px">No Prompt de Comando, aberto <b>depois</b> da instalação. Escreva no chat a sua versão do Node.</p>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <span class="ex-time">Passo 2</span>
+  <h2>Visual Studio Code</h2>
+  <div class="three">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Entende TypeScript</h3><p>Sem instalar nada. Sublinha os erros enquanto você digita.</p></div>
+    <div class="col rule-top"><h3>Terminal embutido</h3><p>Código e comandos na mesma janela.</p></div>
+    <div class="col rule-top"><h3>User Installer</h3><p>Instala só para o seu usuário. Normalmente sem administrador.</p></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <h2>Uma configuração: o terminal</h2>
+  <div class="kbd-line"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> <span>Terminal: Select Default Profile</span> <i>›</i> <b>Command Prompt</b></div>
+  <div class="msgbox" style="margin-top:34px">a execução de scripts foi desabilitada neste sistema</div>
+  <p class="lead" style="margin-top:26px">É o erro que o PowerShell costuma dar com o npm. No Prompt de Comando, ele não acontece.</p>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <span class="ex-time">Passo 3, faça comigo</span>
+  <h2>Criar o projeto</h2>
+  <div class="term sm"><span class="pr">&gt;</span> npx create-vite@9.3.4 central-de-solicitacoes --template react-ts --no-eslint --no-immediate</div>
+  <table class="parts">
+    <tr><td><code>npx</code></td><td>roda uma ferramenta sem instalá-la de vez</td></tr>
+    <tr><td><code>create-vite@9.3.4</code></td><td>o criador de projetos, numa versão fixa para todos</td></tr>
+    <tr><td><code>--template react-ts</code></td><td>React com TypeScript</td></tr>
+    <tr><td><code>--no-eslint</code></td><td>usa o Oxlint, o verificador padrão do modelo</td></tr>
+    <tr><td><code>--no-immediate</code></td><td>não instala sozinho: fazemos cada etapa à mão</td></tr>
+  </table>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>Abrir e instalar</h2>
+  <div class="term"><span class="pr">&gt;</span> code central-de-solicitacoes
+<span class="c"># na janela nova do VS Code, no terminal:</span>
+<span class="pr">&gt;</span> npm install
+<span class="out">added 28 packages, found 0 vulnerabilities</span></div>
+  <div class="two" style="margin-top:28px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>node_modules</h3><p>Tudo o que o npm baixou. Nunca se envia: quem recebe roda <code>npm install</code>.</p></div>
+    <div class="col rule-top"><h3>package-lock.json</h3><p>A versão exata de cada pacote. O projeto fica igual em qualquer máquina.</p></div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <span class="ex-time">Passo 4, faça comigo</span>
+  <h2>Rodar no Chrome</h2>
+  <div class="term"><span class="pr">&gt;</span> npm run dev
+  <span class="out">VITE v8.3.6  ready in 217 ms</span>
+  <span class="out">➜  Local:   </span><b>http://localhost:5173/</b></div>
+  <div class="two" style="margin-top:28px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>localhost</h3><p>Este computador. Só você acessa.</p></div>
+    <div class="col rule-top"><h3>5173</h3><p>A porta: o número que identifica esse servidor. Parar: <kbd>Ctrl</kbd> + <kbd>C</kbd>.</p></div>
+  </div>
+  <p class="lead" style="margin-top:18px">Abriu a página do Vite? Escreva <b>1</b> no chat.</p>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <h2>O que o Vite criou</h2>
+  <div class="tree">
+    <div><code>index.html</code><span>a única página. O React desenha dentro dela</span></div>
+    <div class="hl"><code>src/</code><span>o nosso código: <code>main.tsx</code>, <code>App.tsx</code>, CSS</span></div>
+    <div><code>public/</code><span>arquivos servidos como estão, como o ícone da aba</span></div>
+    <div><code>package.json</code><span>nome, comandos e dependências do projeto</span></div>
+    <div><code>tsconfig.*.json</code><span>as regras do TypeScript</span></div>
+    <div><code>vite.config.ts</code><span>a configuração do Vite, com o plugin do React</span></div>
+    <div><code>.oxlintrc.json</code><span>as regras do Oxlint</span></div>
+    <div><code>.gitignore</code><span>o que o Git deve ignorar, como <code>node_modules</code></span></div>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <h2>index.html: uma página quase vazia</h2>
+  <pre class="code" data-src="s17" data-lang="html"></pre>
+  <p class="lead" style="margin-top:26px">Um <code>div</code> vazio e um script do tipo módulo. Lembram do encontro 3? Módulo precisa de servidor. O Vite é o servidor.</p>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+  <h2>main.tsx: onde o React começa</h2>
+  <pre class="code sm" data-src="s18" data-lang="tsx"></pre>
+  <div class="three" style="margin-top:24px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>createRoot</h3><p>O React assume o <code>div#root</code>.</p></div>
+    <div class="col rule-top"><h3>O <code>!</code></h3><p>“Garanto que não é <code>null</code>.” Aqui pode: o <code>div</code> é nosso.</p></div>
+    <div class="col rule-top"><h3>StrictMode</h3><p>Verificações extras, só em desenvolvimento.</p></div>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+  <h2>package.json</h2>
+  <div class="two">
+    <pre class="code sm" data-src="s19" data-lang="tsx"></pre>
+    <div>
+      <div class="col rule-top" style="border-color:var(--cobalt)"><h3>scripts</h3><p><code>npm run dev</code> roda o que está em <code>dev</code>.</p></div>
+      <div class="col rule-top" style="margin-top:26px"><h3>dependencies</h3><p>Vão para o navegador: React.</p></div>
+      <div class="col rule-top" style="margin-top:26px"><h3>devDependencies</h3><p>Só ajudam a desenvolver: Vite, TypeScript, Oxlint.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>Salvou, atualizou</h2>
+  <ol class="steps">
+    <li><span>Abra <code>src/App.tsx</code></span></li>
+    <li><span>Troque <code>Get started</code> por <code>Central de Solicitações</code></span></li>
+    <li><span>Salve com <kbd>Ctrl</kbd> + <kbd>S</kbd> e olhe o Chrome</span></li>
+  </ol>
+  <p class="lead muted" style="margin-top:24px">A bolinha branca na aba do arquivo quer dizer: ainda não salvou.</p>
+</section>
+
+<!-- 21 -->
+<section class="slide">
+  <span class="ex-time">Passo 5</span>
+  <h2>Onde os erros aparecem agora</h2>
+  <table class="status bp">
+    <tr><td>Editor</td><td>Sublinhado vermelho e painel Problems, <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd>. Enquanto você digita.</td></tr>
+    <tr><td>build</td><td><code>npm run build</code> confere os tipos antes de publicar. Com erro, nada sai.</td></tr>
+    <tr><td>lint</td><td><code>npm run lint</code> e a extensão Oxc: avisos de boas práticas.</td></tr>
+  </table>
+  <p class="lead" style="margin-top:28px"><b>Atenção:</b> o <code>npm run dev</code> não confere tipos. A página abre mesmo com erro de tipo.</p>
+</section>
+
+<!-- 22 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>Uma linha no tsconfig.app.json</h2>
+  <pre class="code" data-src="s22" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:26px">O modo estrito, o do <code>null</code> de sexta. A versão do projeto já liga sozinha, mas o VS Code tem a dele. Escrito, vale para os dois.</p>
+</section>
+
+<!-- 23 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>A extensão Oxc</h2>
+  <div class="kbd-line"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> <span>procure</span> <b>Oxc</b> <i>›</i> <span>publicadora</span> <b>oxc</b> <i>›</i> <b>Install</b></div>
+  <p class="lead" style="margin-top:40px">Teste: escreva <code>const x: number = "texto"</code> no <code>App.tsx</code>. Viu o vermelho? Apague e salve.</p>
+</section>
+
+<!-- 24 -->
+<section class="slide">
+  <h2>Ambiente pronto</h2>
+  <ul class="check">
+    <li>Node 26 LTS e npm</li>
+    <li>VS Code com Prompt de Comando</li>
+    <li>Projeto <code>central-de-solicitacoes</code></li>
+    <li><code>npm run dev</code> abrindo no Chrome</li>
+    <li><code>"strict": true</code> no tsconfig</li>
+    <li>Extensão Oxc</li>
+  </ul>
+  <p class="lead" style="margin-top:36px">Ficou algum passo para trás? O <code>guia-do-ambiente.html</code> tem tudo, e à tarde resolvemos no WhatsApp.</p>
+</section>
+
+<!-- 25 -->
+<section class="slide break">
+  <h1>Intervalo</h1>
+  <p class="lead">Voltamos às 10h35. Deixe o VS Code aberto.</p>
+</section>
+
+<!-- 26 -->
+<section class="slide phase">
+  <p class="step">Etapa 1 do ciclo</p>
+  <h1>Problema real</h1>
+  <p>A supervisão pediu uma coluna.</p>
+</section>
+
+<!-- 27 -->
+<section class="slide">
+  <h2>Três telas, a mesma linha</h2>
+  <div class="screens">
+    <div><small>Atendimento</small><span></span><span></span><span></span><span></span><em>4 linhas</em></div>
+    <div><small>Equipe de campo</small><span></span><span></span><em>2 linhas</em></div>
+    <div><small>Supervisão</small><span></span><span></span><em>2 linhas</em></div>
+  </div>
+  <p class="lead" style="margin-top:34px">Cada linha: número, tipo, município, prioridade e abertura. Escrita à mão, em HTML.</p>
+</section>
+
+<!-- 28 -->
+<section class="slide question">
+  <h2>“Mostrem o bairro em todas as telas.”</h2>
+  <p class="lead">Quantos lugares do código você precisa alterar? Responda no chat, com um número.</p>
+</section>
+
+<!-- 29 -->
+<section class="slide">
+  <h2>Onze alterações</h2>
+  <div class="sum">
+    <div><b>8</b><span>linhas</span></div><i>+</i>
+    <div><b>3</b><span>cabeçalhos</span></div><i>=</i>
+    <div class="hl"><b>11</b><span>lugares</span></div>
+  </div>
+  <p class="lead" style="margin-top:44px">E se, numa delas, alguém esquecer? Uma tela mostra o bairro, a outra não. Ninguém percebe até o cliente ligar.</p>
+</section>
+
+<!-- 30 -->
+<section class="slide phase">
+  <p class="step">Etapa 2 do ciclo</p>
+  <h1>Discussão</h1>
+  <ol class="steps">
+    <li><span>No JSF, como vocês evitam repetir um pedaço de tela?</span></li>
+    <li><span>Já mudaram algo num lugar e esqueceram outro? Sim ou não, no chat.</span></li>
+  </ol>
+</section>
+
+<!-- 31 -->
+<section class="slide phase">
+  <p class="step">Etapa 3 do ciclo</p>
+  <h1>Conceito</h1>
+  <p>Componentes: escreva uma vez, use em vários lugares.</p>
+</section>
+
+<!-- 32 -->
+<section class="slide">
+  <h2>Por que React</h2>
+  <div class="three">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Componentes</h3><p>Um pedaço de tela com nome. Muda num lugar, muda em todos.</p></div>
+    <div class="col rule-top"><h3>Declarativo</h3><p>Você descreve como a tela deve ficar. O React cuida do DOM.</p></div>
+    <div class="col rule-top"><h3>Muito usado</h3><p>Documentação, bibliotecas e gente que já passou pelo seu problema.</p></div>
+  </div>
+</section>
+
+<!-- 33 -->
+<section class="slide">
+  <h2>Imperativo e declarativo</h2>
+  <div class="two">
+    <div><p class="small muted" style="margin-bottom:10px">Etapa 1: passo a passo, como montar</p><pre class="code xs" data-src="s33a" data-lang="tsx"></pre></div>
+    <div><p class="small muted" style="margin-bottom:10px">React: como a linha deve ficar</p><pre class="code xs" data-src="s33b" data-lang="tsx"></pre></div>
+  </div>
+</section>
+
+<!-- 34 -->
+<section class="slide">
+  <h2>JSX: parece HTML, é JavaScript</h2>
+  <pre class="code" data-src="s34" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:26px">O Vite transforma cada tag numa chamada de função. Por isso o arquivo é <code>.tsx</code>: TypeScript com JSX.</p>
+</section>
+
+<!-- 35 -->
+<section class="slide">
+  <h2>Componente: função que devolve JSX</h2>
+  <pre class="code sm" data-src="s35" data-lang="tsx"></pre>
+  <div class="two" style="margin-top:24px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Nome com maiúscula</h3><p>É assim que o React diferencia <code>&lt;Cabecalho /&gt;</code> de <code>&lt;header&gt;</code>.</p></div>
+    <div class="col rule-top"><h3>Usa como tag</h3><p><code>&lt;Cabecalho /&gt;</code> no lugar onde ele deve aparecer.</p></div>
+  </div>
+</section>
+
+<!-- 36 -->
+<section class="slide">
+  <h2>Quatro diferenças do HTML</h2>
+  <table class="status sel">
+    <tr><td>&lt;&gt; … &lt;/&gt;</td><td>Um único elemento por fora. O fragmento agrupa sem criar tag.</td></tr>
+    <tr><td>{/* … */}</td><td>Comentário. <code>&lt;!-- --&gt;</code> não existe no JSX.</td></tr>
+    <tr><td>className, htmlFor</td><td><code>class</code> e <code>for</code> são palavras do JavaScript.</td></tr>
+    <tr><td>tabIndex={0}</td><td>Atributos em camelCase. Número e expressão vão entre chaves.</td></tr>
+  </table>
+  <p class="lead muted" style="margin-top:20px">E toda tag fecha: <code>&lt;input /&gt;</code>.</p>
+</section>
+
+<!-- 37 -->
+<section class="slide">
+  <span class="ex-time">Exercício 1, 15 minutos, faça comigo</span>
+  <h2>Da página para o JSX</h2>
+  <ol class="steps">
+    <li><span>Troque a pasta <code>src</code> pela de <code>pontos-de-controle/0-inicio</code></span></li>
+    <li><span>Corrija o que o Chrome e o editor apontarem, um erro por vez</span></li>
+    <li><span>Crie <code>Cabecalho.tsx</code> e <code>Rodape.tsx</code> em <code>src/components</code></span></li>
+  </ol>
+  <p class="lead muted" style="margin-top:18px">Perdeu um passo? O resultado está em <code>1-cabecalho-e-rodape</code>.</p>
+</section>
+
+<!-- 38 -->
+<section class="slide">
+  <h2>Três sinais, uma página que parece certa</h2>
+  <div class="three">
+    <div class="col rule-top" style="border-color:var(--fail)"><h3>Chrome</h3><p>Tela vermelha do Vite: o código nem foi entendido. Fragmento e comentário.</p></div>
+    <div class="col rule-top" style="border-color:var(--fail)"><h3>Editor</h3><p><code>class</code> sublinhado: “Você quis dizer 'className'?”</p></div>
+    <div class="col rule-top" style="border-color:var(--fail)"><h3>Console</h3><p><code>Invalid DOM property `tabindex`</code>. A página funciona, mas está errada.</p></div>
+  </div>
+</section>
+
+<!-- 39 -->
+<section class="slide">
+  <h2>Props: os dados que o componente recebe</h2>
+  <pre class="code xs" data-src="s39" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:26px">Como atributos de uma tag. O componente recebe todos juntos, num objeto.</p>
+</section>
+
+<!-- 40 -->
+<section class="slide">
+  <h2>Props com tipo</h2>
+  <pre class="code xs" data-src="s40" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:20px">O <code>type</code> da sexta descreve as Props. A desestruturação do encontro 3 tira cada uma do objeto.</p>
+</section>
+
+<!-- 41 -->
+<section class="slide">
+  <h2>Chaves: JavaScript dentro do JSX</h2>
+  <pre class="code" data-src="s41" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:26px">Entre chaves vai qualquer expressão: uma variável, um objeto consultado, uma função chamada.</p>
+</section>
+
+<!-- 42 -->
+<section class="slide">
+  <span class="ex-time">Exercício 2, 15 minutos, faça comigo</span>
+  <h2>A linha vira componente</h2>
+  <ol class="steps">
+    <li><span>Crie <code>LinhaSolicitacao.tsx</code> com as Props tipadas</span></li>
+    <li><span>Troque as quatro <code>&lt;tr&gt;</code> por <code>&lt;LinhaSolicitacao /&gt;</code></span></li>
+    <li><span>Chegou o pedido: acrescente <code>bairro</code> ao tipo das Props</span></li>
+    <li><span>Siga os erros do editor até a página mostrar o bairro</span></li>
+  </ol>
+</section>
+
+<!-- 43 -->
+<section class="slide">
+  <h2>O TypeScript mostra onde falta</h2>
+  <div class="msgbox long">A propriedade 'bairro' está ausente no tipo '{ numero: string; … }', mas é obrigatória no tipo 'LinhaSolicitacaoProps'.</div>
+  <p class="lead" style="margin-top:34px">Uma mensagem para cada uso. Nenhuma linha fica esquecida: é o problema das onze alterações, resolvido.</p>
+</section>
+
+<!-- 44 -->
+<section class="slide">
+  <h2>Composição: children</h2>
+  <div class="two" style="grid-template-columns:1.4fr 1fr;gap:32px">
+    <pre class="code xs" data-src="s44a" data-lang="tsx"></pre>
+    <pre class="code xs" data-src="s44b" data-lang="tsx"></pre>
+  </div>
+  <p class="lead" style="margin-top:18px">O que fica entre as tags chega como <code>children</code>.</p>
+</section>
+
+<!-- 45 -->
+<section class="slide phase">
+  <p class="step">Etapas 4 e 5 do ciclo</p>
+  <h1>Prática</h1>
+  <p>A página da etapa 1, toda em componentes.</p>
+</section>
+
+<!-- 46 -->
+<section class="slide">
+  <span class="ex-time">Prática guiada, 15 minutos, faça comigo</span>
+  <h2>O componente Cartao</h2>
+  <ol class="steps">
+    <li><span>Crie <code>Cartao.tsx</code> com as Props <code>titulo</code> e <code>children</code></span></li>
+    <li><span>No <code>App.tsx</code>, troque a <code>&lt;section className="cartao"&gt;</code> por <code>&lt;Cartao&gt;</code></span></li>
+    <li><span>Confira no Chrome: a página deve ficar igual</span></li>
+  </ol>
+  <p class="lead muted" style="margin-top:18px">Resultado final: <code>3-pagina-em-componentes</code>.</p>
+</section>
+
+<!-- 47 -->
+<section class="slide">
+  <h2>A página em componentes</h2>
+  <div class="ctree">
+    <div class="root">App</div>
+    <div class="kids">
+      <div>Cabecalho</div>
+      <div class="hl">Cartao<small>children: a tabela</small>
+        <div class="sub"><span>LinhaSolicitacao</span><span>LinhaSolicitacao</span><span>LinhaSolicitacao</span><span>LinhaSolicitacao</span></div>
+      </div>
+      <div>Rodape</div>
+    </div>
+  </div>
+</section>
+
+<!-- 48 -->
+<section class="slide phase">
+  <p class="step">Etapa 6 do ciclo</p>
+  <h1>Aplicação</h1>
+  <p>Três perguntas, e o que vem amanhã.</p>
+</section>
+
+<!-- 49 -->
+<section class="slide">
+  <h2>Três perguntas, no chat</h2>
+  <ol class="steps">
+    <li><span>No JSX, <code>class</code> ou <code>className</code>?</span></li>
+    <li><span>O que vai entre chaves?</span></li>
+    <li><span>Esqueci uma Prop obrigatória. Quem me avisa: o Chrome ou o editor?</span></li>
+  </ol>
+</section>
+
+<!-- 50 -->
+<section class="slide">
+  <h2>Ainda repetimos uma coisa</h2>
+  <pre class="code xs" data-src="s50" data-lang="tsx"></pre>
+  <div class="two" style="margin-top:24px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Quarta</h3><p>As linhas saem de uma lista de dados, com <code>map</code>.</p></div>
+    <div class="col rule-top"><h3>Amanhã</h3><p>Estado e eventos: o filtro muda os dados, e a tela não atualiza. Por quê?</p></div>
+  </div>
+</section>
+
+<!-- 51 -->
+<section class="slide">
+  <h2>Para depois, se quiser</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Desafio opcional</h3><p>O formulário de nova solicitação em JSX, com um componente <code>Campo</code>. Está em <code>desafio/</code>.</p></div>
+    <div class="col rule-top"><h3>Amanhã não depende dele</h3><p>A aula de amanhã começa do ponto <code>3-pagina-em-componentes</code>.</p></div>
+  </div>
+  <p class="lead" style="margin-top:44px">Dúvidas da instalação ou do código: grupo do WhatsApp, à tarde.</p>
+</section>
+
+<!-- 52 -->
+<section class="slide cover">
+  <div class="bar"></div>
+  <p class="kicker">Encontro 5 de 27</p>
+  <h1>Até amanhã</h1>
+  <p class="date">Terça, 10 de novembro: estado e eventos</p>
+</section>
+
+</div></div>
+
+<div class="ctrl">
+  <button type="button" id="prev" aria-label="Slide anterior">Anterior</button>
+  <button type="button" id="next" aria-label="Próximo slide">Próximo</button>
+  <button type="button" id="full">Tela cheia</button>
+</div>
+
+<script type="text/plain" id="s17"><body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"><\/script>
+</body></script>
+<script type="text/plain" id="s18">import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)</script>
+<script type="text/plain" id="s19">"scripts": {
+  "dev": "vite",
+  "build": "tsc -b && vite build",
+  "lint": "oxlint",
+  "preview": "vite preview"
+},
+"dependencies": {
+  "react": "^19.3.1",
+  "react-dom": "^19.3.1"
+},
+"devDependencies": {
+  "typescript": "~7.0.2",
+  "vite": "^8.3.6",
+  ...
+}</script>
+<script type="text/plain" id="s22">{
+  "compilerOptions": {
+    "strict": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/...",
+    ...</script>
+<script type="text/plain" id="s33a">function criarLinha(chamado: Chamado) {
+  const linha = document.createElement("tr");
+  const textos = [String(chamado.numero),
+    chamado.assunto, ...];
+  textos.forEach((texto) => {
+    const celula = document.createElement("td");
+    celula.textContent = texto;
+    linha.append(celula);
+  });
+  return linha;
+}</script>
+<script type="text/plain" id="s33b">function LinhaSolicitacao({ numero, tipo, ... }) {
+  return (
+    <tr>
+      <td>{numero}</td>
+      <td>{nomesDosTipos[tipo]}</td>
+      ...
+    </tr>
+  );
+}</script>
+<script type="text/plain" id="s34">const titulo = <h1>Solicitações de serviço</h1>;
+
+// o Vite transforma em algo como:
+const titulo = jsx("h1", { children: "Solicitações de serviço" });</script>
+<script type="text/plain" id="s35">export function Cabecalho() {
+  return (
+    <header className="topo">
+      <p className="marca">Central de Solicitações</p>
+      <nav aria-label="Principal">...</nav>
+    </header>
+  );
+}
+
+// em outro arquivo
+<Cabecalho /></script>
+<script type="text/plain" id="s39"><LinhaSolicitacao
+  numero="26-08817"
+  tipo="vazamento"
+  municipio="Salvador"
+  prioridade="alta"
+  abertura="2026-11-09"
+/></script>
+<script type="text/plain" id="s40">type LinhaSolicitacaoProps = {
+  numero: string;
+  tipo: TipoServico;
+  municipio: string;
+  prioridade: Prioridade;
+  abertura: string;
+};
+
+export function LinhaSolicitacao(
+  { numero, tipo, municipio, prioridade, abertura }: LinhaSolicitacaoProps
+) {</script>
+<script type="text/plain" id="s41"><tr>
+  <td>{numero}</td>
+  <td>{nomesDosTipos[tipo]}</td>
+  <td>{municipio}</td>
+  <td>{nomesDasPrioridades[prioridade]}</td>
+  <td><time dateTime={abertura}>{formatarData(abertura)}</time></td>
+</tr></script>
+<script type="text/plain" id="s44a">type CartaoProps = {
+  titulo: string;
+  children: ReactNode;
+};
+
+export function Cartao(
+  { titulo, children }: CartaoProps
+) {
+  return (
+    <section className="cartao">
+      <h2>{titulo}</h2>
+      {children}
+    </section>
+  );
+}</script>
+<script type="text/plain" id="s44b"><Cartao titulo="Solicitações recentes">
+  <div className="tabela-rolagem" ...>
+    <table>
+      ...
+    </table>
+  </div>
+</Cartao></script>
+<script type="text/plain" id="s50"><LinhaSolicitacao numero="26-08817" tipo="vazamento" ... />
+<LinhaSolicitacao numero="26-08816" tipo="falta-agua" ... />
+<LinhaSolicitacao numero="26-08815" tipo="religacao" ... />
+<LinhaSolicitacao numero="26-08814" tipo="vazamento" ... /></script>
+
+<script>
+function hltsx(src){
+  const esc=(t)=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const re=/(\/\/[^\n]*|\{\/\*[\s\S]*?\*\/\})|("[^"\n]*"|`[^`]*`|'[^'\n]*')|(&lt;\/?)([A-Za-z][\w.]*)|\b(import|export|from|function|return|const|let|type|default)\b|([a-zA-Z][\w-]*)(?==)|(=&gt;)/g;
+  return esc(src).replace(re,(m,c,s,lt,tag,k,at,ar)=>{
+    if(c) return '<span class="c">'+c+'</span>';
+    if(s) return '<span class="s">'+s+'</span>';
+    if(tag) return lt+'<span class="tg">'+tag+'</span>';
+    if(k) return '<span class="k">'+k+'</span>';
+    if(at) return '<span class="at">'+at+'</span>';
+    return '<span class="k">'+ar+'</span>';
+  });
+}
+
+function hl(src){
+  let s=src.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  s=s.replace(/ ([a-zA-Z-]+)(=)("[^"]*")/g,' <span class="a">$1</span>$2<span class="s">$3</span>');
+  s=s.replace(/(&lt;\/?)([a-zA-Z][a-zA-Z0-9]*)/g,'$1<span class="t">$2</span>');
+  s=s.replace(/(&lt;!--[\s\S]*?--&gt;)/g,'<span class="c">$1</span>');
+  return s;
+}
+document.querySelectorAll("pre.code[data-src]").forEach(p=>{
+  const src=document.getElementById(p.dataset.src);
+  if(src){const t=src.textContent.replace(/^\n/,"").split("<\\/script>").join("<"+"/script>");p.innerHTML=p.dataset.lang==="tsx"?hltsx(t):hl(t);}
+});
+
+const slides=[...document.querySelectorAll(".slide")];
+const total=slides.length;
+slides.forEach((s,i)=>{
+  const n=document.createElement("div");n.className="num";
+  n.innerHTML="<b>"+(i+1)+"</b> / "+total;s.appendChild(n);
+  if(!s.classList.contains("cover")){
+    const c=document.createElement("div");c.className="course";c.textContent="Encontro 5, Ambiente e primeiros componentes";s.appendChild(c);
+  }
+});
+let cur=0;
+function show(i){
+  cur=Math.max(0,Math.min(total-1,i));
+  slides.forEach((s,k)=>s.classList.toggle("on",k===cur));
+  document.getElementById("progress").style.width=((cur+1)/total*100)+"%";
+  if(location.hash!=="#"+(cur+1)) history.replaceState(null,"","#"+(cur+1));
+}
+function fromHash(){const n=parseInt(location.hash.slice(1),10);show(isNaN(n)?0:n-1);}
+window.addEventListener("hashchange",fromHash);
+document.addEventListener("keydown",e=>{
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){e.preventDefault();show(cur+1);}
+  else if(["ArrowLeft","PageUp","Backspace"].includes(e.key)){e.preventDefault();show(cur-1);}
+  else if(e.key==="Home")show(0);
+  else if(e.key==="End")show(total-1);
+  else if(e.key==="f"||e.key==="F")toggleFull();
+});
+document.getElementById("next").onclick=()=>show(cur+1);
+document.getElementById("prev").onclick=()=>show(cur-1);
+function toggleFull(){
+  try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }catch(e){}
+}
+document.getElementById("full").onclick=toggleFull;
+function fit(){
+  const s=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  document.getElementById("stage").style.transform="scale("+s+")";
+}
+window.addEventListener("resize",fit);fit();fromHash();
+</script>
+</body>
+</html>

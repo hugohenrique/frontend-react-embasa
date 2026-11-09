@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do ambiente — Encontro 5</title>
+<style>
+:root{
+  --texto:#10222E; --suave:#4E5F6B; --fundo:#F3F6F6; --sup:#fff; --sup2:#EEF2F3; --borda:#D5DDE0;
+  --pri:#0B5F7A; --pri-esc:#084B61; --pri-suave:#E2F0F4;
+  --erro:#B3261E; --erro-suave:#FBE6E3; --ok:#1E6B42; --ok-suave:#E3F3EA; --aviso:#8A5300; --aviso-suave:#FDF1DC;
+  --mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:17px/1.6 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--texto);background:var(--fundo)}
+.topo{background:var(--pri-esc);color:#fff;padding:14px 20px}
+.topo p{margin:0;font-weight:700}
+main{max-width:860px;margin:0 auto;padding:28px 20px 64px}
+h1{font-size:1.9rem;line-height:1.2;margin:0 0 8px}
+h2{font-size:1.4rem;margin:44px 0 10px;padding-top:16px;border-top:2px solid var(--texto)}
+h2 .n{display:inline-grid;place-items:center;width:34px;height:34px;margin-right:10px;border-radius:50%;background:var(--pri);color:#fff;font-size:1.05rem;vertical-align:2px}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--pri)}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+.suave{color:var(--suave)}
+.resumo{display:grid;gap:12px;margin:22px 0}
+.resumo div{background:var(--sup);border:1px solid var(--borda);border-left:4px solid var(--pri);border-radius:10px;padding:12px 16px}
+.resumo b{display:block}
+ol.passos{padding-left:1.3em}
+ol.passos li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.92em;background:var(--sup2);padding:1px 5px;border-radius:4px}
+.cmd{position:relative;margin:8px 0 14px}
+.cmd pre{margin:0;padding:12px 96px 12px 16px;background:#10222E;color:#E8F1F4;border-radius:8px;font:15px/1.5 var(--mono);white-space:pre-wrap;word-break:break-word}
+.cmd button{position:absolute;top:7px;right:7px;min-height:34px;padding:4px 12px;border:1px solid #7FD3E6;border-radius:6px;background:transparent;color:#fff;font:inherit;font-size:.85rem;cursor:pointer}
+.cmd button:focus-visible{outline-color:#7FD3E6}
+.saida{margin:6px 0 14px;padding:10px 16px;background:var(--sup);border:1px dashed var(--borda);border-radius:8px;font:14px/1.5 var(--mono);white-space:pre-wrap;color:var(--suave)}
+.porque{margin:14px 0;padding:12px 16px;background:var(--pri-suave);border-radius:8px}
+.porque::before{content:"Por quê";display:block;font-weight:700;color:var(--pri-esc);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+.confira{margin:14px 0;padding:12px 16px;background:var(--ok-suave);color:#123F28;border-left:4px solid var(--ok);border-radius:8px}
+.confira::before{content:"Deu certo se";display:block;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+details{margin:10px 0;background:var(--sup);border:1px solid var(--borda);border-left:4px solid var(--erro);border-radius:8px}
+details summary{cursor:pointer;padding:10px 16px;font-weight:700;color:var(--erro)}
+details>div{padding:0 16px 8px}
+.planob details{border-left-color:var(--aviso)}
+.planob details summary{color:var(--aviso)}
+table{width:100%;border-collapse:collapse;background:var(--sup);border:1px solid var(--borda);border-radius:8px;margin:10px 0 16px}
+th,td{padding:8px 12px;border-top:1px solid var(--borda);text-align:left;vertical-align:top}
+th{background:var(--sup2);font-size:.9rem}
+.lista-final li{margin-bottom:6px}
+@media (min-width:720px){.resumo{grid-template-columns:repeat(3,1fr)}}
+@media print{.cmd button{display:none}.topo{background:none;color:var(--texto)}details{break-inside:avoid}details>div{display:block}}
+</style>
+</head>
+<body>
+<header class="topo"><p>Desenvolvimento Front-end com React · Encontro 5</p></header>
+<main>
+<h1>Guia do ambiente de desenvolvimento</h1>
+<p class="suave">Segunda-feira, 9 de novembro de 2026. Vamos montar o ambiente juntos, ao vivo, na primeira parte da aula. Este guia é o mesmo roteiro, por escrito, para você consultar durante e depois.</p>
+
+<div class="resumo">
+  <div><b>O que vamos instalar</b>Node.js (versão LTS) e Visual Studio Code. Só isso. O resto vem pelo npm, dentro do projeto.</div>
+  <div><b>O que você precisa</b>Computador com Windows 10 ou 11, internet e cerca de 1 GB livre. O navegador do curso é o Chrome (o Edge também serve).</div>
+  <div><b>Antes da aula, se puder</b>Baixe os dois instaladores (passos 1 e 2). Não precisa instalar: instalamos juntos.</div>
+</div>
+
+<p>Em cada passo, você encontra três coisas: <b>por que</b> usamos aquilo, <b>como</b> fazer e como saber que <b>deu certo</b>. Se algo sair diferente, abra o quadro vermelho <b>“Se der erro”</b> daquele passo. Se ainda assim não funcionar, mande no grupo do WhatsApp um print da tela com a mensagem de erro. À tarde, tiramos as dúvidas.</p>
+
+<!-- ============ PASSO 1 ============ -->
+<h2 id="p1"><span class="n">1</span>Node.js, na versão LTS</h2>
+<div class="porque">Até a sexta, o JavaScript rodava só dentro do navegador. O Node.js faz o JavaScript rodar <b>no seu computador, fora do navegador</b>. As ferramentas modernas de front-end (o Vite, o compilador do TypeScript, o verificador de código) são programas escritos em JavaScript, então precisam do Node para funcionar. Junto com o Node vem o <b>npm</b>, que baixa essas ferramentas e as bibliotecas, como o próprio React.<br><br>
+<b>LTS</b> quer dizer <i>Long Term Support</i>, suporte de longo prazo. É a versão estável, que recebe correções por anos. Hoje é o <b>Node.js 26</b>, LTS desde 28 de outubro de 2026, com suporte até abril de 2029. O site também oferece a versão <i>Current</i>, com novidades ainda em teste: para trabalho, sempre a LTS.</div>
+
+<ol class="passos">
+  <li>Abra <a href="https://nodejs.org/pt-br/download">nodejs.org/pt-br/download</a> no Chrome.</li>
+  <li>Confira que está selecionada a versão marcada como <b>LTS</b> (hoje, a v26), para <b>Windows</b>, e baixe o <b>Instalador Windows (.msi)</b>.</li>
+  <li>Abra o arquivo baixado e avance com <b>Next</b>, aceitando a licença e a pasta sugerida.</li>
+  <li>Na tela <b>Tools for Native Modules</b>, <b>deixe a caixa desmarcada</b> e avance.
+    <div class="porque">Essa opção instala Python e ferramentas de compilação do Windows, para bibliotecas escritas em C++. Não usamos nada disso no curso, e ela demora bastante.</div></li>
+  <li>Clique em <b>Install</b>. Se o Windows perguntar se permite alterações, confirme.</li>
+</ol>
+
+<h3>Conferir a instalação</h3>
+<p>Abra o <b>Prompt de Comando</b>: tecla Windows, digite <code>cmd</code> e aperte Enter. Precisa ser uma janela nova, aberta depois da instalação. Digite os dois comandos, um de cada vez:</p>
+<div class="cmd"><pre>node -v</pre><button type="button">Copiar</button></div>
+<div class="cmd"><pre>npm -v</pre><button type="button">Copiar</button></div>
+<div class="confira">O primeiro mostra uma versão começando com <code>v26.</code> (por exemplo, <code>v26.13.0</code>) e o segundo mostra um número de versão do npm. Durante a aula, escreva no chat a versão do Node que apareceu.</div>
+
+<details><summary>Se der erro no passo 1</summary><div>
+  <p><b>“'node' não é reconhecido como um comando interno ou externo”</b>: a janela do terminal foi aberta antes da instalação. Feche todas as janelas de terminal e abra uma nova. Se continuar, reinicie o computador.</p>
+  <p><b>Apareceu uma versão menor que 22</b> (por exemplo, <code>v18.</code>): já havia um Node antigo instalado. O projeto exige no mínimo a 22.12. Instale a LTS por cima: o instalador substitui a versão anterior.</p>
+  <p><b>Apareceu v22 ou v24</b>: funciona com o curso. Se puder, atualize para a 26, para ficarmos todos iguais.</p>
+  <p><b>O Windows pede senha de administrador e você não tem</b>: siga o <a href="#planob-admin">plano B, sem administrador</a>.</p>
+</div></details>
+
+<!-- ============ PASSO 2 ============ -->
+<h2 id="p2"><span class="n">2</span>Visual Studio Code</h2>
+<div class="porque">Até agora, escrevíamos no navegador, no laboratório. A partir de hoje, o código fica em arquivos no seu computador, e precisamos de um editor de verdade. O VS Code é gratuito, é o editor mais usado em front-end e entende TypeScript sem instalar nada: é a mesma empresa que faz os dois, e ele usa o próprio TypeScript para sublinhar erros enquanto você digita, como no laboratório. Ele também tem um terminal embutido, então fazemos tudo numa janela só.</div>
+
+<ol class="passos">
+  <li>Abra <a href="https://code.visualstudio.com/download">code.visualstudio.com/download</a> e baixe a versão para <b>Windows</b>, no botão principal. Ela é a <b>User Installer</b>, que instala só para o seu usuário e normalmente não pede administrador.</li>
+  <li>No instalador, aceite a licença e avance. Na tela <b>Tarefas adicionais</b>, marque:
+    <ul>
+      <li><b>Adicionar a ação “Abrir com Code” ao menu de contexto de pasta</b>: para abrir uma pasta clicando com o botão direito;</li>
+      <li><b>Adicionar em PATH</b> (normalmente já vem marcada): para abrir o VS Code pelo terminal, com o comando <code>code</code>.</li>
+    </ul></li>
+  <li>Termine a instalação e abra o VS Code.</li>
+</ol>
+
+<h3>Uma configuração: o terminal</h3>
+<p>No VS Code, aperte <b>Ctrl + Shift + P</b>, digite <code>Terminal: Select Default Profile</code> e escolha <b>Command Prompt</b>.</p>
+<div class="porque">O terminal padrão do VS Code no Windows é o PowerShell, que em muitos computadores bloqueia os scripts do npm com o erro <i>“a execução de scripts foi desabilitada neste sistema”</i>. O Prompt de Comando não tem essa trava, e todos os comandos do curso funcionam igual nele. Assim, a sua tela fica igual à de todo mundo.</div>
+
+<h3>Extensões: só uma é necessária</h3>
+<table>
+<thead><tr><th>Extensão</th><th>Para quê</th></tr></thead>
+<tbody>
+<tr><td><b>Oxc</b><br><span class="suave">publicada por <i>oxc</i></span></td><td>Mostra no editor os avisos do <b>Oxlint</b>, o verificador de boas práticas que vem no projeto. Sem ela, os avisos só aparecem quando você roda um comando. Vamos instalá-la juntos no passo 5, com o projeto aberto.</td></tr>
+<tr><td><b>Portuguese (Brazil) Language Pack</b><br><span class="suave">opcional, publicada pela Microsoft</span></td><td>Coloca os menus do VS Code em português. O curso usa atalhos de teclado, que funcionam em qualquer idioma, então é questão de gosto.</td></tr>
+</tbody></table>
+<p class="suave">Por que tão poucas? Cada extensão roda o tempo todo dentro do editor. Instalamos uma quando houver um motivo, e explicamos o motivo. A extensão do React, por exemplo, não é necessária: o suporte já vem no VS Code.</p>
+
+<details><summary>Se der erro no passo 2</summary><div>
+  <p><b>O instalador pede administrador</b>: confira se baixou a <b>User Installer</b> (o nome do arquivo começa com <code>VSCodeUserSetup</code>). Se a TI bloquear qualquer instalação, há a versão <b>.zip</b> na mesma página de download: descompacte numa pasta sua e abra o <code>Code.exe</code>.</p>
+  <p><b>Não encontro “Command Prompt” na lista</b>: digite só <code>Select Default Profile</code>. Se os menus estiverem em português, a opção chama <b>Prompt de Comando</b>.</p>
+</div></details>
+
+<!-- ============ PASSO 3 ============ -->
+<h2 id="p3"><span class="n">3</span>Criar o projeto React com TypeScript</h2>
+<div class="porque">Um projeto React precisa de várias peças conversando: o React, o TypeScript, um servidor local e algo que transforme o nosso código em JavaScript que o navegador entende. Montar isso à mão levaria horas. O <b>Vite</b> é a ferramenta que cria o projeto com tudo configurado e depois roda o servidor local. É hoje o caminho mais usado para começar um projeto React, rápido e com poucas configurações. Lembram, no encontro 3, que módulos de JavaScript não funcionavam abrindo o arquivo com dois cliques, porque precisavam de um servidor? O Vite é esse servidor.</div>
+
+<h3>Uma pasta para o curso</h3>
+<p>Crie uma pasta chamada <code>curso-react</code> dentro da sua pasta de usuário, por exemplo <code>C:\Users\seu.nome\curso-react</code>. Depois, no VS Code: <b>File &gt; Open Folder</b> (ou <b>Arquivo &gt; Abrir Pasta</b>) e escolha essa pasta.</p>
+<div class="porque">Evite a pasta Documentos e a Área de Trabalho quando elas estiverem no OneDrive: o projeto vai ter milhares de arquivos pequenos, e a sincronização deixa tudo lento ou trava arquivos. Evite também espaços e acentos no caminho, que algumas ferramentas não aceitam bem.</div>
+<p>Se o VS Code perguntar <b>“Do you trust the authors of the files in this folder?”</b>, clique em <b>Yes, I trust the authors</b>. A pasta é sua; sem isso, o editor desliga parte dos recursos.</p>
+
+<h3>Gerar o projeto</h3>
+<p>Abra o terminal do VS Code com <b>Ctrl + '</b> (a tecla de aspas simples, ao lado do Enter; no menu: <b>Terminal &gt; New Terminal</b>). Copie e cole o comando abaixo, inteiro, numa linha só:</p>
+<div class="cmd"><pre>npx create-vite@9.3.4 central-de-solicitacoes --template react-ts --no-eslint --no-immediate</pre><button type="button">Copiar</button></div>
+<p>Se aparecer <code>Need to install the following packages: create-vite@9.3.4 Ok to proceed? (y)</code>, digite <code>y</code> e Enter.</p>
+<table>
+<thead><tr><th>Parte do comando</th><th>O que faz</th></tr></thead>
+<tbody>
+<tr><td><code>npx</code></td><td>Roda uma ferramenta do npm sem instalá-la de vez no computador. Ela é baixada, usada e pronto.</td></tr>
+<tr><td><code>create-vite@9.3.4</code></td><td>O criador de projetos do Vite. Fixamos a versão para que todos recebam exatamente os mesmos arquivos do material.</td></tr>
+<tr><td><code>central-de-solicitacoes</code></td><td>O nome do projeto e da pasta que será criada.</td></tr>
+<tr><td><code>--template react-ts</code></td><td>O modelo: React com TypeScript.</td></tr>
+<tr><td><code>--no-eslint</code></td><td>Usa o <b>Oxlint</b>, o verificador padrão do modelo, em vez do ESLint. Os dois procuram problemas no código; o Oxlint é bem mais rápido. Sem essa opção, ele só perguntaria qual você quer.</td></tr>
+<tr><td><code>--no-immediate</code></td><td>Não instala nem inicia nada sozinho. Vamos fazer cada etapa à mão, para entender o que cada uma faz.</td></tr>
+</tbody></table>
+<div class="saida">o  Scaffolding project in C:\Users\seu.nome\curso-react\central-de-solicitacoes...
+—  Done. Now run:
+
+  cd central-de-solicitacoes
+  npm install
+  npm run dev</div>
+
+<h3>Abrir o projeto como pasta principal</h3>
+<p>No terminal, digite:</p>
+<div class="cmd"><pre>code central-de-solicitacoes</pre><button type="button">Copiar</button></div>
+<p>Abre uma janela nova do VS Code, já na pasta do projeto. Feche a janela antiga e trabalhe nesta. Se o comando <code>code</code> não funcionar, use <b>File &gt; Open Folder</b> e escolha a pasta <code>central-de-solicitacoes</code>.</p>
+<div class="porque">O VS Code procura as configurações do TypeScript e do Oxlint na pasta que está aberta. Com a pasta do projeto aberta como principal, tudo encontra as configurações certas, e o terminal já abre no lugar certo.</div>
+
+<h3>Instalar as dependências</h3>
+<p>Na janela nova, abra o terminal (<b>Ctrl + '</b>) e digite:</p>
+<div class="cmd"><pre>npm install</pre><button type="button">Copiar</button></div>
+<div class="porque">O projeto veio só com a lista do que precisa, no arquivo <code>package.json</code>. O <code>npm install</code> lê essa lista e baixa tudo para a pasta <code>node_modules</code>: o React, o TypeScript, o Vite e o Oxlint, cerca de 100 MB. Também cria o <code>package-lock.json</code>, que anota a versão exata de cada pacote instalado, para que o projeto funcione igual em qualquer computador. A pasta <code>node_modules</code> nunca é copiada nem enviada para ninguém: quem receber o projeto roda <code>npm install</code> e ela é recriada.</div>
+<div class="confira">Termina com uma linha parecida com <code>added 28 packages</code> e <code>found 0 vulnerabilities</code>, e aparece a pasta <code>node_modules</code> no painel da esquerda.</div>
+
+<details><summary>Se der erro no passo 3</summary><div>
+  <p><b>O comando fica parado muito tempo, ou aparece <code>ETIMEDOUT</code>, <code>ECONNREFUSED</code> ou <code>ENOTFOUND</code></b>: a rede não está deixando o npm baixar os pacotes. Siga o <a href="#planob-rede">plano B, rede da empresa</a>.</p>
+  <p><b>Aparece <code>SELF_SIGNED_CERT_IN_CHAIN</code> ou <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code></b>: a rede da empresa inspeciona as conexões com um certificado próprio. Também está no <a href="#planob-rede">plano B, rede da empresa</a>.</p>
+  <p><b>“a execução de scripts foi desabilitada neste sistema”</b>: o terminal ainda é o PowerShell. Refaça a configuração do terminal do passo 2 e abra um terminal novo, no ícone de lixeira e depois no <b>+</b>.</p>
+  <p><b><code>EPERM</code> ou <code>EBUSY</code></b>: algum programa está segurando arquivos da pasta, geralmente o antivírus ou o OneDrive. Confira se a pasta não está dentro do OneDrive e rode <code>npm install</code> de novo.</p>
+  <p><b>Rodei <code>npm install</code> e apareceu <code>ENOENT ... package.json</code></b>: o terminal não está na pasta do projeto. Veja o caminho escrito antes do cursor: ele precisa terminar em <code>central-de-solicitacoes</code>. Se não terminar, digite <code>cd central-de-solicitacoes</code>.</p>
+</div></details>
+
+<!-- ============ PASSO 4 ============ -->
+<h2 id="p4"><span class="n">4</span>Rodar o projeto no Chrome</h2>
+<div class="cmd"><pre>npm run dev</pre><button type="button">Copiar</button></div>
+<div class="saida">  VITE v8.3.6  ready in 217 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose</div>
+<p>Abra <code>http://localhost:5173</code> no Chrome. Aparece a página de boas-vindas do Vite com React.</p>
+<div class="porque"><code>npm run dev</code> executa o script <code>dev</code> que está no <code>package.json</code>, e esse script inicia o Vite. <code>localhost</code> quer dizer “este computador”: o servidor roda na sua máquina, e só você o acessa. O <code>5173</code> é a porta, um número que identifica esse servidor entre outros programas. Enquanto ele estiver rodando, toda vez que você salvar um arquivo, o Vite atualiza o navegador sozinho, em menos de um segundo.</div>
+<div class="confira">A página do Vite abre no Chrome. Durante a aula, escreva <b>1</b> no chat quando chegar aqui.</div>
+<p><b>Para parar o servidor</b>: clique no terminal e aperte <b>Ctrl + C</b>. Para iniciar de novo, <code>npm run dev</code>. Deixe o terminal aberto enquanto trabalha.</p>
+
+<details><summary>Se der erro no passo 4</summary><div>
+  <p><b>A porta é outra, como 5174</b>: a 5173 já estava em uso, talvez por outro terminal com o Vite rodando. Não tem problema: use o endereço que o terminal mostrar.</p>
+  <p><b>O Chrome diz “Não é possível acessar esse site”</b>: o servidor não está rodando. Olhe o terminal: se ele voltou para o cursor, rode <code>npm run dev</code> de novo. Se apareceu um erro em vermelho, mande um print no grupo.</p>
+  <p><b>Ao clicar no link do terminal, abriu outro navegador</b>: tudo bem. Copie o endereço e cole no Chrome.</p>
+</div></details>
+
+<!-- ============ PASSO 5 ============ -->
+<h2 id="p5"><span class="n">5</span>O TypeScript, agora no editor</h2>
+<p>Na sexta, os erros de tipo apareciam no painel da direita do laboratório. No projeto, eles aparecem em três lugares:</p>
+<table>
+<thead><tr><th>Onde</th><th>Quando</th></tr></thead>
+<tbody>
+<tr><td><b>No editor</b>, sublinhado em vermelho, e no painel <b>Problems</b> (<b>Ctrl + Shift + M</b>)</td><td>Enquanto você digita. É onde você vai olhar quase sempre.</td></tr>
+<tr><td><b>No terminal</b>, com <code>npm run build</code></td><td>Quando o projeto é preparado para publicação. Se houver erro de tipo, a preparação para e nada é publicado.</td></tr>
+<tr><td><b>No terminal</b>, com <code>npm run lint</code>, e no editor com a extensão Oxc</td><td>Avisos de boas práticas, que não são erros de tipo.</td></tr>
+</tbody></table>
+<div class="porque"><b>Atenção a uma diferença importante:</b> o <code>npm run dev</code> não confere os tipos. Para ser rápido, o Vite só remove as anotações e entrega o JavaScript ao navegador. Então a página pode abrir mesmo com um erro de tipo. Quem avisa é o editor. Por isso, o hábito é: <b>sublinhado vermelho, pare e corrija</b>.</div>
+
+<h3>Uma linha a mais no tsconfig</h3>
+<p>Abra o arquivo <code>tsconfig.app.json</code> e acrescente <code>"strict": true,</code> logo abaixo de <code>"compilerOptions": {</code>:</p>
+<div class="cmd"><pre>{
+  "compilerOptions": {
+    "strict": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",</pre><button type="button">Copiar</button></div>
+<div class="porque">O modo estrito é o que fez o TypeScript reclamar do <code>null</code> do <code>querySelector</code> na sexta. A versão do TypeScript do projeto já liga esse modo sozinha, mas o VS Code tem a própria versão do TypeScript, que pode ser outra. Escrevendo a configuração, o editor e o projeto seguem a mesma regra, sem depender de versão.</div>
+
+<h3>Instalar a extensão Oxc</h3>
+<p>Aperte <b>Ctrl + Shift + X</b>, procure <code>Oxc</code>, confira que a publicadora é <b>oxc</b> e clique em <b>Install</b>.</p>
+<div class="confira">No arquivo <code>src/App.tsx</code>, escreva <code>const x: number = "texto"</code> numa linha qualquer: aparece o sublinhado vermelho e um item no painel Problems. Apague a linha e salve com <b>Ctrl + S</b>.</div>
+
+<!-- ============ PLANO B ============ -->
+<h2 id="planob"><span class="n">B</span>Plano B</h2>
+<div class="planob">
+<details id="planob-admin"><summary>Sem permissão de administrador: Node.js em uma pasta sua</summary><div>
+  <p>O Node também é distribuído em um arquivo <code>.zip</code>, que não precisa ser instalado.</p>
+  <ol class="passos">
+    <li>Em <a href="https://nodejs.org/pt-br/download">nodejs.org/pt-br/download</a>, com a versão LTS e Windows selecionados, baixe o <b>Binário Independente (.zip)</b> para x64.</li>
+    <li>Descompacte dentro da sua pasta de usuário. Vai aparecer uma pasta com nome parecido com <code>node-v26.13.0-win-x64</code>. Renomeie para <code>node</code>, ficando <code>C:\Users\seu.nome\node</code>.</li>
+    <li>Tecla Windows, digite <b>variáveis de ambiente</b> e escolha <b>Editar as variáveis de ambiente para sua conta</b>. Essa opção é só da sua conta e não pede administrador.</li>
+    <li>Em <b>Variáveis de usuário</b>, selecione <b>Path</b>, clique em <b>Editar</b>, depois em <b>Novo</b>, e cole <code>C:\Users\seu.nome\node</code>, com o seu nome de usuário. Confirme com OK em todas as janelas.</li>
+    <li>Abra um terminal novo e rode <code>node -v</code>.</li>
+  </ol>
+  <p class="suave">Por que funciona: o <code>Path</code> é a lista de pastas onde o Windows procura um programa quando você digita o nome dele. Colocando a pasta do Node ali, os comandos <code>node</code>, <code>npm</code> e <code>npx</code> passam a ser encontrados.</p>
+</div></details>
+
+<details id="planob-rede"><summary>Rede da empresa bloqueando o npm: proxy e certificado</summary><div>
+  <p>Primeiro, teste se o npm alcança o repositório de pacotes:</p>
+  <div class="cmd"><pre>npm ping</pre><button type="button">Copiar</button></div>
+  <p>Se responder <code>PONG</code>, a rede está liberada e o problema é outro: mande um print no grupo. Se der erro, a rede da empresa provavelmente exige um <b>proxy</b>, um intermediário por onde passam as conexões com a internet. O endereço do proxy é fornecido pela TI. Com ele em mãos, rode os dois comandos, trocando <code>ENDERECO:PORTA</code> pelo que a TI informar:</p>
+  <div class="cmd"><pre>npm config set proxy http://ENDERECO:PORTA
+npm config set https-proxy http://ENDERECO:PORTA</pre><button type="button">Copiar</button></div>
+  <p>Se o erro for de certificado (<code>SELF_SIGNED_CERT_IN_CHAIN</code> ou <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>), peça à TI o <b>certificado da empresa em formato .pem</b> e aponte o npm para ele:</p>
+  <div class="cmd"><pre>npm config set cafile C:\Users\seu.nome\certificado-empresa.pem</pre><button type="button">Copiar</button></div>
+  <p><b>Não use</b> a sugestão comum na internet <code>npm config set strict-ssl false</code>. Ela desliga a verificação de segurança das conexões, e qualquer pacote adulterado no caminho seria aceito.</p>
+  <p class="suave">Para desfazer, se mudar de rede: <code>npm config delete proxy</code>, <code>npm config delete https-proxy</code> e <code>npm config delete cafile</code>.</p>
+</div></details>
+
+<details><summary>Nada funcionou a tempo da aula</summary><div>
+  <p>Acompanhe a aula pela tela compartilhada, sem tentar fazer junto. Os exercícios ficam gravados no material, e no grupo do WhatsApp à tarde resolvemos a instalação com você, com calma.</p>
+  <p>Se a rede da empresa permitir, há uma alternativa temporária que roda no próprio Chrome, sem instalar nada: o site <a href="https://stackblitz.com">stackblitz.com</a>, escolhendo o modelo <b>React + TypeScript</b> do Vite. Use só para acompanhar a aula, até a instalação ser resolvida.</p>
+</div></details>
+</div>
+
+<!-- ============ FINAL ============ -->
+<h2 id="final"><span class="n">✓</span>Ao final, você terá</h2>
+<ul class="lista-final">
+  <li>Node.js 26 LTS e npm funcionando no terminal;</li>
+  <li>VS Code com o terminal no Prompt de Comando e a extensão Oxc;</li>
+  <li>o projeto <code>central-de-solicitacoes</code> em <code>curso-react</code>, com <code>"strict": true</code> no <code>tsconfig.app.json</code>;</li>
+  <li>a página do Vite abrindo no Chrome com <code>npm run dev</code>.</li>
+</ul>
+<p class="suave">O Git, para versionar o código, entra no ambiente mais à frente no curso, quando chegarmos à etapa de GitLab. Atualizamos o ambiente juntos, explicando cada passo, como hoje.</p>
+</main>
+
+<script>
+document.querySelectorAll(".cmd button").forEach((botao) => {
+  botao.addEventListener("click", async () => {
+    const texto = botao.previousElementSibling.textContent;
+    try { await navigator.clipboard.writeText(texto); botao.textContent = "Copiado"; }
+    catch { botao.textContent = "Selecione e copie"; }
+    setTimeout(() => { botao.textContent = "Copiar"; }, 1800);
+  });
+});
+</script>
+</body>
+</html>

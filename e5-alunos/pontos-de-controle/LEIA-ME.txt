@@ -1,0 +1,19 @@
+PONTOS DE CONTROLE DO ENCONTRO 5
+
+Cada pasta guarda a pasta src do projeto como ela fica em um momento da aula.
+Use se você se perder, se faltou a um trecho ou para conferir o seu código.
+
+  0-inicio                  ponto de partida do exercício 1 (o HTML colado, ainda com erros)
+  1-cabecalho-e-rodape      depois do exercício 1
+  2-linha-da-tabela         depois do exercício 2
+  3-pagina-em-componentes   depois da prática guiada (final da aula)
+
+COMO USAR
+1. No VS Code, no painel da esquerda, apague a pasta src do seu projeto
+   (botão direito > Delete).
+2. Copie a pasta src de dentro do ponto escolhido e cole dentro da pasta
+   central-de-solicitacoes.
+3. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Se quiser guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.

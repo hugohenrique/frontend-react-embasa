@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Desafio — Nova solicitação</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <!--
+    DESAFIO DO ENCONTRO 5 (opcional, para depois da aula)
+    Este é o formulário de nova solicitação, em HTML, com o CSS da etapa 1.
+    Abra este arquivo no Chrome para ver como ele fica.
+
+    No seu projeto:
+    1. Coloque o formulário na página, dentro de <Cartao titulo="Nova solicitação">, antes da tabela.
+    2. Converta para JSX: class, for, rows, maxlength, autocomplete, inputmode e os comentários.
+    3. Crie o componente Campo (src/components/Campo.tsx) com as Props id, rotulo e children,
+       que monta a <div class="campo"> com o <label> e o campo dentro.
+       Dica: o children aqui é o próprio <input>, <select> ou <textarea>.
+    4. Use o Campo nos campos de matrícula, telefone, município, bairro e descrição.
+    5. Se quiser ir além: leve o formulário inteiro para um componente FormularioSolicitacao.
+  -->
+  <main class="pagina">
+    <section id="nova" class="cartao">
+      <h2>Nova solicitação</h2>
+      <p>Registre o pedido do cliente. O telefone é opcional.</p>
+
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Imóvel e contato</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="matricula">Matrícula do imóvel</label>
+              <input type="text" id="matricula" name="matricula" inputmode="numeric" required>
+            </div>
+            <div class="campo">
+              <label for="telefone">Telefone (opcional)</label>
+              <input type="tel" id="telefone" name="telefone" autocomplete="tel">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>O que aconteceu</legend>
+          <div class="campos">
+            <div class="campo">
+              <label for="tipo">Tipo de serviço</label>
+              <select id="tipo" name="tipo" required>
+                <option value="">Selecione o tipo</option>
+                <option value="vazamento">Vazamento</option>
+                <option value="falta-agua">Falta d'água</option>
+                <option value="religacao">Religação</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="municipio">Município</label>
+              <select id="municipio" name="municipio" required>
+                <option value="">Selecione o município</option>
+                <option>Salvador</option>
+                <option>Feira de Santana</option>
+                <option>Vitória da Conquista</option>
+                <option>Camaçari</option>
+                <option>Juazeiro</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="bairro">Bairro</label>
+              <input type="text" id="bairro" name="bairro" required>
+            </div>
+
+            <fieldset class="campo campo-inteiro">
+              <legend>Prioridade</legend>
+              <div class="opcoes">
+                <div class="opcao">
+                  <input type="radio" id="prioridade-baixa" name="prioridade" value="baixa" required>
+                  <label for="prioridade-baixa">Baixa</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-media" name="prioridade" value="media">
+                  <label for="prioridade-media">Média</label>
+                </div>
+                <div class="opcao">
+                  <input type="radio" id="prioridade-alta" name="prioridade" value="alta">
+                  <label for="prioridade-alta">Alta</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="campo campo-inteiro">
+              <label for="descricao">O que o cliente relatou</label>
+              <textarea id="descricao" name="descricao" rows="5" maxlength="500" required></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit">Registrar solicitação</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
