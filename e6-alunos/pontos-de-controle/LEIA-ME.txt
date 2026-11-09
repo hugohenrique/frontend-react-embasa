@@ -1,0 +1,19 @@
+PONTOS DE CONTROLE DO ENCONTRO 6
+
+Cada pasta guarda a pasta src do projeto como ela fica em um momento da aula.
+
+  0-inicio                  ponto de partida: o final do encontro 5, com 6 linhas novas no CSS
+  1-o-problema              o filtro que muda a variável, mas não muda a tela
+  2-tentativas-de-contato   depois do exercício 1 (contador)
+  3-dicas                   depois do exercício 2 (mostrar e ocultar)
+  4-filtro-com-estado       depois da prática guiada (final da aula)
+
+COMO USAR
+1. No VS Code, no painel da esquerda, apague a pasta src do seu projeto
+   (botão direito > Delete).
+2. Copie a pasta src de dentro do ponto escolhido e cole dentro da pasta
+   central-de-solicitacoes.
+3. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Se quiser guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.

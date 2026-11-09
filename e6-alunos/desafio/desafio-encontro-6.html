@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 6</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.25rem;margin:32px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12)}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  .dica{color:#5B6878}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 6</h1>
+  <p class="dica">Opcional, para depois da aula. A aula de quarta começa do ponto <code>4-filtro-com-estado</code> e não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>1. Limite de tentativas</h2>
+    <p>Na prática, depois de três tentativas sem sucesso, o atendimento deixa de ligar e registra o retorno por escrito. No componente <code>TentativasDeContato</code>:</p>
+    <ul>
+      <li>desabilite o botão <b>Registrar tentativa</b> quando chegar a 3;</li>
+      <li>mostre, só nesse caso, a frase: <i>Limite de tentativas atingido. Registre o retorno por escrito.</i></li>
+    </ul>
+    <p class="dica">Dicas: o atributo <code>disabled</code> recebe <code>true</code> ou <code>false</code>, então pode receber uma comparação entre chaves. E a frase usa o mesmo <code>&amp;&amp;</code> das dicas. Repare que o botão desabilitado fica com a mesma cor do habilitado: crie uma regra <code>button:disabled</code> no CSS para que ele pareça desabilitado.</p>
+
+    <h2>2. Filtro por tipo de serviço</h2>
+    <p>Na tabela de solicitações recentes, acrescente um segundo filtro, <b>Tipo de serviço</b>, ao lado do de prioridade: Todos, Vazamento, Falta d'água, Religação.</p>
+    <p>Uma linha só aparece se combinar com os dois filtros.</p>
+    <p class="dica">Dicas: é um segundo estado, independente do primeiro. A função <code>deveMostrar</code> passa a receber a prioridade e o tipo da linha.</p>
+  </div>
+</main>
+</body>
+</html>
