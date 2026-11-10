@@ -144,3 +144,18 @@ th { background: #F1F4F7; }
 @media (min-width: 768px) {
   .filtros { grid-template-columns: 1fr 2fr; }
 }
+
+/* ===== Encontro 6: ações e dicas ===== */
+/* Botões lado a lado; no celular, um embaixo do outro (button tem width: 100%) */
+.acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+
+/* Botão de ação secundária: mesma cor, sem fundo */
+.botao-secundario { background: #fff; color: #1B6CA8; border: 2px solid #1B6CA8; }
+.botao-secundario:hover { background: #E8F1F8; }
+
+/* Um bloco de contato embaixo do outro, separados por uma linha */
+.contato + .contato { margin-top: 20px; padding-top: 20px; border-top: 1px solid #DCE3EA; }
+.contato p { margin: 0; }
+
+.dicas { margin: 16px 0 0; padding-left: 20px; }
+.dicas li { margin-bottom: 6px; }

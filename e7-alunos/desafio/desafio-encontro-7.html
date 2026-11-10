@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 7</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.25rem;margin:32px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12)}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  .dica{color:#5B6878}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 7</h1>
+  <p class="dica">Opcional, para depois da aula. A aula de quinta começa do ponto <code>4-retorno-da-lista</code> e não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>1. Busca sem se preocupar com acento</h2>
+    <p>Hoje, buscar <code>itapua</code> não encontra <b>Itapuã</b>, e buscar <code>camacari</code> não encontraria um bairro com cedilha. O atendente digita rápido, sem acento. Faça a busca ignorar acentos.</p>
+    <p class="dica">Dica: crie em <code>formatos.ts</code> uma função <code>semAcento(texto: string): string</code> com <code>texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "")</code>. O <code>normalize</code> separa a letra do acento, e o <code>replace</code> apaga os acentos. Use a função nos dois lados da comparação.</p>
+
+    <h2>2. Mais antigas primeiro</h2>
+    <p>A supervisão quer ver as solicitações mais antigas no topo, porque são as que estão esperando há mais tempo. Acrescente uma caixa de seleção (checkbox) <b>Mais antigas primeiro</b> que, marcada, inverte a ordem da tabela.</p>
+    <p class="dica">Dicas: é mais um estado, <code>true</code> ou <code>false</code>, como o das dicas. Para ordenar, use <code>sort</code>, mas atenção: o <code>sort</code> altera a lista original. Ordene uma cópia: <code>[...visiveis].sort(...)</code>. As datas estão no formato ano-mês-dia, então comparar como texto funciona: <code>a.abertura.localeCompare(b.abertura)</code>.</p>
+  </div>
+</main>
+</body>
+</html>

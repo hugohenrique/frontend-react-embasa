@@ -1,0 +1,18 @@
+PONTOS DE CONTROLE DO ENCONTRO 7
+
+Cada pasta guarda a pasta src do projeto como ela fica em um momento da aula.
+
+  0-inicio                  ponto de partida: o final do encontro 6, com dados.ts (oito
+                            solicitações), o tipo Solicitacao e uma regra de CSS nova
+  1-lista-com-map           depois do map e da key
+  2-filter-e-contagem       depois do filter e da contagem
+  3-busca-e-lista-vazia     depois da busca por bairro e da mensagem de lista vazia
+  4-retorno-da-lista        depois da prática (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
