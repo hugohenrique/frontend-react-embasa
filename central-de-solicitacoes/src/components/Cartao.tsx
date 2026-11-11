@@ -5,7 +5,7 @@ type CartaoProps = {
   children: ReactNode;
 };
 
-export default function Cartao({ titulo, children }: CartaoProps) {
+export function Cartao({ titulo, children }: CartaoProps) {
   return (
     <section className="cartao">
       <h2>{titulo}</h2>

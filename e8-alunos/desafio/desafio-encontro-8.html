@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 8</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.25rem;margin:32px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12)}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  .dica{color:#5B6878}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 8</h1>
+  <p class="dica">Opcional, para depois da aula. A aula de sexta começa do ponto <code>4-efeitos</code> e não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>1. Botão “Limpar formulário”</h2>
+    <p>O atendente começou a preencher e desistiu. Acrescente, ao lado de <b>Registrar solicitação</b>, um botão <b>Limpar formulário</b> que volta todos os campos ao início.</p>
+    <p class="dica">Dicas: a função <code>registrar</code> já limpa os campos no fim. Leve essa limpeza para uma função <code>limparFormulario</code> e use nos dois lugares. O botão novo precisa de <code>type="button"</code>, senão ele envia o formulário.</p>
+
+    <h2>2. “Onde é o vazamento?”</h2>
+    <p>Para vazamento, a equipe precisa saber o local: na rua, na calçada ou no hidrômetro. Acrescente um select <b>Onde é o vazamento?</b> que:</p>
+    <ul>
+      <li>só aparece quando o tipo é vazamento;</li>
+      <li>é obrigatório nesse caso: o botão fica desabilitado sem ele;</li>
+      <li>é limpo quando o tipo muda;</li>
+      <li>entra no começo do relato ao registrar: <i>Local: na calçada. …</i></li>
+    </ul>
+    <p class="dica">Dica: é o mesmo padrão do “rua toda”. Um estado novo, o <code>&amp;&amp;</code> com o tipo, uma condição a mais no <code>podeRegistrar</code> e uma linha a mais no <code>mudarTipo</code>.</p>
+  </div>
+</main>
+</body>
+</html>

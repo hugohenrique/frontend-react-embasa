@@ -1,0 +1,17 @@
+PONTOS DE CONTROLE DO ENCONTRO 8
+
+Cada pasta guarda a pasta src do projeto como ela fica em um momento da aula.
+
+  0-inicio                ponto de partida: o final do encontro 7, com a função hojeISO em formatos.ts
+  1-campos-controlados    depois dos campos controlados e do botão Limpar filtros
+  2-formulario            depois do formulário de nova solicitação (antes do intervalo e até o envio)
+  3-registro-na-lista     depois da elevação de estado: a solicitação entra na lista
+  4-efeitos               depois do useEffect (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.

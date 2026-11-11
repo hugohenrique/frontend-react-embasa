@@ -1,26 +1,19 @@
 import { formatarData, nomesDasPrioridades, nomesDosTipos } from "../formatos";
-import type { Prioridade, TipoServico } from "../tipos";
+import type { Solicitacao } from "../tipos";
 
 type LinhaSolicitacaoProps = {
-  numero: string;
-  tipo: TipoServico;
-  municipio: string;
-  bairro: string;
-  prioridade: Prioridade;
-  abertura: string;
+  solicitacao: Solicitacao;
 };
 
-export function LinhaSolicitacao(
-  { numero, tipo, municipio, bairro, prioridade, abertura }: LinhaSolicitacaoProps
-) {
+export function LinhaSolicitacao({ solicitacao }: LinhaSolicitacaoProps) {
   return (
     <tr>
-      <td>{numero}</td>
-      <td>{nomesDosTipos[tipo]}</td>
-      <td>{municipio}</td>
-      <td>{bairro}</td>
-      <td>{nomesDasPrioridades[prioridade]}</td>
-      <td><time dateTime={abertura}>{formatarData(abertura)}</time></td>
+      <td>{solicitacao.numero}</td>
+      <td>{nomesDosTipos[solicitacao.tipo]}</td>
+      <td>{solicitacao.municipio}</td>
+      <td>{solicitacao.bairro}</td>
+      <td>{nomesDasPrioridades[solicitacao.prioridade]}</td>
+      <td><time dateTime={solicitacao.abertura}>{formatarData(solicitacao.abertura)}</time></td>
     </tr>
   );
 }

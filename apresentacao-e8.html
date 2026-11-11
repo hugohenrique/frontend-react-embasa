@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encontro 8 — Hooks e formulários</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6F9; --ink:#141C26; --muted:#5A6575; --line:#D3DAE3;
+  --cobalt:#2E46F0; --cobalt-ink:#FFFFFF; --soft:#E6EAF7; --fail:#B3261E;
+  --code-bg:#141C26; --code-ink:#E7ECF3; --tag:#8FA2FF; --attr:#F2C46B; --str:#8EDDC1; --cmt:#7D8899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0E131A;overflow:hidden}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.viewport{position:fixed;inset:0;display:grid;place-items:center}
+.stage{width:1280px;height:720px;position:relative;transform-origin:center center;background:var(--paper);overflow:hidden}
+.slide{position:absolute;inset:0;padding:72px 96px 80px;display:none;flex-direction:column}
+.slide.on{display:flex}
+.num{position:absolute;right:40px;bottom:28px;font:600 18px "Atkinson Hyperlegible",sans-serif;color:var(--muted);font-variant-numeric:tabular-nums}
+.num b{color:var(--ink)}
+.course{position:absolute;left:96px;bottom:30px;font-size:16px;color:var(--muted)}
+
+h1,h2{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.025em;line-height:1.02}
+h1{font-size:96px;font-weight:800}
+h2{font-size:58px;font-weight:700;margin-bottom:36px;max-width:1000px}
+p,li{font-size:30px;line-height:1.38}
+.lead{font-size:34px;line-height:1.35;max-width:980px}
+.muted{color:var(--muted)}
+ul.plain{list-style:none}
+ul.plain li{padding:14px 0;border-bottom:2px solid var(--line)}
+ul.plain li:last-child{border-bottom:0}
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:64px 1fr;align-items:baseline;padding:12px 0}
+ol.steps li::before{content:counter(s);font:800 40px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.small{font-size:24px}
+.ex-time{display:inline-block;font-weight:700;font-size:24px;color:var(--cobalt);margin-bottom:14px}
+
+/* Capa */
+.cover{justify-content:flex-end;padding-bottom:120px}
+.cover .kicker{font-size:28px;color:var(--muted);margin-bottom:24px}
+.cover h1{font-size:148px;letter-spacing:-.04em;max-width:1100px}
+.cover .date{font-size:28px;margin-top:36px}
+.cover .bar{position:absolute;left:0;top:0;bottom:0;width:22px;background:var(--cobalt)}
+
+/* Divisores de fase do ciclo */
+.phase{background:var(--cobalt);color:var(--cobalt-ink);justify-content:center}
+.phase .step{font:700 30px "Atkinson Hyperlegible",sans-serif;opacity:.8;margin-bottom:8px}
+.phase h1{font-size:190px;letter-spacing:-.05em;line-height:.9}
+.phase p{font-size:36px;margin-top:30px;max-width:1000px}
+.phase .num,.phase .num b,.phase .course{color:rgba(255,255,255,.75)}
+.phase ol{margin-top:26px}
+.phase ol li{font-size:34px;padding:6px 0}
+.phase ol.steps li::before{color:#fff;opacity:.7}
+
+/* Grades */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.col h3{font:700 36px "Bricolage Grotesque",sans-serif;margin-bottom:10px;letter-spacing:-.01em}
+.col p{font-size:26px}
+.rule-top{border-top:6px solid var(--ink);padding-top:18px}
+
+/* Etapas */
+.weeks{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:8px}
+.weeks div{padding:18px 16px 0 0;border-top:6px solid var(--line)}
+.weeks div:first-child{border-top-color:var(--cobalt)}
+.weeks b{display:block;font:800 52px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.weeks span{display:block;font-size:22px;font-weight:700;line-height:1.25;margin:6px 0 8px}
+.weeks small{font-size:18px;color:var(--muted)}
+
+/* Ciclo */
+.cycle{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:20px}
+.cycle div{background:var(--soft);padding:22px 18px;min-height:220px;display:flex;flex-direction:column;justify-content:space-between}
+.cycle b{font:800 44px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.cycle span{font-size:26px;font-weight:700;line-height:1.2}
+.cycle small{font-size:19px;color:var(--muted)}
+
+/* Fluxo */
+.flow{display:flex;align-items:stretch;gap:0;margin-top:30px}
+.flow div{flex:1;border:3px solid var(--ink);padding:22px 14px;text-align:center;font-size:24px;font-weight:700;background:#fff;display:grid;place-items:center;min-height:130px}
+.flow i{width:36px;display:grid;place-items:center;font-style:normal;font-size:30px;color:var(--cobalt)}
+.flow div.hl{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+.flow-note{display:flex;gap:0;margin-top:14px}
+.flow-note span{flex:1;font-size:19px;color:var(--muted);text-align:center}
+
+/* Status */
+table.status{border-collapse:collapse;width:100%}
+table.status td{font-size:28px;padding:14px 0;border-bottom:2px solid var(--line)}
+table.status td:first-child{font:800 40px "Bricolage Grotesque",sans-serif;color:var(--cobalt);width:140px}
+
+/* Página-esquema */
+.wire{display:grid;grid-template-rows:80px 56px 1fr 64px;gap:10px;height:440px;width:560px}
+.wire div{border:3px solid var(--ink);display:flex;align-items:center;padding:0 18px;font:600 24px "JetBrains Mono",monospace;background:#fff}
+.wire .main{flex-direction:column;align-items:stretch;justify-content:flex-start;padding:16px 18px;gap:10px}
+.wire .main span{border:2px dashed var(--muted);padding:10px;font-size:20px;color:var(--muted)}
+.wire .main em{font-style:normal}
+.wire .hl{border-color:var(--cobalt);color:var(--cobalt)}
+
+/* Títulos */
+.heads{font:600 28px "JetBrains Mono",monospace;line-height:2}
+.heads div:nth-child(2),.heads div:nth-child(3){padding-left:48px}
+.heads div:nth-child(4),.heads div:nth-child(5){padding-left:96px}
+.heads b{color:var(--cobalt)}
+
+/* Código */
+pre.code{background:var(--code-bg);color:var(--code-ink);font:400 22px/1.5 "JetBrains Mono",monospace;padding:26px 30px;white-space:pre;overflow:hidden}
+pre.code.sm{font-size:19px}
+pre.code .t{color:var(--tag);font-weight:600}
+pre.code .a{color:var(--attr)}
+pre.code .s{color:var(--str)}
+pre.code .c{color:var(--cmt);font-style:italic}
+.url{font:600 26px "JetBrains Mono",monospace;background:#fff;border:3px solid var(--ink);padding:18px 22px;margin:20px 0;word-break:break-all}
+.url b{color:var(--cobalt)}
+
+/* Grandes regras */
+.rule{font:700 44px/1.18 "Bricolage Grotesque",sans-serif;letter-spacing:-.015em;padding:28px 0;border-bottom:3px solid var(--line)}
+.rule code{font:600 40px "JetBrains Mono",monospace;color:var(--cobalt)}
+.rule:last-child{border-bottom:0}
+
+/* Checklist */
+.check{columns:2;column-gap:56px}
+.check li{list-style:none;font-size:25px;padding:8px 0 8px 44px;position:relative;break-inside:avoid}
+.check li::before{content:"";position:absolute;left:0;top:13px;width:24px;height:24px;border:3px solid var(--ink)}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em}
+
+.break{justify-content:center;align-items:flex-start}
+.break h1{font-size:170px;letter-spacing:-.05em}
+
+/* Pessoas e resultado */
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:6px}
+.people > div{border-top:6px solid var(--ink);padding-top:20px}
+.people b{display:block;font:800 60px "Bricolage Grotesque",sans-serif;letter-spacing:-.025em;margin-bottom:10px}
+.people p{font-size:26px}
+.people .tag-r{display:inline-block;font-weight:700;font-size:22px;padding:4px 12px;margin-bottom:14px}
+.people .ok{border-top-color:var(--cobalt)}
+.people .ok .tag-r{background:var(--cobalt);color:#fff}
+.people .fail{border-top-color:var(--fail)}
+.people .fail .tag-r{background:var(--fail);color:#fff}
+
+/* Teclado e foco */
+.kbd-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:center}
+.keys > div{display:grid;grid-template-columns:270px 1fr;align-items:center;padding:14px 0;border-bottom:2px solid var(--line);font-size:26px}
+.keys > div:last-child{border-bottom:0}
+kbd{display:inline-block;font:700 22px "JetBrains Mono",monospace;border:3px solid var(--ink);border-bottom-width:6px;border-radius:7px;padding:3px 12px;background:#fff;color:var(--ink)}
+.lbl-demo{display:block;font-size:26px;font-weight:700;margin-bottom:8px}
+.fake-input{display:block;height:64px;background:#fff;border:3px solid var(--muted);border-radius:4px;outline:5px solid var(--cobalt);outline-offset:5px}
+.fake-input.plain{outline:0}
+.focus-demo p{font-size:26px;margin-top:30px}
+
+/* Leitor de tela */
+.hear{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:40px;align-items:start}
+.hear small{display:block;font-size:22px;color:var(--muted);margin-bottom:14px}
+.voice{font:700 46px/1.15 "Bricolage Grotesque",sans-serif;color:var(--cobalt);letter-spacing:-.015em}
+
+/* Pergunta */
+.question{justify-content:center}
+.question h2{font-size:84px;font-weight:800;letter-spacing:-.035em}
+.question .lead{font-size:40px;max-width:1050px}
+
+/* Controles */
+.ctrl{position:fixed;right:14px;top:12px;display:flex;gap:6px;opacity:.25;transition:opacity .2s}
+.ctrl:hover,.ctrl:focus-within{opacity:1}
+.ctrl button{background:#fff;border:0;font:700 14px "Atkinson Hyperlegible",sans-serif;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.ctrl button:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.progress{position:fixed;left:0;top:0;height:4px;background:var(--cobalt);transition:width .2s}
+@media (prefers-reduced-motion:reduce){.progress{transition:none}}
+
+/* ===== Encontro 2 ===== */
+.people .new{border-top-color:var(--cobalt)}
+pre.code.xs{font-size:17px;padding:18px 20px;white-space:pre}
+pre.code .p{color:var(--attr)}
+pre.code .v{color:var(--str)}
+pre.code .k{color:var(--tag);font-weight:600}
+pre.code.strike{position:relative;opacity:.75}
+pre.code.strike::after{content:"";position:absolute;left:18px;right:18px;top:50%;height:4px;background:var(--fail);transform:rotate(-4deg)}
+
+.phone-row{display:grid;grid-template-columns:270px 1fr;gap:64px;align-items:center}
+.phone{width:250px;height:470px;border:10px solid var(--ink);border-radius:34px;overflow:hidden;background:#fff;position:relative}
+.phone img{width:100%;display:block}
+.phone::after{content:"";position:absolute;right:0;top:0;bottom:0;width:30px;background:linear-gradient(90deg,transparent,rgba(179,38,30,.35))}
+
+.anatomy{display:grid;grid-template-columns:1.5fr 1fr;gap:56px;align-items:center}
+.an-code{font:600 32px/1.6 "JetBrains Mono",monospace;background:var(--code-bg);color:var(--code-ink);padding:30px 36px}
+.an-sel{color:var(--tag)} .an-prop{color:var(--attr)} .an-val{color:var(--str)}
+.an-legend b.an-sel{color:#2E46F0} .an-legend b.an-prop{color:#9A6400} .an-legend b.an-val{color:#0F7A5C}
+
+table.status.sel td:first-child{font:600 26px "JetBrains Mono",monospace;color:var(--cobalt);width:400px;padding-right:20px}
+table.status.sel td{font-size:26px;padding:12px 0}
+table.status.sel code{color:var(--cobalt)}
+table.status.bp td:first-child{width:160px}
+
+.boxrow{display:grid;grid-template-columns:560px 1fr;gap:56px;align-items:center}
+.bm-margin,.bm-border,.bm-padding{position:relative;padding:44px 34px 30px}
+.bm-margin{border:3px dashed var(--muted);background:#fff}
+.bm-border{border:8px solid var(--ink);background:var(--soft)}
+.bm-padding{background:#D5DCF9}
+.bm-content{background:var(--cobalt);color:#fff;font:700 26px "Atkinson Hyperlegible",sans-serif;padding:30px;text-align:center}
+.boxrow span{position:absolute;left:14px;top:10px;font:600 19px "JetBrains Mono",monospace;color:var(--ink)}
+
+.sum{display:flex;align-items:center;gap:14px}
+.sum div{border:3px solid var(--ink);background:#fff;padding:16px 22px;text-align:center;min-width:150px}
+.sum b{display:block;font:800 40px "Bricolage Grotesque",sans-serif}
+.sum span{font-size:20px;color:var(--muted)}
+.sum i{font:800 44px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+.sum .hl{background:var(--fail);border-color:var(--fail);color:#fff}
+.sum .hl span{color:#fff}
+
+.flowdemo{border:3px solid var(--line);background:#fff;padding:14px;margin:6px 0 16px;min-height:200px}
+.flowdemo span{font:600 22px "JetBrains Mono",monospace;background:var(--soft);border:2px solid var(--cobalt);color:var(--cobalt);padding:10px 14px}
+.flowdemo.block span{display:block;margin-bottom:10px}
+.flowdemo.inline span{display:inline-block;margin-right:10px}
+
+.axes{position:relative;padding:20px 0 70px 70px}
+.ax-row{display:flex;gap:16px;border:3px solid var(--ink);padding:16px;background:#fff}
+.ax-row span{flex:1;background:var(--cobalt);color:#fff;font:700 22px "Atkinson Hyperlegible",sans-serif;padding:64px 0;text-align:center}
+.ax-main{position:absolute;left:70px;right:0;bottom:22px;border-top:4px solid var(--cobalt);font:700 20px "Atkinson Hyperlegible",sans-serif;color:var(--cobalt);padding-top:6px}
+.ax-main::after{content:"";position:absolute;right:-2px;top:-12px;border:10px solid transparent;border-left:16px solid var(--cobalt)}
+.ax-cross{position:absolute;left:24px;top:20px;bottom:70px;border-left:4px solid var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);font:700 20px "Atkinson Hyperlegible",sans-serif;color:var(--muted);text-align:center;padding-right:6px}
+
+.gridd{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:3px solid var(--ink);padding:14px;background:#fff}
+.gridd span{background:var(--soft);border:2px solid var(--cobalt);font:700 22px "Atkinson Hyperlegible",sans-serif;color:var(--cobalt);padding:20px 14px}
+.gridd .wide{grid-column:1 / -1}
+
+.mf{display:flex;align-items:flex-end;gap:20px;margin-top:10px}
+.mf div{border:4px solid var(--ink);background:#fff;padding:18px;display:flex;flex-direction:column;justify-content:flex-end}
+.mf-1{width:200px;height:300px;border-color:var(--cobalt)!important;background:var(--soft)!important}
+.mf-2{width:330px;height:240px}
+.mf-3{width:460px;height:200px}
+.mf b{font:800 38px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+.mf span{font-size:24px;font-weight:700}
+.mf small{font-size:19px;color:var(--muted)}
+
+.tap{display:flex;gap:24px;align-items:center;margin-top:26px}
+.tap span{background:#1B6CA8;color:#fff;font-weight:700}
+.tap-small{font-size:13px;padding:3px 9px;opacity:.85}
+.tap-ok{font-size:24px;padding:12px 26px;min-height:56px;display:inline-flex;align-items:center}
+
+.cols12{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:6px;background:repeating-linear-gradient(90deg,var(--soft) 0 calc((100% - 110px)/12),transparent calc((100% - 110px)/12) calc((100% - 110px)/12 + 10px));padding:10px 0}
+.cols12 .lbl-row{background:var(--cobalt);color:#fff;font-size:22px;font-weight:700;padding:16px 14px;white-space:nowrap;overflow:hidden}
+.cols12 .lbl-row code{color:#fff}
+.c12{grid-column:span 12}.c6{grid-column:span 6}.c4{grid-column:span 4}
+
+table.compare{border-collapse:collapse;width:100%}
+table.compare th{font:700 30px "Bricolage Grotesque",sans-serif;text-align:left;padding:10px 0;border-bottom:4px solid var(--ink)}
+table.compare th:nth-child(3){color:var(--cobalt)}
+table.compare td{font-size:25px;padding:12px 0;border-bottom:2px solid var(--line);vertical-align:top}
+table.compare td:first-child{color:var(--muted);width:280px}
+table.compare td:nth-child(2){width:380px}
+
+/* ===== Encontro 3 ===== */
+.msgbox{display:inline-block;margin-top:18px;padding:12px 18px;border-left:6px solid var(--fail);background:#FBE3E1;color:#8C1D16;font:700 28px "Atkinson Hyperlegible",sans-serif}
+.weeks.four{grid-template-columns:repeat(4,1fr)}
+.weeks.four span{font-size:26px}
+table.compare.passos td:last-child{font:800 30px "Bricolage Grotesque",sans-serif;color:var(--cobalt);width:170px}
+table.compare.passos td:first-child{width:120px}
+table.compare.passos td:nth-child(2){width:auto}
+pre.code .k{color:var(--tag);font-weight:600}
+.bignum{font:800 120px/1 "Bricolage Grotesque",sans-serif;color:var(--cobalt);margin:8px 0}
+.h2code{font:700 54px "JetBrains Mono",monospace;color:var(--cobalt)}
+.arr{display:flex;align-items:center;gap:24px;margin-top:6px}
+.arr>div{display:flex;gap:10px;border:3px solid var(--ink);background:#fff;padding:14px}
+.arr span{font:700 22px "Atkinson Hyperlegible",sans-serif;background:var(--soft);border:2px solid var(--line);padding:16px 14px;min-width:84px;text-align:center}
+.arr .c-a{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.arr .arr-out{border-color:var(--cobalt)}
+.arr .txt span{font-family:"JetBrains Mono",monospace;font-size:19px;background:#fff;border-color:var(--cobalt);color:var(--cobalt)}
+.arr i{font:800 54px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+
+/* ===== Encontro 5 ===== */
+.weeks.five{grid-template-columns:repeat(5,1fr)}
+.weeks.five div:first-child{border-top-color:var(--line)}
+.weeks.five div.hl{border-top-color:var(--cobalt)}
+.weeks.five span{font-size:25px}
+.weeks.five small{font-size:19px}
+.fromto{display:grid;grid-template-columns:1fr 60px 1fr;align-items:stretch;margin-top:10px}
+.fromto>div{border-top:6px solid var(--line);padding-top:20px}
+.fromto .new{border-top-color:var(--cobalt)}
+.fromto small{display:block;font-size:22px;color:var(--muted);margin-bottom:8px}
+.fromto b{display:block;font:800 48px/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;margin-bottom:16px}
+.fromto .new b{color:var(--cobalt)}
+.fromto .old b{color:var(--muted)}
+.fromto p{font-size:27px}
+.fromto i{font:800 60px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt);display:grid;place-items:center}
+.base-bar{margin-top:30px;background:var(--soft);border-left:8px solid var(--cobalt);padding:20px 24px;font-size:26px}
+.lts{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.lts div{border-top:6px solid var(--line);padding:18px 20px 0 0}
+.lts .hl{border-top-color:var(--cobalt)}
+.lts b{display:block;font:800 72px "Bricolage Grotesque",sans-serif;color:var(--ink)}
+.lts .hl b{color:var(--cobalt)}
+.lts .dim b{color:var(--muted)}
+.lts span{display:block;font-size:28px;font-weight:700}
+.lts small{display:block;font-size:21px;color:var(--muted);margin-top:6px}
+.term{background:var(--code-bg);color:var(--code-ink);font:400 26px/1.55 "JetBrains Mono",monospace;padding:24px 30px;white-space:pre-wrap;word-break:break-word}
+.term.sm{font-size:21px}
+.term .pr{color:var(--tag);font-weight:700}
+.term .out{color:var(--cmt)}
+.term .c{color:var(--attr)}
+.term b{color:var(--str)}
+table.parts{border-collapse:collapse;width:100%;margin-top:18px}
+table.parts td{font-size:23px;padding:8px 0;border-bottom:2px solid var(--line);vertical-align:baseline}
+table.parts td:first-child{width:330px;padding-right:18px}
+table.parts code{font-weight:700;color:var(--cobalt)}
+.kbd-line{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:28px}
+.kbd-line i{font:800 34px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt)}
+.kbd-line span{color:var(--muted)}
+.kbd-line b{font-weight:700}
+.stack{display:grid;gap:18px}
+table.status.deps td:first-child{width:300px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:24px}
+.ctree .kids.even{grid-template-columns:1fr 1fr 1fr}
+.stack pre.code{margin:0}
+.big-idea{font:700 40px/1.25 "Bricolage Grotesque",sans-serif;letter-spacing:-.01em;margin:6px 0 34px;max-width:1080px}
+.big-idea code{font-size:34px}
+.msgbox.long{font-size:25px;line-height:1.35;max-width:1060px}
+.tree{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.tree div{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:2px solid var(--line)}
+.tree div>code{font:700 21px "JetBrains Mono",monospace;color:var(--ink)}
+.tree div.hl>code{color:var(--cobalt)}
+.tree span{font-size:21px;line-height:1.3;color:var(--muted)}
+.tree span code{font-size:19px;color:var(--ink)}
+.screens{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.screens div{border:3px solid var(--ink);background:#fff;padding:16px 18px;min-height:260px;display:flex;flex-direction:column;gap:10px}
+.screens small{font:700 24px "Atkinson Hyperlegible",sans-serif;padding-bottom:6px;border-bottom:3px solid var(--ink)}
+.screens span{height:30px;background:var(--soft);border-left:6px solid var(--cobalt)}
+.screens em{margin-top:auto;font-style:normal;font-size:21px;color:var(--muted)}
+.ctree{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:4px}
+.ctree>div.root{font:700 28px "JetBrains Mono",monospace;background:var(--ink);color:#fff;padding:12px 34px}
+.ctree .kids{display:grid;grid-template-columns:1fr 2.2fr 1fr;gap:26px;width:100%;margin-top:34px;border-top:4px solid var(--ink);padding-top:26px;position:relative}
+.ctree .kids::before{content:"";position:absolute;left:50%;top:-38px;height:34px;border-left:4px solid var(--ink)}
+.ctree .kids>div{font:700 26px "JetBrains Mono",monospace;border:3px solid var(--ink);background:#fff;padding:16px;text-align:center;align-self:start}
+.ctree .kids>div.hl{border-color:var(--cobalt);color:var(--cobalt)}
+.ctree small{display:block;font:400 19px "Atkinson Hyperlegible",sans-serif;color:var(--muted);margin-top:4px}
+.ctree .sub{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ctree .sub span{font:600 18px "JetBrains Mono",monospace;background:var(--soft);border:2px solid var(--cobalt);padding:10px 4px;color:var(--cobalt)}
+pre.code .tg{color:var(--tag);font-weight:600}
+/* ===== Encontro 6 ===== */
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:10px}
+.twin>div{border:3px solid var(--ink);background:#fff;padding:26px 28px;display:flex;flex-direction:column;gap:10px}
+.twin>div.dark{background:var(--code-bg);border-color:var(--code-bg);color:var(--code-ink)}
+.twin small{font-size:21px;color:var(--muted)}
+.twin .dark small{color:var(--cmt)}
+.twin b{font:700 34px "JetBrains Mono",monospace}
+.twin .dark b{color:var(--str)}
+.twin span{font-size:22px;color:var(--muted)}
+.twin .dark span{color:var(--cmt)}
+.loop{display:flex;align-items:stretch;gap:10px}
+.loop>div{flex:1;border:3px solid var(--ink);background:#fff;padding:18px 14px;font-size:23px;font-weight:700;display:grid;place-items:center;text-align:center;line-height:1.25}
+.loop>div.hl{border-color:var(--cobalt);background:var(--cobalt);color:#fff}
+.loop>div span{display:block;width:100%;text-align:center}
+.loop>div code{font-size:19px}
+.loop i{font:800 34px "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--cobalt);display:grid;place-items:center}
+.msgbox.warnbox{background:#FDF1DC;color:#6B4100;border-left-color:#8A5300}
+.msgbox small{display:block;font-weight:400;margin-top:6px}
+table.status.quiz td:first-child{width:70px;font:800 34px "Bricolage Grotesque",sans-serif;color:var(--cobalt)}
+table.quiz td code{font-size:25px}
+.col pre.code{margin:6px 0 12px}
+
+pre.code .at{color:var(--attr)}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="viewport"><div class="stage" id="stage">
+
+<!-- 1 -->
+<section class="slide cover">
+  <div class="bar"></div>
+  <p class="kicker">Desenvolvimento Front-end com React · Etapa 2</p>
+  <h1>Hooks e formulários</h1>
+  <p class="date">Encontro 8 de 27, quinta-feira, 12 de novembro de 2026</p>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <h2>Ontem, numa frase</h2>
+  <p class="big-idea">Uma lista alimenta tudo: o <code>filter</code> escolhe, o <code>map</code> desenha.</p>
+  <pre class="code xs" data-src="s2" data-lang="tsx"></pre>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>Ponto de partida</h2>
+  <ol class="steps">
+    <li><span><code>npm run dev</code> no terminal do VS Code</span></li>
+    <li><span>Troque a pasta <code>src</code> pela de <code>pontos-de-controle/0-inicio</code></span></li>
+    <li><span>Projeto aberto no Chrome? Escreva <b>1</b> no chat</span></li>
+  </ol>
+  <p class="lead muted" style="margin-top:18px">É o final de ontem, com uma função nova em <code>formatos.ts</code>: <code>hojeISO()</code>, a data de hoje.</p>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <h2>Hoje</h2>
+  <div class="weeks five">
+    <div class="hl"><b>1</b><span>Campos controlados</span><small>o Limpar funciona</small></div>
+    <div><b>2</b><span>Formulário</span><small>nova solicitação</small></div>
+    <div><b>3</b><span>Campos que dependem</span><small>um do outro</small></div>
+    <div><b>4</b><span>Elevar o estado</span><small>registrar na lista</small></div>
+    <div><b>5</b><span>useEffect</span><small>e as regras dos hooks</small></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide phase">
+  <p class="step">Etapa 1 do ciclo</p>
+  <h1>Problema real</h1>
+  <p>O botão “Limpar filtros”, de ontem.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo, 4 minutos</span>
+  <h2>O botão Limpar filtros</h2>
+  <pre class="code xs" data-src="s6" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:14px">A função fica logo abaixo dos estados, no <code>App.tsx</code>.</p>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <h2>Escolham “Alta”, busquem “centro”, cliquem em Limpar</h2>
+  <div class="twin">
+    <div><small>A tabela</small><b>8 linhas</b><span>o estado foi limpo</span></div>
+    <div class="dark"><small>Os campos</small><b>Alta · centro</b><span>continuam como estavam</span></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide question">
+  <h2>O estado foi limpo. Por que os campos não?</h2>
+  <p class="lead">Escreva o seu palpite no chat.</p>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <h2>E o problema maior: um cadastro</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Muitos campos</h3><p>Tipo, município, bairro, prioridade, relato. Todos precisam ser lidos, conferidos e limpos.</p></div>
+    <div class="col rule-top"><h3>Que dependem uns dos outros</h3><p>Falta d'água na rua toda? A prioridade já é alta. Um campo muda o outro.</p></div>
+  </div>
+  <p class="lead muted" style="margin-top:36px">A regra da prioridade é um exemplo do curso, não uma regra real de atendimento.</p>
+</section>
+
+<!-- 10 -->
+<section class="slide phase">
+  <p class="step">Etapa 2 do ciclo</p>
+  <h1>Discussão</h1>
+  <ol class="steps">
+    <li><span>No JSF, o que o <code>value</code> de um <code>h:inputText</code> faz?</span></li>
+  </ol>
+  <pre class="code" data-src="s10" data-lang="html" style="margin-top:24px"></pre>
+</section>
+
+<!-- 11 -->
+<section class="slide phase">
+  <p class="step">Etapa 3 do ciclo</p>
+  <h1>Campos controlados</h1>
+  <p>O valor do campo vem do estado.</p>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <h2>Duas memórias, uma de cada um</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>O campo</h3><p>O navegador guarda o que foi digitado, dentro do próprio campo.</p></div>
+    <div class="col rule-top"><h3>O estado</h3><p>O React guarda uma cópia, que o <code>onChange</code> atualiza.</p></div>
+  </div>
+  <p class="lead" style="margin-top:36px">O <code>setBusca("")</code> limpou a memória do React. A do campo ninguém mexeu.</p>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <h2>Campo controlado: value e onChange</h2>
+  <pre class="code" data-src="s13" data-lang="tsx"></pre>
+  <div class="two" style="margin-top:22px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>value</h3><p>O campo mostra o que está no estado.</p></div>
+    <div class="col rule-top"><h3>onChange</h3><p>O que se digita vai para o estado.</p></div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <h2>Uma memória só</h2>
+  <div class="loop">
+    <div><span>Digita “c”</span></div><i>›</i>
+    <div><span><code>onChange</code>: <code>setBusca("c")</code></span></div><i>›</i>
+    <div><span>React redesenha</span></div><i>›</i>
+    <div class="hl"><span><code>value</code> mostra “c”</span></div>
+  </div>
+  <p class="lead" style="margin-top:40px">Quem manda no campo é o estado. Mudou o estado, por qualquer motivo, o campo muda junto.</p>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 1 de 2</span>
+  <h2>O select controlado</h2>
+  <pre class="code" data-src="s15" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:18px">Só uma linha nova: <code>value={filtro}</code>.</p>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 2 de 2</span>
+  <h2>A busca controlada</h2>
+  <pre class="code" data-src="s16" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:18px">De novo, uma linha: <code>value={busca}</code>. Teste o Limpar.</p>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <h2>Agora o Limpar limpa tudo</h2>
+  <div class="twin">
+    <div><small>A tabela</small><b>8 linhas</b><span>o estado foi limpo</span></div>
+    <div><small>Os campos</small><b>Todas · vazio</b><span>acompanharam o estado</span></div>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+  <h2>Esqueceu o onChange?</h2>
+  <div class="msgbox long">You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field.</div>
+  <p class="lead" style="margin-top:30px">Com <code>value</code> e sem <code>onChange</code>, o campo trava: o estado nunca muda, então o campo nunca muda. O console avisa.</p>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+  <h2>A regra do campo controlado</h2>
+  <ul class="check">
+    <li><code>value</code> vem do estado</li>
+    <li><code>onChange</code> atualiza o estado</li>
+    <li>No checkbox e no radio: <code>checked</code> no lugar de <code>value</code></li>
+  </ul>
+  <p class="lead" style="margin-top:30px">Como o <code>value="#{bean.campo}"</code> do JSF: o campo mostra o dado, e o dado recebe o que se digita.</p>
+</section>
+
+<!-- 20 -->
+<section class="slide phase">
+  <p class="step">Mesmo padrão, num formulário inteiro</p>
+  <h1>Nova solicitação</h1>
+  <p>Seis campos, todos controlados.</p>
+</section>
+
+<!-- 21 -->
+<section class="slide">
+  <h2>O que vamos montar</h2>
+  <div class="tree">
+    <div class="hl"><code>tipo</code><span>select: vazamento, falta d'água, religação</span></div>
+    <div><code>municipio</code><span>select, com as opções geradas por <code>map</code></span></div>
+    <div><code>bairro</code><span>campo de texto</span></div>
+    <div><code>prioridade</code><span>três radios</span></div>
+    <div><code>relato</code><span>textarea, com contador de caracteres</span></div>
+    <div><code>ruaToda</code><span>checkbox, só quando é falta d'água</span></div>
+  </div>
+</section>
+
+<!-- 22 -->
+<section class="slide">
+  <h2>Um estado para cada campo</h2>
+  <p class="big-idea">Cada campo controlado tem o seu <code>useState</code>. O formulário é a soma deles.</p>
+  <p class="lead">O valor inicial é vazio. Para o tipo e a prioridade, o tipo do estado aceita o vazio: <code>TipoServico | ""</code>.</p>
+</section>
+
+<!-- 23 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 1 de 6</span>
+  <h2>O componente e os estados</h2>
+  <pre class="code xs" data-src="s23" data-lang="tsx"></pre>
+</section>
+
+<!-- 24 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 2 de 6</span>
+  <h2>O tipo de serviço</h2>
+  <pre class="code xs" data-src="s24" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:14px">E use no App, num <code>Cartao</code> “Nova solicitação”, antes das solicitações recentes.</p>
+</section>
+
+<!-- 25 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 3 de 6</span>
+  <h2>O município, com map</h2>
+  <div class="stack" style="gap:10px"><pre class="code xs" data-src="s25b" data-lang="tsx" style="line-height:1.4"></pre><pre class="code xs" data-src="s25" data-lang="tsx" style="line-height:1.4"></pre></div>
+</section>
+
+<!-- 26 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 4 de 6</span>
+  <h2>O bairro</h2>
+  <pre class="code" data-src="s26" data-lang="tsx"></pre>
+</section>
+
+<!-- 27 -->
+<section class="slide">
+  <h2>Confira no Chrome</h2>
+  <ul class="check">
+    <li>Escolher um tipo e um município</li>
+    <li>Digitar um bairro</li>
+    <li>Tudo continua lá depois de clicar em outro lugar</li>
+  </ul>
+  <p class="lead" style="margin-top:30px">Escreva “ok” no chat. Depois do intervalo: prioridade, relato e os campos que dependem uns dos outros.</p>
+</section>
+
+<!-- 28 -->
+<section class="slide break">
+  <h1>Intervalo</h1>
+  <p class="lead">Voltamos às 10h35. Deixe o projeto rodando.</p>
+</section>
+
+<!-- 29 -->
+<section class="slide">
+  <h2>Radio controlado: checked</h2>
+  <p class="big-idea">O radio fica marcado quando o estado é igual ao valor dele.</p>
+  <p class="lead"><code>checked={prioridade === "baixa"}</code>: é uma comparação, verdadeiro ou falso, como o <code>aria-expanded</code> das dicas.</p>
+</section>
+
+<!-- 30 -->
+<section class="slide">
+  <h2>Por que três radios, e não um select</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Poucas opções</h3><p>Com três, todas ficam à vista. Um clique, sem abrir lista.</p></div>
+    <div class="col rule-top"><h3>Agrupados</h3><p><code>fieldset</code> e <code>legend</code> da etapa 1: o leitor de tela anuncia “Prioridade”.</p></div>
+  </div>
+</section>
+
+<!-- 31 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 5 de 6</span>
+  <h2>A prioridade</h2>
+  <pre class="code xs" data-src="s31" data-lang="tsx"></pre>
+</section>
+
+<!-- 32 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 6 de 6</span>
+  <h2>O relato, com contador</h2>
+  <pre class="code xs" data-src="s32" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:12px">E, no topo do arquivo: <code>const LIMITE_RELATO = 500;</code></p>
+</section>
+
+<!-- 33 -->
+<section class="slide">
+  <h2>O contador da etapa 1, agora numa linha</h2>
+  <div class="stack">
+    <div><p class="small muted" style="margin-bottom:10px">Encontro 3: ouvir, contar, escrever, trocar a classe</p><pre class="code xs" data-src="s33a" data-lang="tsx"></pre></div>
+    <div><p class="small muted" style="margin-bottom:10px">Hoje: o contador sai do estado</p><pre class="code xs" data-src="s33b" data-lang="tsx"></pre></div>
+  </div>
+</section>
+
+<!-- 34 -->
+<section class="slide">
+  <h2>Campos que dependem uns dos outros</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Aparece ou não</h3><p>A pergunta “rua toda?” só faz sentido para falta d'água. É o <code>&amp;&amp;</code> das dicas.</p></div>
+    <div class="col rule-top"><h3>Um muda o outro</h3><p>Marcou “rua toda”: a prioridade vira alta e as outras ficam bloqueadas.</p></div>
+  </div>
+</section>
+
+<!-- 35 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 1 de 3</span>
+  <h2>A pergunta só para falta d'água</h2>
+  <pre class="code xs" data-src="s35" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:14px">Logo depois do município.</p>
+</section>
+
+<!-- 36 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 2 de 3</span>
+  <h2>As duas funções que mudam mais de um campo</h2>
+  <pre class="code xs" data-src="s36" data-lang="tsx"></pre>
+</section>
+
+<!-- 37 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 3 de 3</span>
+  <h2>Ligar as funções aos campos</h2>
+  <pre class="code" data-src="s37" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:14px">Escolha “Falta d'água”, marque “rua toda” e olhe a prioridade.</p>
+</section>
+
+<!-- 38 -->
+<section class="slide">
+  <h2>podeRegistrar: calculado, não guardado</h2>
+  <pre class="code xs" data-src="s38" data-lang="tsx"></pre>
+  <p class="lead" style="margin-top:18px">Se dá para calcular a partir do estado, não é estado: é uma constante, recalculada a cada desenho. Como a <code>visiveis</code>.</p>
+</section>
+
+<!-- 39 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo</span>
+  <h2>O envio: onSubmit</h2>
+  <pre class="code xs" data-src="s39" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:12px">O <code>preventDefault</code> do encontro 3: a página não recarrega. Por enquanto, só o console.</p>
+</section>
+
+<!-- 40 -->
+<section class="slide phase">
+  <p class="step">Ainda no conceito</p>
+  <h1>Elevar o estado</h1>
+  <p>O formulário precisa mexer na lista.</p>
+</section>
+
+<!-- 41 -->
+<section class="slide question">
+  <h2>O formulário tem os dados. A tabela está no App. Como a solicitação chega lá?</h2>
+  <p class="lead">Pensem um minuto. Respostas no chat.</p>
+</section>
+
+<!-- 42 -->
+<section class="slide">
+  <h2>O estado mora no ancestral comum</h2>
+  <div class="ctree">
+    <div class="root">App · lista</div>
+    <div class="kids even">
+      <div class="hl">FormularioSolicitacao<small>recebe aoRegistrar</small></div>
+      <div>LinhaSolicitacao<small>uma por item da visiveis</small></div>
+      <div>TentativasDeContato<small>uma por urgente</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 43 -->
+<section class="slide">
+  <h2>Os dados descem, os avisos sobem</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Desce</h3><p>O App passa a lista para quem desenha. Props, como sempre.</p></div>
+    <div class="col rule-top"><h3>Sobe</h3><p>O App passa uma função, <code>aoRegistrar</code>. O formulário chama a função, e o App muda a lista.</p></div>
+  </div>
+</section>
+
+<!-- 44 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 1 de 4</span>
+  <h2>A lista vira estado no App</h2>
+  <pre class="code xs" data-src="s44" data-lang="tsx"></pre>
+</section>
+
+<!-- 45 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 2 de 4</span>
+  <h2>A função registrar, no App</h2>
+  <pre class="code xs" data-src="s45" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:12px">E em <code>tipos.ts</code>: <code>export type NovaSolicitacao = Omit&lt;Solicitacao, "numero" | "abertura"&gt;;</code></p>
+</section>
+
+<!-- 46 -->
+<section class="slide">
+  <h2>Imutabilidade, agora de verdade</h2>
+  <pre class="code" data-src="s48" data-lang="tsx"></pre>
+  <div class="two" style="margin-top:22px">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3><code>{ ...nova, numero, abertura }</code></h3><p>Um objeto novo: os campos da nova, mais número e data.</p></div>
+    <div class="col rule-top"><h3><code>[ novo, ...lista ]</code></h3><p>Uma lista nova: o novo no topo, e as antigas depois. Nada de <code>push</code>.</p></div>
+  </div>
+</section>
+
+<!-- 47 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 3 de 4</span>
+  <h2>O formulário recebe aoRegistrar</h2>
+  <pre class="code xs" data-src="s46" data-lang="tsx"></pre>
+</section>
+
+<!-- 48 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 4 de 4</span>
+  <h2>Registrar, avisar e limpar</h2>
+  <pre class="code xs" data-src="s47" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:10px">No App: <code>&lt;FormularioSolicitacao aoRegistrar={registrar} /&gt;</code> e o parágrafo da mensagem.</p>
+</section>
+
+<!-- 49 -->
+<section class="slide">
+  <h2>Registrou, apareceu</h2>
+  <div class="twin">
+    <div><small>Na tabela</small><b>26-08825</b><span>no topo, com a data de hoje</span></div>
+    <div><small>E também</small><b>9 · retorno · mensagem</b><span>a contagem, o retorno ao cliente e o aviso</span></div>
+  </div>
+</section>
+
+<!-- 50 -->
+<section class="slide phase">
+  <p class="step">Ainda no conceito</p>
+  <h1>useEffect</h1>
+  <p>Para o que fica fora do React.</p>
+</section>
+
+<!-- 51 -->
+<section class="slide">
+  <h2>Algumas coisas o JSX não alcança</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>O título da aba</h3><p>Fica no <code>&lt;title&gt;</code>, fora do <code>div#root</code>.</p></div>
+    <div class="col rule-top"><h3>O teclado da página toda</h3><p>Um atalho que funciona de qualquer lugar, não só num campo.</p></div>
+  </div>
+  <p class="lead" style="margin-top:34px">O <code>useEffect</code> roda depois do desenho, para sincronizar essas coisas com o estado.</p>
+</section>
+
+<!-- 52 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 1 de 2</span>
+  <h2>O título da aba com as urgentes</h2>
+  <pre class="code xs" data-src="s52" data-lang="tsx"></pre>
+  <p class="lead muted" style="margin-top:10px">Depois da <code>urgentes</code>. Registre uma alta e olhe a aba.</p>
+</section>
+
+<!-- 53 -->
+<section class="slide">
+  <h2>A lista de dependências</h2>
+  <table class="status bp deps">
+    <tr><td>[totalUrgentes]</td><td>Roda de novo só quando o número de urgentes mudar.</td></tr>
+    <tr><td>[]</td><td>Roda uma vez, quando o componente aparece.</td></tr>
+    <tr><td>sem a lista</td><td>Roda depois de todo desenho. Quase nunca é o que se quer.</td></tr>
+  </table>
+</section>
+
+<!-- 54 -->
+<section class="slide">
+  <span class="ex-time">Faça comigo · passo 2 de 2</span>
+  <h2>Esc limpa os filtros</h2>
+  <pre class="code xs" data-src="s54" data-lang="tsx"></pre>
+</section>
+
+<!-- 55 -->
+<section class="slide">
+  <span class="ex-time">Demonstração</span>
+  <h2>Sem a limpeza, o ouvinte dobra</h2>
+  <div class="twin">
+    <div><small>Com o <code>return</code></small><b>1 mensagem</b><span>por Esc, no console</span></div>
+    <div class="dark"><small>Sem o <code>return</code></small><b>2 mensagens</b><span>o StrictMode montou duas vezes, e o primeiro ouvinte ficou</span></div>
+  </div>
+  <p class="lead" style="margin-top:30px">O que o efeito liga, a limpeza desliga.</p>
+</section>
+
+<!-- 56 -->
+<section class="slide">
+  <h2>As regras dos hooks</h2>
+  <pre class="code xs" data-src="s56" data-lang="tsx"></pre>
+  <div class="msgbox long" style="margin-top:20px">React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render.</div>
+  <p class="lead" style="margin-top:20px">Hooks sempre no começo do componente, nunca dentro de <code>if</code>, laço ou função. O Oxlint acusa em vermelho.</p>
+</section>
+
+<!-- 57 -->
+<section class="slide phase">
+  <p class="step">Etapa 6 do ciclo</p>
+  <h1>Aplicação</h1>
+  <p>Três perguntas, e o que vem amanhã.</p>
+</section>
+
+<!-- 58 -->
+<section class="slide">
+  <h2>Três perguntas, no chat</h2>
+  <ol class="steps">
+    <li><span>O que faz um campo ser controlado?</span></li>
+    <li><span>O formulário precisa mudar a lista do App. O que o App passa para ele?</span></li>
+    <li><span>O efeito ligou um ouvinte. O que a limpeza faz?</span></li>
+  </ol>
+</section>
+
+<!-- 59 -->
+<section class="slide">
+  <h2>Amanhã: o App.tsx tem 173 linhas</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Funciona</h3><p>Filtros, busca, tabela, formulário, retorno, efeitos. Tudo certo.</p></div>
+    <div class="col rule-top"><h3>Mas onde está cada coisa?</h3><p>Uma pessoa nova no projeto acharia a regra da prioridade? Amanhã: organização e entrega da etapa 2.</p></div>
+  </div>
+</section>
+
+<!-- 60 -->
+<section class="slide">
+  <h2>Para depois, se quiser</h2>
+  <div class="two">
+    <div class="col rule-top" style="border-color:var(--cobalt)"><h3>Desafio opcional</h3><p>Botão “Limpar formulário” e a pergunta “Onde é o vazamento?”. Está em <code>desafio/</code>.</p></div>
+    <div class="col rule-top"><h3>Amanhã não depende dele</h3><p>A aula de amanhã começa do ponto <code>4-efeitos</code>.</p></div>
+  </div>
+  <p class="lead" style="margin-top:44px">Dúvidas: grupo do WhatsApp, à tarde.</p>
+</section>
+
+<!-- 61 -->
+<section class="slide cover">
+  <div class="bar"></div>
+  <p class="kicker">Encontro 8 de 27</p>
+  <h1>Até amanhã</h1>
+  <p class="date">Sexta, 13 de novembro: organização do projeto e entrega da etapa 2</p>
+</section>
+
+</div></div>
+
+<div class="ctrl">
+  <button type="button" id="prev" aria-label="Slide anterior">Anterior</button>
+  <button type="button" id="next" aria-label="Próximo slide">Próximo</button>
+  <button type="button" id="full">Tela cheia</button>
+</div>
+
+<script type="text/plain" id="s2">const visiveis = solicitacoes.filter(...);
+
+{visiveis.map((solicitacao) => (
+  <LinhaSolicitacao key={solicitacao.numero} solicitacao={solicitacao} />
+))}</script>
+<script type="text/plain" id="s6">function limparFiltros() {
+  setFiltro("todas");
+  setBusca("");
+}
+
+// logo acima do parágrafo total:
+<div className="acoes">
+  <button type="button" className="botao-secundario" onClick={limparFiltros}>
+    Limpar filtros
+  </button>
+</div></script>
+<script type="text/plain" id="s10"><h:inputText value="#{atendimentoBean.bairro}" /></script>
+<script type="text/plain" id="s13"><input
+  type="search"
+  id="busca-bairro"
+  value={busca}
+  onChange={(evento) => setBusca(evento.target.value)}
+/></script>
+<script type="text/plain" id="s15"><select
+  id="filtro-prioridade"
+  value={filtro}
+  onChange={(evento) => setFiltro(evento.target.value as FiltroPrioridade)}
+></script>
+<script type="text/plain" id="s23">import { useState } from "react";
+import type { Prioridade, TipoServico } from "../tipos";
+
+export function FormularioSolicitacao() {
+  const [tipo, setTipo] = useState<TipoServico | "">("");
+  const [ruaToda, setRuaToda] = useState(false);
+  const [municipio, setMunicipio] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [prioridade, setPrioridade] = useState<Prioridade | "">("");
+  const [relato, setRelato] = useState("");
+
+  return (
+    <form>
+      <div className="campos">{/* os campos vêm a seguir */}</div>
+    </form>
+  );
+}</script>
+<script type="text/plain" id="s24"><div className="campo">
+  <label htmlFor="nova-tipo">Tipo de serviço</label>
+  <select
+    id="nova-tipo"
+    value={tipo}
+    onChange={(evento) => setTipo(evento.target.value as TipoServico | "")}
+  >
+    <option value="">Selecione o tipo</option>
+    <option value="vazamento">Vazamento</option>
+    <option value="falta-agua">Falta d'água</option>
+    <option value="religacao">Religação</option>
+  </select>
+</div></script>
+<script type="text/plain" id="s25"><div className="campo">
+  <label htmlFor="nova-municipio">Município</label>
+  <select
+    id="nova-municipio"
+    value={municipio}
+    onChange={(evento) => setMunicipio(evento.target.value)}
+  >
+    <option value="">Selecione o município</option>
+    {municipios.map((nome) => (
+      <option key={nome} value={nome}>{nome}</option>
+    ))}
+  </select>
+</div></script>
+<script type="text/plain" id="s25b">const municipios = ["Salvador", "Feira de Santana", "Vitória da Conquista",
+  "Camaçari", "Juazeiro", "Ilhéus", "Lauro de Freitas"];</script>
+<script type="text/plain" id="s26"><div className="campo">
+  <label htmlFor="nova-bairro">Bairro</label>
+  <input
+    type="text"
+    id="nova-bairro"
+    value={bairro}
+    onChange={(evento) => setBairro(evento.target.value)}
+  />
+</div></script>
+<script type="text/plain" id="s31"><fieldset className="campo">
+  <legend>Prioridade</legend>
+  <div className="opcoes">
+    <div className="opcao">
+      <input
+        type="radio"
+        id="nova-baixa"
+        name="nova-prioridade"
+        checked={prioridade === "baixa"}
+        onChange={() => setPrioridade("baixa")}
+      />
+      <label htmlFor="nova-baixa">Baixa</label>
+    </div>
+    {/* Média e Alta: iguais, trocando "baixa" por "media" e "alta" */}
+  </div>
+</fieldset></script>
+<script type="text/plain" id="s32"><div className="campo campo-inteiro">
+  <label htmlFor="nova-relato">O que o cliente relatou</label>
+  <textarea
+    id="nova-relato"
+    rows={4}
+    maxLength={LIMITE_RELATO}
+    value={relato}
+    onChange={(evento) => setRelato(evento.target.value)}
+  />
+  <p className={relato.length >= 450 ? "contador contador-alerta" : "contador"}>
+    {relato.length} de {LIMITE_RELATO} caracteres
+  </p>
+</div></script>
+<script type="text/plain" id="s35">{tipo === "falta-agua" && (
+  <div className="opcao campo-inteiro">
+    <input
+      type="checkbox"
+      id="nova-rua-toda"
+      checked={ruaToda}
+      onChange={(evento) => mudarRuaToda(evento.target.checked)}
+    />
+    <label htmlFor="nova-rua-toda">Falta d'água na rua toda, não só no imóvel</label>
+  </div>
+)}</script>
+<script type="text/plain" id="s36">function mudarTipo(novoTipo: TipoServico | "") {
+  setTipo(novoTipo);
+  if (novoTipo !== "falta-agua") setRuaToda(false);
+}
+
+// Regra de exemplo do curso: falta d'água na rua toda é prioridade alta
+function mudarRuaToda(marcado: boolean) {
+  setRuaToda(marcado);
+  if (marcado) setPrioridade("alta");
+}
+</script>
+<script type="text/plain" id="s37">// nos radios Baixa e Média:
+disabled={ruaToda}
+
+// no select do tipo, setTipo vira mudarTipo:
+onChange={(evento) => mudarTipo(evento.target.value as TipoServico | "")}</script>
+<script type="text/plain" id="s38">// O botão só fica ativo com os campos obrigatórios preenchidos
+const podeRegistrar =
+  tipo !== "" && municipio !== "" && bairro.trim() !== "" && prioridade !== "";
+
+<button type="submit" disabled={!podeRegistrar}>Registrar solicitação</button></script>
+<script type="text/plain" id="s39">import type { FormEvent } from "react";
+
+function registrar(evento: FormEvent<HTMLFormElement>) {
+  evento.preventDefault();
+  console.log("Registrar:", { tipo, municipio, bairro, prioridade, relato });
+}
+
+<form onSubmit={registrar}></script>
+<script type="text/plain" id="s44">import type { Solicitacao } from "./tipos";
+
+const [lista, setLista] = useState<Solicitacao[]>(solicitacoes);
+const [mensagem, setMensagem] = useState("");
+
+// no filter e na legenda, lista no lugar de solicitacoes:
+const visiveis = lista.filter(...);
+Exibindo {visiveis.length} de {lista.length} solicitações.</script>
+<script type="text/plain" id="s45">// A solicitação nova ganha número e data e entra no topo da lista
+function registrar(nova: NovaSolicitacao) {
+  const maior = Math.max(...lista.map((solicitacao) => Number(solicitacao.numero.slice(3))));
+  const numero = `26-${String(maior + 1).padStart(5, "0")}`;
+  setLista([{ ...nova, numero, abertura: hojeISO() }, ...lista]);
+  setMensagem(`Solicitação ${numero} registrada.`);
+}
+</script>
+<script type="text/plain" id="s45t">// tipos.ts
+export type NovaSolicitacao = Omit<Solicitacao, "numero" | "abertura">;</script>
+<script type="text/plain" id="s46">type FormularioSolicitacaoProps = {
+  aoRegistrar: (nova: NovaSolicitacao) => void;
+};
+
+export function FormularioSolicitacao({ aoRegistrar }: FormularioSolicitacaoProps) {</script>
+<script type="text/plain" id="s47">function registrar(evento: FormEvent<HTMLFormElement>) {
+  evento.preventDefault();
+  if (tipo === "" || prioridade === "") return;
+  aoRegistrar({ tipo, municipio, bairro: bairro.trim(), prioridade, relato });
+
+  setTipo("");
+  setRuaToda(false);
+  setMunicipio("");
+  setBairro("");
+  setPrioridade("");
+  setRelato("");
+}
+</script>
+<script type="text/plain" id="s47b"><FormularioSolicitacao aoRegistrar={registrar} />
+<p className="mensagem" role="status">{mensagem}</p></script>
+<script type="text/plain" id="s48">setLista([{ ...nova, numero, abertura: hojeISO() }, ...lista]);</script>
+<script type="text/plain" id="s52">import { useEffect, useState } from "react";
+
+// Quantas urgentes há na lista inteira, para o título da aba
+const totalUrgentes = lista.filter((solicitacao) => solicitacao.prioridade === "alta").length;
+
+// Efeito 1: mantém o título da aba do navegador em dia
+useEffect(() => {
+  document.title = `(${totalUrgentes}) Central de Solicitações`;
+}, [totalUrgentes]);</script>
+<script type="text/plain" id="s54">// Efeito 2: a tecla Esc limpa os filtros, de qualquer lugar da página
+useEffect(() => {
+  function aoTeclar(evento: KeyboardEvent) {
+    if (evento.key === "Escape") {
+      console.log("Esc: limpando os filtros");
+      setFiltro("todas");
+      setBusca("");
+    }
+  }
+  window.addEventListener("keydown", aoTeclar);
+  // A limpeza: tira o ouvinte quando o componente sai da tela
+  return () => window.removeEventListener("keydown", aoTeclar);
+}, []);</script>
+<script type="text/plain" id="s56">export function TentativasDeContato({ numero }: TentativasDeContatoProps) {
+  if (numero === "") return null;
+  const [tentativas, setTentativas] = useState(0);</script>
+<script type="text/plain" id="s33a">function atualizarContador() {
+  const quantidade = descricao.value.length;
+  contador.textContent = `${quantidade} de 500 caracteres`;
+  contador.classList.toggle("contador-alerta", quantidade >= 450);
+}
+
+descricao.addEventListener("input", atualizarContador);</script>
+<script type="text/plain" id="s33b"><p className={relato.length >= 450 ? "contador contador-alerta" : "contador"}>
+  {relato.length} de {LIMITE_RELATO} caracteres
+</p></script>
+<script type="text/plain" id="s16"><input
+  type="search"
+  id="busca-bairro"
+  value={busca}
+  onChange={(evento) => setBusca(evento.target.value)}
+/></script>
+
+<script>
+function hltsx(src){
+  const esc=(t)=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const re=/(\/\/[^\n]*|\{\/\*[\s\S]*?\*\/\})|("[^"\n]*"|`[^`]*`|'[^'\n]*')|(&lt;\/?)([A-Za-z][\w.]*)|\b(import|export|from|function|return|const|let|type|default)\b|([a-zA-Z][\w-]*)(?==)|(=&gt;)/g;
+  return esc(src).replace(re,(m,c,s,lt,tag,k,at,ar)=>{
+    if(c) return '<span class="c">'+c+'</span>';
+    if(s) return '<span class="s">'+s+'</span>';
+    if(tag) return lt+'<span class="tg">'+tag+'</span>';
+    if(k) return '<span class="k">'+k+'</span>';
+    if(at) return '<span class="at">'+at+'</span>';
+    return '<span class="k">'+ar+'</span>';
+  });
+}
+
+function hl(src){
+  let s=src.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  s=s.replace(/ ([a-zA-Z-]+)(=)("[^"]*")/g,' <span class="a">$1</span>$2<span class="s">$3</span>');
+  s=s.replace(/(&lt;\/?)([a-zA-Z][a-zA-Z0-9]*)/g,'$1<span class="t">$2</span>');
+  s=s.replace(/(&lt;!--[\s\S]*?--&gt;)/g,'<span class="c">$1</span>');
+  return s;
+}
+document.querySelectorAll("pre.code[data-src]").forEach(p=>{
+  const src=document.getElementById(p.dataset.src);
+  if(src){const t=src.textContent.replace(/^\n/,"").split("<\\/script>").join("<"+"/script>");p.innerHTML=p.dataset.lang==="tsx"?hltsx(t):hl(t);}
+});
+
+const slides=[...document.querySelectorAll(".slide")];
+const total=slides.length;
+slides.forEach((s,i)=>{
+  const n=document.createElement("div");n.className="num";
+  n.innerHTML="<b>"+(i+1)+"</b> / "+total;s.appendChild(n);
+  if(!s.classList.contains("cover")){
+    const c=document.createElement("div");c.className="course";c.textContent="Encontro 8, Hooks e formulários";s.appendChild(c);
+  }
+});
+let cur=0;
+function show(i){
+  cur=Math.max(0,Math.min(total-1,i));
+  slides.forEach((s,k)=>s.classList.toggle("on",k===cur));
+  document.getElementById("progress").style.width=((cur+1)/total*100)+"%";
+  if(location.hash!=="#"+(cur+1)) history.replaceState(null,"","#"+(cur+1));
+}
+function fromHash(){const n=parseInt(location.hash.slice(1),10);show(isNaN(n)?0:n-1);}
+window.addEventListener("hashchange",fromHash);
+document.addEventListener("keydown",e=>{
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){e.preventDefault();show(cur+1);}
+  else if(["ArrowLeft","PageUp","Backspace"].includes(e.key)){e.preventDefault();show(cur-1);}
+  else if(e.key==="Home")show(0);
+  else if(e.key==="End")show(total-1);
+  else if(e.key==="f"||e.key==="F")toggleFull();
+});
+document.getElementById("next").onclick=()=>show(cur+1);
+document.getElementById("prev").onclick=()=>show(cur-1);
+function toggleFull(){
+  try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }catch(e){}
+}
+document.getElementById("full").onclick=toggleFull;
+function fit(){
+  const s=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  document.getElementById("stage").style.transform="scale("+s+")";
+}
+window.addEventListener("resize",fit);fit();fromHash();
+</script>
+</body>
+</html>
