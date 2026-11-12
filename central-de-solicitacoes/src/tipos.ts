@@ -8,6 +8,9 @@ export type Solicitacao = {
   tipo: TipoServico;
   municipio: string;
   bairro: string;
+  relato: string;
   prioridade: Prioridade;
   abertura: string;
 };
+
+export type NovaSolicitacao = Omit<Solicitacao, "numero" | "abertura">;

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist da etapa 2</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Checklist da entrega da etapa 2</h1>
+  <p class="dica">Use no seu projeto central-de-solicitacoes. Marque cada item depois de conferir. As marcações não são salvas: é só um apoio para a conferência.</p>
+  <p id="placar" role="status">0 de 6 itens conferidos.</p>
+
+  <div class="cartao">
+    <label class="item"><input type="checkbox"><div><b>1. npm run lint sem avisos e npm run build sem erros</b>
+      <span>Num segundo terminal do VS Code (botão +), rode <code>npm run lint</code> e depois <code>npm run build</code>. O lint sem avisos não mostra nada; o build termina com “built in”. Se der erro, a primeira linha mostra o arquivo, a linha e a coluna.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>2. Pastas por funcionalidade, e imports pelas portas de entrada</b>
+      <span>A <code>src</code> tem <code>app</code>, <code>features</code> e <code>shared</code>. O <code>App.tsx</code> importa de <code>features/solicitacoes</code> só pelo <code>index.ts</code>. Nada em <code>shared</code> importa de <code>features</code>. As dependências só descem: app → features → shared.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>3. Regras de negócio em regras.ts, nenhuma repetida</b>
+      <span>Procure no projeto (<code>Ctrl + Shift + F</code>) por <code>solicitacao.prioridade === "alta"</code>: aparece uma vez só, no <code>ehUrgente</code>. O número novo é calculado só no <code>proximoNumero</code>. As funções de <code>regras.ts</code> não usam React.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>4. A página guarda o estado; os componentes só apresentam</b>
+      <span>Os <code>useState</code> das solicitações estão na <code>PaginaSolicitacoes</code>. A <code>TabelaSolicitacoes</code> e os <code>FiltrosSolicitacoes</code> recebem tudo por Props e avisam por funções que começam com <code>ao</code>.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>5. Campos controlados, com label ligado ao campo</b>
+      <span>Cada campo tem <code>value</code> (ou <code>checked</code>) e <code>onChange</code>. Cada <code>label</code> tem um <code>htmlFor</code> igual ao <code>id</code> do campo: clicar no texto do label coloca o cursor no campo.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>6. Lista vazia com mensagem; key com o número</b>
+      <span>Busque um bairro que não existe: aparece a mensagem de lista vazia, e não uma tabela sem linhas. No <code>map</code> das linhas, a <code>key</code> é <code>solicitacao.numero</code>, e não o índice.</span></div></label>
+  </div>
+
+  <h2>Para a revisão ao vivo</h2>
+  <div class="cartao">
+    <p><b>Quem mostra:</b> compartilha a tela, mostra a árvore de pastas e um arquivo de que gostou. Cinco minutos.</p>
+    <p><b>Quem assiste:</b> escolhe um item deste checklist e escreve no chat um ponto forte e uma sugestão.</p>
+    <p class="dica">Comenta-se o código, nunca a pessoa: “essa regra está repetida”, e não “você repetiu a regra”.</p>
+  </div>
+</main>
+<script>
+  const caixas = [...document.querySelectorAll('input[type="checkbox"]')];
+  const placar = document.getElementById("placar");
+  caixas.forEach((c) => c.addEventListener("change", () => {
+    const feitos = caixas.filter((x) => x.checked).length;
+    placar.textContent = feitos + " de " + caixas.length + " itens conferidos." + (feitos === caixas.length ? " Pronto para a revisão." : "");
+  }));
+</script>
+</body>
+</html>

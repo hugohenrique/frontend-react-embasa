@@ -1,0 +1,20 @@
+PONTOS DE CONTROLE DO ENCONTRO 9
+
+Cada pasta guarda a pasta src do projeto como ela fica em um momento da aula.
+
+  0-inicio                     ponto de partida: o final do encontro 8 (App.tsx com 173 linhas)
+  1-regras-de-negocio          depois do regras.ts: filtro, urgente, próximo número e completar
+  2-pastas-por-funcionalidade  depois de criar app, features e shared e mover os arquivos
+  3-pagina-e-tabela            depois da PaginaSolicitacoes, da TabelaSolicitacoes e do App de 19 linhas
+  4-filtros-e-entrega          depois do componente FiltrosSolicitacoes (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+Do ponto 2 em diante, o main.tsx importa o App de ./app/App.tsx.
+Se a tela ficar branca depois de colar, confira esse import.

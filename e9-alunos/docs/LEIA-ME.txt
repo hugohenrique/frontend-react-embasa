@@ -1,0 +1,8 @@
+REGISTRO DE DECISÕES (slide 42)
+
+O arquivo decisoes/0001-estrutura-por-funcionalidade.md é o registro da
+decisão que tomamos hoje: organizar o projeto por funcionalidade.
+
+Para usar no seu projeto: copie a pasta docs inteira para dentro de
+central-de-solicitacoes, ao lado da pasta src (e não dentro dela).
+O VS Code mostra o arquivo formatado com Ctrl + Shift + V.

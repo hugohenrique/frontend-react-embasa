@@ -1,0 +1,164 @@
+import { useState } from "react";
+import type { FormEvent } from "react";
+import type { NovaSolicitacao, Prioridade, TipoServico } from "../tipos";
+
+const municipios = [
+  "Salvador",
+  "Feira de Santana",
+  "Vitória da Conquista",
+  "Camaçari",
+  "Juazeiro",
+  "Ilhéus",
+  "Lauro de Freitas"
+];
+
+const LIMITE_RELATO = 500;
+
+type FormularioSolicitacaoProps = {
+  aoRegistrar: (nova: NovaSolicitacao) => void;
+};
+
+export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicitacaoProps) {
+  const [tipo, setTipo] = useState<TipoServico | "">("");
+  const [prioridade, setPrioridade] = useState<Prioridade | "">("");
+  const [ruaToda, setRuaToda] = useState(false);
+  const [municipio, setMunicipio] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [relato, setRelato] = useState("");
+
+  const podeRegistrar =
+    tipo !== "" && municipio !== "" && bairro.trim() !== "" && prioridade !== "";
+
+  function mudarTipo(novoTipo: TipoServico | "") {
+    setTipo(novoTipo);
+    if (novoTipo !== "falta-agua") {
+      setRuaToda(false);
+    }
+  }
+
+  // Regra de exemplo do curso: falta d'água na rua toda é prioridade alta
+  function mudarRuaToda(marcado: boolean) {
+    setRuaToda(marcado);
+    if (marcado) {
+      setPrioridade("alta");
+    }
+  }
+
+  function registrar(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+
+    if (tipo === "" || prioridade === "") {
+      return;
+    }
+
+    aoRegistrar({ tipo, municipio, bairro: bairro.trim(), prioridade, relato });
+
+    setTipo("");
+    setRuaToda(false);
+    setMunicipio("");
+    setBairro("");
+    setPrioridade("");
+    setRelato("");
+  }
+
+  return (
+    <form onSubmit={registrar}>
+      <div className="campos">
+        <label htmlFor="nova-tipo">Tipo de serviço</label>
+        <select
+          id="nova-tipo"
+          value={tipo}
+          onChange={(evento) => mudarTipo(evento.target.value as TipoServico | "")}>
+          <option value="">Selecione o tipo</option>
+          <option value="vazamento">Vazamento</option>
+          <option value="falta-agua">Falta d'água</option>
+          <option value="religacao">Religação</option>
+        </select>
+      </div>
+      <div className="campo">
+        <label htmlFor="nova-municipio">Município</label>
+        <select
+          id="nova-municipio"
+          value={municipio}
+          onChange={(evento) => setMunicipio(evento.target.value)}
+        >
+          <option value="">Selecione o município</option>
+          {municipios.map((nome) => (
+            <option key={nome} value={nome}>{nome}</option>
+          ))}
+        </select>
+      </div>
+      {tipo === "falta-agua" && (
+        <div className="campo campo-inteiro">
+          <input
+            type="checkbox"
+            id="nova-rua-toda"
+            checked={ruaToda}
+            onChange={(evento) => setRuaToda(evento.target.checked)}
+          />
+          <label htmlFor="nova-rua-toda">Falta d'água na rua toda, não só no imóvel</label>
+        </div>
+      )}
+      <div className="campo">
+        <label htmlFor="nova-bairro">Bairro</label>
+        <input
+          type="text"
+          id="nova-bairro"
+          value={bairro}
+          onChange={(evento) => setBairro(evento.target.value)}
+        />
+      </div>
+      <fieldset className="campo">
+        <legend>Prioridade</legend>
+        <div className="opcoes">
+          <div className="opcao">
+            <input
+              type="radio"
+              id="nova-baixa"
+              name="nova-prioridade-baixa"
+              checked={prioridade === "baixa"}
+              disabled={ruaToda}
+              onChange={() => setPrioridade("baixa")}
+            />
+            <label htmlFor="nova-baixa">Baixa</label>
+          </div>
+          <div className="opcao">
+            <input
+              type="radio"
+              id="nova-media"
+              name="nova-prioridade-media"
+              checked={prioridade === "media"}
+              disabled={ruaToda}
+              onChange={() => setPrioridade("media")}
+            />
+            <label htmlFor="nova-media">Média</label>
+          </div>
+          <div className="opcao">
+            <input
+              type="radio"
+              id="nova-alta"
+              name="nova-prioridade-alta"
+              checked={prioridade === "alta"}
+              onChange={() => setPrioridade("alta")}
+            />
+            <label htmlFor="nova-alta">Alta</label>
+          </div>
+        </div>
+      </fieldset>
+      <div className="campo campo-inteiro">
+        <label htmlFor="nova-relato">O que o cliente relatou</label>
+        <textarea
+          id="nova-relato"
+          rows={4}
+          maxLength={LIMITE_RELATO}
+          value={relato}
+          onChange={(evento) => setRelato(evento.target.value)}
+        />
+        <p className={relato.length >= 450 ? "contador contador-alerta" : "contador"}>
+          {relato.length} de {LIMITE_RELATO} caracteres
+        </p>
+      </div>
+      <button type="submit" disabled={!podeRegistrar}>Registrar solicitação</button>
+    </form>
+  );
+}

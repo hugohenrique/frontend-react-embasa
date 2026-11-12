@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exercício: projetar uma estrutura</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Exercício: projete a estrutura de um módulo novo</h1>
+  <p class="dica">Exercício individual da aula (slide 39), 8 minutos. Módulo fictício, criado para o curso.</p>
+
+  <div class="cartao">
+    <h2>O módulo: ordens de serviço de campo</h2>
+    <p>A equipe de campo recebe, todo dia, as ordens de serviço que vai executar. O módulo precisa de:</p>
+    <ul>
+      <li>a lista das ordens do dia da equipe, com filtro por status;</li>
+      <li>o detalhe de uma ordem, com o endereço e o relato;</li>
+      <li>registrar a conclusão ou um impedimento, com foto;</li>
+      <li>um resumo de produtividade da equipe, para o supervisor;</li>
+      <li>usar o cabeçalho, o cartão e as datas que já existem no projeto.</li>
+    </ul>
+    <p class="dica">Se você acha que falta alguma necessidade, inclua na sua proposta e diga qual.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>A sua proposta, em quatro itens</h2>
+    <ol>
+      <li>As pastas e os arquivos principais, como na árvore da Central.</li>
+      <li>Quais são as páginas, e quais os componentes de apresentação.</li>
+      <li>Quais regras de negócio, com o nome da função.</li>
+      <li>Uma decisão que você tomou, e por quê.</li>
+    </ol>
+    <p>Escreva num arquivo de texto ou direto no chat do Teams. No fim, cole no chat pelo menos o item 4.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Para lembrar: a árvore da Central</h2>
+<pre>src/
+  app/        App.tsx
+  features/
+    solicitacoes/
+      index.ts  PaginaSolicitacoes.tsx  regras.ts  tipos.ts  dados.ts  nomes.ts
+      components/
+    atendimento/
+      index.ts  components/
+  shared/
+    ui/  Cabecalho  Cartao  Rodape
+    datas.ts</pre>
+    <p class="dica">As dependências só descem: app → features → shared. Outra feature, só pelo index.ts.</p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 9</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 9</h1>
+  <p class="dica">Opcional, para o fim de semana. Comece do ponto <code>4-filtros-e-entrega</code>. A aula de segunda não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>1. A regra mudou</h2>
+    <p>É a rodada 3 do jogo de hoje: a supervisão decidiu que <b>urgente é prioridade alta ou falta d'água</b>. (Regra fictícia do curso.)</p>
+    <p>Faça a mudança e confira que o título da aba e o cartão “Retorno ao cliente” mudam juntos.</p>
+    <p class="dica">Dica: se a organização de hoje deu certo, você muda uma função só. Ajuste também os textos do cartão de retorno, que hoje falam em “prioridade alta”.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>2. O começo do módulo de ordens de serviço</h2>
+    <p>Use a proposta que você fez em aula e crie a funcionalidade <code>features/ordens-de-servico</code>, só com a lista das ordens do dia:</p>
+    <ul>
+      <li><code>tipos.ts</code>: o tipo <code>OrdemDeServico</code> com número, número da solicitação de origem, endereço, bairro, equipe, status e data prevista. O status é um de quatro: aberta, em execução, concluída ou impedida.</li>
+      <li><code>dados.ts</code>: cinco ordens fictícias.</li>
+      <li><code>regras.ts</code>: <code>filtrarPorStatus</code> e <code>podeConcluir</code> (só uma ordem em execução pode ser concluída).</li>
+      <li>Um componente de apresentação com a tabela das ordens, com mensagem de lista vazia.</li>
+      <li>A página <code>PaginaOrdensDoDia</code>, com um select controlado de status, e um botão <b>Concluir</b> que só aparece nas ordens que podem ser concluídas.</li>
+      <li>O <code>index.ts</code>, e o <code>App.tsx</code> mostrando a página abaixo das solicitações.</li>
+    </ul>
+    <p class="dica">Regras do jogo: siga as convenções do slide 41 e as regras de dependência. A funcionalidade de ordens não importa nada de dentro de <code>features/solicitacoes</code>. Para a data, use o que já existe em <code>shared/datas.ts</code>. Para concluir, a lista muda sem mutação: uma lista nova, com a ordem trocada.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>3. Registre uma decisão</h2>
+    <p>Escreva o <code>docs/decisoes/0002-....md</code> com uma decisão que você tomou no item 2, no formato de hoje: contexto, decisão e consequências, boas e ruins.</p>
+    <p class="dica">Uma boa candidata: a ordem guarda a solicitação inteira, ou só o número dela? O que muda em cada caso?</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>, e confira o seu projeto com o <code>entrega/checklist-etapa-2.html</code>.</p>
+  </div>
+</main>
+</body>
+</html>
