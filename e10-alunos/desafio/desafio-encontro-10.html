@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 10</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 10</h1>
+  <p class="dica">Opcional. Comece do ponto <code>4-tentar-de-novo</code>, com a API do curso rodando. A aula de amanhã não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>1. Consultar uma solicitação pelo número</h2>
+    <p>O atendente recebe uma ligação: “quero saber da minha solicitação 26-08830”. Crie um cartão <b>Consultar solicitação</b>, com um campo para o número e um botão <b>Consultar</b>, que pergunta direto à API.</p>
+    <ul>
+      <li>No <code>api.ts</code>, uma função <code>buscarSolicitacao(numero)</code> que usa <code>GET /api/solicitacoes/{numero}</code> e devolve <code>Promise&lt;Solicitacao | null&gt;</code>.</li>
+      <li>Quando a API responder <b>404</b>, a função devolve <code>null</code>: não existir não é uma falha, é uma resposta. Os outros erros continuam lançando um <code>Error</code>.</li>
+      <li>Um componente novo, <code>ConsultaPorNumero</code>, mostra uma de quatro coisas: consultando, o resumo da solicitação, “não existe solicitação com esse número”, ou uma mensagem de falha.</li>
+    </ul>
+    <p class="dica">Dica: aqui a busca acontece por causa de um clique, então o lugar dela é a função do evento <code>onSubmit</code>, que pode ser <code>async</code>. Não precisa de <code>useEffect</code>. Teste com <code>26-08830</code>, com <code>26-99999</code> e com a API parada.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>2. Atualizar a lista</h2>
+    <p>Acima dos filtros, mostre <b>“Atualizado às 09:42.”</b>, com a hora em que a lista chegou da API, e um botão <b>Atualizar lista</b>, que busca de novo.</p>
+    <p class="dica">Dica: o botão pode reaproveitar o mesmo mecanismo do “Tentar de novo”. Para a hora: <code>new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })</code>.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Para pensar</h2>
+    <p>No item 1, o 404 vira <code>null</code>. Na lista da aula, qualquer resposta que não seja <code>ok</code> vira erro. Por que a mesma API recebe dois tratamentos diferentes?</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>. Confira na aba Rede do Chrome e no terminal da API cada pedido que a sua tela faz.</p>
+  </div>
+</main>
+</body>
+</html>

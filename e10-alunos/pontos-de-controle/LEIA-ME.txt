@@ -1,0 +1,22 @@
+PONTOS DE CONTROLE DO ENCONTRO 10
+
+Cada pasta guarda o projeto como ele fica num momento da aula.
+
+  0-inicio            ponto de partida: o final do encontro 9 (só a pasta src)
+  1-proxy             depois do proxy no vite.config.ts (slide 29)
+  2-api-e-efeito      depois do api.ts e do efeito que carrega a lista; o dados.ts foi apagado
+  3-estados-da-tela   depois de carregando, erro e pronto na tela (slides 39 e 40)
+  4-tentar-de-novo    depois do botão "Tentar de novo" (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Do ponto 1 em diante, copie também o vite.config.ts para a raiz do projeto
+   (ao lado do package.json), substituindo o que já existe.
+4. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+Do ponto 2 em diante, a lista vem da API: rode também a API do curso
+(veja api-do-curso/LEIA-ME.txt). Sem ela, a tela mostra o erro de carregamento.
