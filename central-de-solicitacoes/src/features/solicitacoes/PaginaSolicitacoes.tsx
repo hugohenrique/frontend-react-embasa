@@ -2,26 +2,28 @@ import { useEffect, useState } from "react";
 import { Cartao } from "../../shared/ui/Cartao";
 import { DicasAtendimento, TentativasDeContato } from "../../features/atendimento";
 import FormularioSolicitacao from './components/FormularioSolicitacao';
-import { solicitacoes } from "./dados";
-import { nomesDasPrioridades } from "./nome";
-import type { NovaSolicitacao, Prioridade, Solicitacao } from "./tipos";
+import type { NovaSolicitacao, Solicitacao } from "./tipos";
 import { completarSolicitacao, ehUrgente, filtrarSolicitacoes } from './regras';
 import { hojeISO } from "../../shared/datas";
 import type { Filtros } from "./regras";
 import TabelaSolicitacoes from "./components/TabelaSolicitacoes";
 import FiltrosSolicitacoes from "./components/FiltroSolicitacoes";
-
-type FiltroPrioridade = Prioridade | "todas";
+import { listarSolicitacoes } from "./api";
+import MensagemDeErro from "../../shared/ui/MensagemDeErro";
 
 const FILTROS_INICIAIS: Filtros = {
   prioridade: "todas",
   busca: ""
 };
 
+type Situacao = "carregando" | "erro" | "pronto";
+
 function PaginaSolicitacoes() {
-  const [lista, setLista] = useState<Solicitacao[]>(solicitacoes);
+  const [lista, setLista] = useState<Solicitacao[]>([]);
   const [mensagem, setMensagem] = useState("");
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
+  const [situacao, setSituacao] = useState<Situacao>("carregando");
+  const [tentativa, setTentativa] = useState(0);
 
   const visiveis = filtrarSolicitacoes(lista, filtros);
   const urgentes = visiveis.filter(ehUrgente);
@@ -32,6 +34,32 @@ function PaginaSolicitacoes() {
     setLista([completa, ...lista]);
     setMensagem(`Solicitação ${completa.numero} registrada.`);
   }
+
+  function tentarDeNovo() {
+    setSituacao("carregando");
+    setTentativa(tentativa + 1);
+  }
+
+  useEffect(() => {
+    let ignorar = false;
+    async function carrega() {
+      try {
+        const itens = await listarSolicitacoes();
+        if (ignorar) {
+          return;
+        }
+        setLista(itens);
+        setSituacao("pronto");
+      } catch (erro) {
+        console.log(erro)
+        setSituacao("erro");
+      }
+    }
+    carrega();
+    return () => {
+      ignorar = true;
+    }
+  }, [tentativa]);
 
   useEffect(() => {
     document.title = `(${totalUrgentes}) Central de Solicitações`;
@@ -63,8 +91,21 @@ function PaginaSolicitacoes() {
       </Cartao>
 
       <Cartao titulo="Solicitações recentes">
-        <FiltrosSolicitacoes filtros={filtros} aoMudar={() => {}} />
-        <TabelaSolicitacoes solicitacoes={visiveis} total={lista.length} />
+        {situacao === "carregando" && (
+          <p className="vazio" role="status">Carregando as solicitações…</p>
+        )}
+        {situacao === "erro" && (
+          <MensagemDeErro
+            texto="Não foi possível carregar as solicitações"
+            aoTentarDeNovo={tentarDeNovo}
+          />
+        )}
+        {situacao === "pronto" && (
+          <>
+            <FiltrosSolicitacoes filtros={filtros} aoMudar={setFiltros} />
+            <TabelaSolicitacoes solicitacoes={visiveis} total={lista.length} />
+          </>
+        )}
       </Cartao>
 
       <Cartao titulo="Retorno ao cliente">

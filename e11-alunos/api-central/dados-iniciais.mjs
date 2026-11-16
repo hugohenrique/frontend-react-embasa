@@ -1,0 +1,63 @@
+// Solicitações fictícias, criadas para o curso. Nenhum dado é real.
+// "eventos" são as mudanças de status depois do registro.
+
+const s = (numero, tipo, municipio, bairro, prioridade, abertura, hora, relato, eventos = []) => {
+  const status = eventos.length > 0 ? eventos[eventos.length - 1].para : "aberta";
+  return { numero, tipo, municipio, bairro, prioridade, abertura, hora, relato, status, eventos };
+};
+const ev = (para, em, observacao = "") => ({ para, em, observacao });
+
+export const SOLICITACOES_INICIAIS = [
+  s("26-08801", "vazamento", "Salvador", "Pituba", "media", "2026-11-03", "08:12",
+    "Água minando na calçada em frente ao número 120.",
+    [ev("em-atendimento", "2026-11-03T10:30"), ev("concluida", "2026-11-03T15:05", "Troca de 2 m de tubulação no ramal.")]),
+  s("26-08802", "falta-agua", "Feira de Santana", "Tomba", "alta", "2026-11-03", "09:40",
+    "Rua inteira sem água desde a madrugada.",
+    [ev("em-atendimento", "2026-11-03T10:02"), ev("concluida", "2026-11-03T13:48", "Registro reaberto após manobra na rede.")]),
+  s("26-08803", "religacao", "Salvador", "Cabula", "baixa", "2026-11-04", "11:20",
+    "Cliente informa pagamento da fatura em atraso.",
+    [ev("em-atendimento", "2026-11-05T08:30"), ev("concluida", "2026-11-05T09:15", "Ligação restabelecida no cavalete.")]),
+  s("26-08804", "vazamento", "Lauro de Freitas", "Ipitanga", "alta", "2026-11-04", "14:03",
+    "Vazamento forte no cruzamento, alagando a pista.",
+    [ev("em-atendimento", "2026-11-04T14:20"), ev("concluida", "2026-11-04T18:40", "Reparo em adutora de 150 mm.")]),
+  s("26-08805", "falta-agua", "Juazeiro", "Santo Antônio", "media", "2026-11-05", "07:55",
+    "Pouca pressão no período da manhã.",
+    [ev("cancelada", "2026-11-05T09:10", "Cliente informou que o registro interno estava fechado.")]),
+  s("26-08806", "vazamento", "Camaçari", "Gleba A", "baixa", "2026-11-05", "16:30",
+    "Pequeno vazamento no hidrômetro.",
+    [ev("em-atendimento", "2026-11-06T08:00"), ev("concluida", "2026-11-06T09:30", "Vedação do hidrômetro substituída.")]),
+  s("26-08807", "religacao", "Vitória da Conquista", "Candeias", "media", "2026-11-06", "10:12",
+    "Imóvel desocupado será alugado; pedido de religação.",
+    [ev("em-atendimento", "2026-11-09T08:40"), ev("concluida", "2026-11-09T10:05", "Religação feita; leitura inicial registrada.")]),
+  s("26-08808", "falta-agua", "Salvador", "Cajazeiras", "alta", "2026-11-09", "06:48",
+    "Bairro sem água; moradores relatam caixa d'água vazia.",
+    [ev("em-atendimento", "2026-11-09T07:05"), ev("concluida", "2026-11-09T12:30", "Bomba da elevatória religada após queda de energia.")]),
+  s("26-08809", "vazamento", "Ilhéus", "Pontal", "alta", "2026-11-10", "09:15",
+    "Água jorrando de tampa na calçada.",
+    [ev("em-atendimento", "2026-11-10T09:50")]),
+  s("26-08810", "religacao", "Juazeiro", "Centro", "baixa", "2026-11-10", "13:22",
+    "Religação após troca de titularidade."),
+  s("26-08811", "vazamento", "Salvador", "Itapuã", "media", "2026-11-11", "08:05",
+    "Infiltração na parede junto ao ramal.",
+    [ev("em-atendimento", "2026-11-11T13:00")]),
+  s("26-08812", "falta-agua", "Lauro de Freitas", "Vilas do Atlântico", "media", "2026-11-11", "15:40",
+    "Falta d'água só no imóvel; vizinhos têm água."),
+  s("26-08813", "religacao", "Feira de Santana", "Centro", "media", "2026-11-12", "09:00",
+    "Cliente aguarda religação desde ontem.",
+    [ev("cancelada", "2026-11-12T11:30", "Pedido duplicado da solicitação 26-08807.")]),
+  s("26-08814", "vazamento", "Vitória da Conquista", "Candeias", "baixa", "2026-11-12", "10:45",
+    "Gotejamento no registro da calçada."),
+  s("26-08815", "falta-agua", "Camaçari", "Gleba A", "alta", "2026-11-13", "07:20",
+    "Rua inteira sem água; há uma creche na rua.",
+    [ev("em-atendimento", "2026-11-13T07:35")]),
+  s("26-08816", "vazamento", "Salvador", "Liberdade", "alta", "2026-11-13", "11:10",
+    "Vazamento na rede principal; rua começando a ceder."),
+  s("26-08817", "religacao", "Salvador", "Barra", "baixa", "2026-11-13", "14:55",
+    "Religação programada para mudança."),
+  s("26-08818", "vazamento", "Juazeiro", "Santo Antônio", "media", "2026-11-16", "08:20",
+    "Água escorrendo pela sarjeta há dois dias."),
+  s("26-08819", "falta-agua", "Ilhéus", "Pontal", "media", "2026-11-16", "09:05",
+    "Sem água desde ontem à noite."),
+  s("26-08820", "vazamento", "Lauro de Freitas", "Ipitanga", "baixa", "2026-11-16", "10:30",
+    "Hidrômetro embaçado e com gotejamento."),
+];

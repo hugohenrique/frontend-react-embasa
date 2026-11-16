@@ -163,3 +163,9 @@ th { background: #F1F4F7; }
 /* ===== Encontro 7: lista vazia ===== */
 /* Aparece no lugar da tabela quando nenhuma solicitação combina com os filtros */
 .vazio { margin: 0; padding: 24px 16px; border: 2px dashed #B8C4CF; border-radius: 8px; text-align: center; color: #3F4C59; }
+
+.erro-carregamento {
+    padding: 10px;
+    background-color: red;
+    color: #fff;
+}

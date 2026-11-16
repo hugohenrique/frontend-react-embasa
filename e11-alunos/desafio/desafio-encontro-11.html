@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 11</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 11</h1>
+  <p class="dica">Opcional. Comece do ponto <code>6-observacao</code>, com a API da Central rodando. A aula de amanhã não depende do desafio.</p>
+
+  <div class="cartao">
+    <h2>Um resumo por status</h2>
+    <p>O supervisor quer bater o olho e saber como está o dia. Acima dos filtros, no cartão “Solicitações recentes”, mostre quatro cartões: quantas estão <b>abertas</b>, <b>em atendimento</b>, <b>concluídas</b> e <b>canceladas</b>.</p>
+    <ul>
+      <li>No <code>regras.ts</code>, uma função pura <code>contarPorStatus(lista)</code>, que devolve um <code>Record&lt;Status, number&gt;</code>.</li>
+      <li>Um componente de apresentação <code>ResumoStatus</code>, que recebe a contagem por Props.</li>
+      <li>O resumo precisa se atualizar sozinho quando o atendente inicia ou conclui uma solicitação no painel.</li>
+    </ul>
+    <p class="dica">Dica: se a contagem for calculada a partir da <code>lista</code> da página, ela se atualiza sem nenhum código a mais. Por quê? Para o visual, uma lista com <code>display: grid</code> e um cartão por item, com a borda de cima na cor do selo de cada status.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Para pensar</h2>
+    <p>A API tem um endereço <code>GET /api/resumo</code> que devolve a mesma contagem. Se ela já existe, por que não usar? Em que situação a contagem feita no navegador passaria a dar errado?</p>
+    <p class="dica">Pense no que acontece quando a lista tiver milhares de solicitações e a tela só trouxer uma página delas. É o assunto de amanhã.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>. Mude o status de uma solicitação e confira o resumo.</p>
+  </div>
+</main>
+</body>
+</html>

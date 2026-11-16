@@ -1,0 +1,22 @@
+PONTOS DE CONTROLE DO ENCONTRO 11
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio         ponto de partida: o final do encontro 10
+  1-status         o status como selo na tabela e a nova regra de urgente (slide 13)
+  2-registrar      registrar na API, com os erros de cada campo (slide 22)
+  3-aviso          o aviso flutuante que some sozinho (slide 26)
+  4-detalhe        lista e detalhe lado a lado, com histórico (slide 30)
+  5-mudar-status   os botões de status no painel (slide 34)
+  6-observacao     a observação para concluir ou cancelar (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+4. Se o npm run dev estiver rodando, o navegador atualiza sozinho.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+Do ponto 0 em diante, a API precisa estar rodando: veja api-central/LEIA-ME.txt.
