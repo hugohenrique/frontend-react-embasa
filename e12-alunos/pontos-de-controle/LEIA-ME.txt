@@ -1,0 +1,20 @@
+PONTOS DE CONTROLE DO ENCONTRO 12
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio           ponto de partida: onde paramos no encontro 11 (painel com histórico)
+  1-mudar-status     os botões de status no painel (slide 8)
+  2-observacao       a observação para concluir ou cancelar (slide 10)
+  3-lista-pela-api   a API filtra; a tela pede uma página (slide 23)
+  4-paginacao        Anterior, "Página 3 de 250" e Próxima (slide 25)
+  5-pagina-1         filtro novo volta para a página 1 (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+A API precisa estar rodando: veja api-central/LEIA-ME.txt.

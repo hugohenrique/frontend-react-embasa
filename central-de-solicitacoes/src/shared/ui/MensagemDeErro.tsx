@@ -1,9 +1,10 @@
 type MensagemDeErroProps = {
-  texto: string,
+  texto: string;
   aoTentarDeNovo: () => void;
 };
 
-export default function MensagemDeErro({ texto, aoTentarDeNovo }: MensagemDeErroProps) {
+// Uma falha que a pessoa pode resolver tentando de novo. Não sabe de onde veio o erro.
+export function MensagemDeErro({ texto, aoTentarDeNovo }: MensagemDeErroProps) {
   return (
     <div className="erro-carregamento" role="alert">
       <p>{texto}</p>
@@ -12,4 +13,4 @@ export default function MensagemDeErro({ texto, aoTentarDeNovo }: MensagemDeErro
       </button>
     </div>
   );
-};
+}

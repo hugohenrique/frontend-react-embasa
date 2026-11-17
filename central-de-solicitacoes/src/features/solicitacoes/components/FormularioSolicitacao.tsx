@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import type { NovaSolicitacao, Prioridade, TipoServico } from "./tipos";
+import type { NovaSolicitacao, Prioridade, TipoServico } from "../tipos";
+import type { ErrosCampos } from "../api";
 
 const municipios = [
   "Salvador",
@@ -14,10 +15,12 @@ const municipios = [
 const LIMITE_RELATO = 500;
 
 type FormularioSolicitacaoProps = {
-  aoRegistrar: (nova: NovaSolicitacao) => void;
+  aoRegistrar: (nova: NovaSolicitacao) => Promise<boolean>;
+  erros: ErrosCampos;
+  enviando: boolean;
 };
 
-export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicitacaoProps) {
+export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: FormularioSolicitacaoProps) {
   const [tipo, setTipo] = useState<TipoServico | "">("");
   const [ruaToda, setRuaToda] = useState(false);
   const [municipio, setMunicipio] = useState("");
@@ -40,11 +43,15 @@ export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicit
     if (marcado) setPrioridade("alta");
   }
 
-  function registrar(evento: FormEvent<HTMLFormElement>) {
+  async function registrar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     if (tipo === "" || prioridade === "") return;
 
-    aoRegistrar({ tipo, municipio, bairro: bairro.trim(), prioridade, relato });
+    const registrou = await aoRegistrar({ tipo, municipio, bairro: bairro.trim(), prioridade, relato });
+
+    if (!registrou) {
+      return;
+    }
 
     // Limpa o formulário para a próxima solicitação
     setTipo("");
@@ -57,6 +64,7 @@ export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicit
 
   return (
     <form onSubmit={registrar}>
+      {erros.geral && <p className="erro-carregamento" role="alert">{erros.geral}</p>}
       <div className="campos">
         <div className="campo">
           <label htmlFor="nova-tipo">Tipo de serviço</label>
@@ -71,7 +79,6 @@ export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicit
             <option value="religacao">Religação</option>
           </select>
         </div>
-
         <div className="campo">
           <label htmlFor="nova-municipio">Município</label>
           <select
@@ -106,6 +113,7 @@ export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicit
             value={bairro}
             onChange={(evento) => setBairro(evento.target.value)}
           />
+          {erros.bairro && <p className="erro-campo" id="nova-bairro-erro">{erros.bairro}</p>}
         </div>
 
         <fieldset className="campo">
@@ -154,14 +162,18 @@ export default function FormularioSolicitacao({ aoRegistrar }: FormularioSolicit
             maxLength={LIMITE_RELATO}
             value={relato}
             onChange={(evento) => setRelato(evento.target.value)}
+            aria-invalid={erros.relato ? true : undefined}
+            aria-describedby={erros.relato ? "nova-relato-erro" : ""}
           />
+          {erros.relato && <p className="erro-campo" id="nova-relato-erro">{erros.relato}</p>}
           <p className={relato.length >= 450 ? "contador contador-alerta" : "contador"}>
             {relato.length} de {LIMITE_RELATO} caracteres
           </p>
         </div>
       </div>
-
-      <button type="submit" disabled={!podeRegistrar}>Registrar solicitação</button>
+      <button
+        type="submit"
+        disabled={!podeRegistrar || enviando}>{enviando ? "Registrando..." : "Registrar solicitação"}</button>
     </form>
   );
 }

@@ -1,3 +1,5 @@
+// Funções de data, usadas em qualquer parte do sistema
+
 // Converte "2026-11-09" em "09/11/2026"
 export function formatarData(iso: string): string {
   const [ano, mes, dia] = iso.split("-");
@@ -10,4 +12,10 @@ export function hojeISO(): string {
   const mes = String(agora.getMonth() + 1).padStart(2, "0");
   const dia = String(agora.getDate()).padStart(2, "0");
   return `${agora.getFullYear()}-${mes}-${dia}`;
+}
+
+// 20206-11-17T09:42:50 -> 17/11/2026 as 09:42
+export function formatarDataHora(iso: string): string {
+  const [data, hora] = iso.split("T");
+  return `${formatarData(data)} às ${hora}`;
 }

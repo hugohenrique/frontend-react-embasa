@@ -1,80 +1,113 @@
 import { useEffect, useState } from "react";
+import { DicasAtendimento, TentativasDeContato } from "../atendimento";
 import { Cartao } from "../../shared/ui/Cartao";
-import { DicasAtendimento, TentativasDeContato } from "../../features/atendimento";
-import FormularioSolicitacao from './components/FormularioSolicitacao';
-import type { NovaSolicitacao, Solicitacao } from "./tipos";
-import { completarSolicitacao, ehUrgente, filtrarSolicitacoes } from './regras';
-import { hojeISO } from "../../shared/datas";
+import { MensagemDeErro } from "../../shared/ui/MensagemDeErro";
+import { FiltrosSolicitacoes } from "./components/FiltrosSolicitacoes";
+import { FormularioSolicitacao } from "./components/FormularioSolicitacao";
+import { TabelaSolicitacoes } from "./components/TabelaSolicitacoes";
+import { listarSolicitacoes, registrarSolicitacao, type ErrosCampos } from "./api";
+import { ehUrgente, filtrarSolicitacoes } from "./regras";
 import type { Filtros } from "./regras";
-import TabelaSolicitacoes from "./components/TabelaSolicitacoes";
-import FiltrosSolicitacoes from "./components/FiltroSolicitacoes";
-import { listarSolicitacoes } from "./api";
-import MensagemDeErro from "../../shared/ui/MensagemDeErro";
+import type { NovaSolicitacao, Solicitacao } from "./tipos";
+import { Aviso } from "../../shared/ui/Aviso";
+import { DetalheSolicitacao } from "./DetalheSolicitacao";
 
-const FILTROS_INICIAIS: Filtros = {
-  prioridade: "todas",
-  busca: ""
-};
+const FILTROS_INICIAIS: Filtros = { prioridade: "todas", busca: "" };
 
+// Em que pé está o carregamento da lista: um valor só, nunca dois ao mesmo tempo
 type Situacao = "carregando" | "erro" | "pronto";
 
-function PaginaSolicitacoes() {
+// A página: guarda o estado da tela e compõe os componentes.
+// As regras vêm de regras.ts; a apresentação, dos componentes.
+export function PaginaSolicitacoes() {
   const [lista, setLista] = useState<Solicitacao[]>([]);
-  const [mensagem, setMensagem] = useState("");
-  const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
   const [situacao, setSituacao] = useState<Situacao>("carregando");
   const [tentativa, setTentativa] = useState(0);
+  const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
+  const [errosFormulario, setErrosFormulario] = useState<ErrosCampos>({});
+  const [enviando, setEnviando] = useState(false);
+  const [aviso, setAviso] = useState("");
+  const [selecionada, setSelecionada] = useState<string | null>(null);
 
   const visiveis = filtrarSolicitacoes(lista, filtros);
   const urgentes = visiveis.filter(ehUrgente);
   const totalUrgentes = lista.filter(ehUrgente).length;
 
-  function registrar(nova: NovaSolicitacao) {
-    const completa = completarSolicitacao(nova, lista, hojeISO());
-    setLista([completa, ...lista]);
-    setMensagem(`Solicitação ${completa.numero} registrada.`);
+  async function registrar(nova: NovaSolicitacao): Promise<boolean> {
+    setEnviando(true);
+    setErrosFormulario({});
+
+    try {
+      const resultado = await registrarSolicitacao(nova);
+      if (resultado.tipo === "recusada") {
+        setErrosFormulario(resultado.campos);
+        return false;
+      }
+      const registrada = resultado.solicitacao;
+      setLista((atual) => [registrada, ...atual]);
+      setAviso(`Solicitação ${registrada.numero} registrada.`);
+      return true;
+    } catch (erro) {
+      console.log(erro);
+      setErrosFormulario({ geral: "Não foi possível registrar agora, tente novamente mais tarde." });
+      return false;
+    } finally {
+      setEnviando(false);
+    }
   }
 
+  // Cada clique muda a tentativa, e o efeito de carregar roda de novo
   function tentarDeNovo() {
     setSituacao("carregando");
     setTentativa(tentativa + 1);
   }
 
+  // Carrega a lista da API quando a página aparece, e a cada nova tentativa
   useEffect(() => {
     let ignorar = false;
-    async function carrega() {
+
+    async function carregar() {
       try {
         const itens = await listarSolicitacoes();
-        if (ignorar) {
-          return;
-        }
+        if (ignorar) return;
         setLista(itens);
         setSituacao("pronto");
       } catch (erro) {
-        console.log(erro)
+        if (ignorar) return;
+        console.error(erro);
         setSituacao("erro");
       }
     }
-    carrega();
+
+    carregar();
     return () => {
       ignorar = true;
-    }
+    };
   }, [tentativa]);
 
+  // Título da aba com o número de urgentes
   useEffect(() => {
     document.title = `(${totalUrgentes}) Central de Solicitações`;
   }, [totalUrgentes]);
 
+  // Esc limpa os filtros, de qualquer lugar da página
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
-      if (evento.key === "Escape") {
-        setFiltros(FILTROS_INICIAIS);
-      }
+      if (evento.key === "Escape") setFiltros(FILTROS_INICIAIS);
     }
     window.addEventListener("keydown", aoTeclar);
-    // A limpeza: tira o ouvinte quando o componente sai da tela
     return () => window.removeEventListener("keydown", aoTeclar);
   }, []);
+
+  useEffect(() => {
+    if (aviso === "") {
+      return;
+    }
+    const relogio = setTimeout(() => {
+      setAviso("");
+    }, 5000);
+    return () => clearTimeout(relogio);
+  }, [aviso]);
 
   return (
     <>
@@ -86,45 +119,60 @@ function PaginaSolicitacoes() {
       </Cartao>
 
       <Cartao titulo="Nova solicitação">
-        <FormularioSolicitacao aoRegistrar={registrar} />
-        <p className="mensagem" role="status">{mensagem}</p>
+        <div className="avisos" role="status">
+          {aviso && <Aviso texto={aviso} aoFechar={() => setAviso("")} />}
+        </div>
+        <FormularioSolicitacao
+          aoRegistrar={registrar}
+          erros={errosFormulario}
+          enviando={enviando}
+        />
       </Cartao>
 
-      <Cartao titulo="Solicitações recentes">
-        {situacao === "carregando" && (
-          <p className="vazio" role="status">Carregando as solicitações…</p>
-        )}
-        {situacao === "erro" && (
-          <MensagemDeErro
-            texto="Não foi possível carregar as solicitações"
-            aoTentarDeNovo={tentarDeNovo}
+      <div className={selecionada ? "mestre-detalhe com-detalhe" : "mestre-detalhe"}>
+        <Cartao titulo="Solicitações recentes">
+          {situacao === "carregando" && (
+            <p className="vazio" role="status">Carregando as solicitações…</p>
+          )}
+          {situacao === "erro" && (
+            <MensagemDeErro
+              texto="Não foi possível carregar as solicitações."
+              aoTentarDeNovo={tentarDeNovo}
+            />
+          )}
+          {situacao === "pronto" && (
+            <>
+              <FiltrosSolicitacoes filtros={filtros} aoMudar={setFiltros} />
+              <TabelaSolicitacoes
+                solicitacoes={visiveis}
+                total={lista.length}
+                selecionada={selecionada}
+                aoAbrir={setSelecionada}
+              />
+            </>
+          )}
+        </Cartao>
+        {selecionada && (
+          <DetalheSolicitacao
+            key={selecionada}
+            numero={selecionada}
+            aoFechar={() => setSelecionada(null)}
           />
         )}
-        {situacao === "pronto" && (
-          <>
-            <FiltrosSolicitacoes filtros={filtros} aoMudar={setFiltros} />
-            <TabelaSolicitacoes solicitacoes={visiveis} total={lista.length} />
-          </>
-        )}
-      </Cartao>
+      </div>
 
-      <Cartao titulo="Retorno ao cliente">
-        <p>Antes de enviar a equipe, o atendimento liga para confirmar o endereço. Aparecem aqui as de prioridade alta que estão na tabela.</p>
-        {urgentes.length === 0 ? (
-          <p className="vazio" role="status">
-            Nenhuma solicitação de prioridade alta com os filtros atuais.
-          </p>
-        ) : (
-          urgentes.map((solicitacao) => (
-            <TentativasDeContato
-              key={solicitacao.numero}
-              numero={solicitacao.numero}
-            />
-          ))
-        )}
-      </Cartao>
+      {situacao === "pronto" && (
+        <Cartao titulo="Retorno ao cliente">
+          <p>Antes de enviar a equipe, o atendimento liga para confirmar o endereço. Aparecem aqui as de prioridade alta que estão na tabela.</p>
+          {urgentes.length === 0 ? (
+            <p className="vazio" role="status">Nenhuma solicitação de prioridade alta com os filtros atuais.</p>
+          ) : (
+            urgentes.map((solicitacao) => (
+              <TentativasDeContato key={solicitacao.numero} numero={solicitacao.numero} />
+            ))
+          )}
+        </Cartao>
+      )}
     </>
   );
 }
-
-export default PaginaSolicitacoes;

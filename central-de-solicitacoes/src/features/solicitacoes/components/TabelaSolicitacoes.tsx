@@ -1,12 +1,15 @@
 import type { Solicitacao } from "../tipos";
-import LinhaSolicitacao from "./LinhaSolicitacao";
+import { LinhaSolicitacao } from "./LinhaSolicitacao";
 
 type TabelaSolicitacoesProps = {
-  solicitacoes: Solicitacao[],
-  total: number
+  solicitacoes: Solicitacao[];
+  total: number;
+  selecionada: string | null;
+  aoAbrir: (numero: string) => void;
 };
 
-export default function TabelaSolicitacoes({ solicitacoes, total }: TabelaSolicitacoesProps) {
+// Só apresenta: recebe a lista pronta e desenha. Não filtra, não guarda estado.
+export function TabelaSolicitacoes({ solicitacoes, total, selecionada, aoAbrir }: TabelaSolicitacoesProps) {
   if (solicitacoes.length === 0) {
     return (
       <p className="vazio" role="status">
@@ -27,11 +30,20 @@ export default function TabelaSolicitacoes({ solicitacoes, total }: TabelaSolici
             <th scope="col">Bairro</th>
             <th scope="col">Prioridade</th>
             <th scope="col">Abertura</th>
+            <th scope="col">Status</th>
+            <th scope="col">
+              <span className="sr-only">Ações</span>
+            </th>
           </tr>
         </thead>
         <tbody>
           {solicitacoes.map((solicitacao) => (
-            <LinhaSolicitacao key={solicitacao.numero} solicitacao={solicitacao} />
+            <LinhaSolicitacao
+              key={solicitacao.numero}
+              solicitacao={solicitacao}
+              selecionada={solicitacao.numero === selecionada}
+              aoAbrir={aoAbrir}
+            />
           ))}
         </tbody>
       </table>

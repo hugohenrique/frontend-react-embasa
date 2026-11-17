@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 12</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 12</h1>
+  <p class="dica">Opcional. Comece do ponto <code>5-pagina-1</code>, com a API rodando com <code>--volume 5000</code>.</p>
+
+  <div class="cartao">
+    <h2>Um resumo por status, vindo da API</h2>
+    <p>Acima dos filtros, mostre quatro cartões: quantas solicitações estão <b>abertas</b>, <b>em atendimento</b>, <b>concluídas</b> e <b>canceladas</b>, no banco inteiro.</p>
+    <ul>
+      <li>No <code>api.ts</code>, uma função <code>buscarResumo()</code> que usa <code>GET /api/resumo</code> e devolve <code>Promise&lt;Record&lt;Status, number&gt;&gt;</code>.</li>
+      <li>Um componente de apresentação <code>ResumoStatus</code>, que recebe a contagem por Props.</li>
+      <li>O resumo é buscado quando a página aparece e de novo depois de cada registro ou mudança de status.</li>
+      <li>Se o resumo falhar, a lista continua funcionando: o resumo só não aparece.</li>
+    </ul>
+    <p class="dica">Dica: um estado que é só um contador de mudanças, nas dependências do efeito do resumo, faz ele buscar de novo. É o mesmo truque da <code>tentativa</code>.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Para pensar</h2>
+    <p>Por que não dá mais para contar os status a partir da <code>lista</code> da página, como no desafio do encontro 11?</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>. Inicie o atendimento de uma solicitação e confira os números mudando.</p>
+  </div>
+</main>
+</body>
+</html>
