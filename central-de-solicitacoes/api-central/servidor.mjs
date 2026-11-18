@@ -10,6 +10,7 @@
 //   --falha 50      50% das respostas falham com 503 (padrão: 0)
 //   --porta 4000    usa outra porta (padrão: 3333)
 //   --reiniciar     apaga o banco e volta aos dados iniciais
+//   --volume 5000   completa o banco até 5000 solicitações fictícias (para ver uma central cheia)
 
 import { createServer } from "node:http";
 import { parseArgs } from "node:util";
@@ -20,7 +21,7 @@ if (maior < 22 || (maior === 22 && menor < 13)) {
   process.exit(1);
 }
 
-const { abrirBanco, agoraISO, ARQUIVO } = await import("./banco.mjs");
+const { abrirBanco, agoraISO, garantirVolume, ARQUIVO } = await import("./banco.mjs");
 const { validarNovaSolicitacao, validarMudancaDeStatus, STATUS, PRIORIDADES } = await import("./regras.mjs");
 
 const { values: opcoes } = parseArgs({
@@ -29,6 +30,7 @@ const { values: opcoes } = parseArgs({
     atraso: { type: "string", default: "300" },
     falha: { type: "string", default: "0" },
     reiniciar: { type: "boolean", default: false },
+    volume: { type: "string", default: "0" },
   },
 });
 const PORTA = Number(opcoes.porta);
@@ -36,6 +38,7 @@ const ATRASO = Number(opcoes.atraso);
 const FALHA = Number(opcoes.falha);
 
 const { banco, novo } = abrirBanco({ reiniciar: opcoes.reiniciar });
+const gerados = garantirVolume(banco, Number(opcoes.volume));
 
 // ---------- Consultas ----------
 const sql = {
@@ -215,5 +218,8 @@ servidor.on("error", (erro) => {
 servidor.listen(PORTA, () => {
   console.log(`API da Central rodando em http://localhost:${PORTA}/api/solicitacoes`);
   console.log(`Banco: ${ARQUIVO}${novo ? " (criado agora, com os dados iniciais)" : ""}`);
+  if (gerados > 0) console.log(`Volume: ${gerados} solicitações fictícias geradas agora.`);
+  const { total } = banco.prepare("SELECT COUNT(*) AS total FROM solicitacoes").get();
+  console.log(`Solicitações no banco: ${total}`);
   console.log(`Atraso: ${ATRASO} ms · Falha simulada: ${FALHA}% · Ctrl + C para parar`);
 });

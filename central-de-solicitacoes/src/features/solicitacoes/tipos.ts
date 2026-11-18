@@ -15,10 +15,7 @@ export type Solicitacao = {
   relato?: string;
 };
 
-// O que o formulário entrega: a solicitação sem número e sem data,
-// que são definidos por quem registra
-export type NovaSolicitacao = Omit<Solicitacao, "numero" | "abertura" | "status">;
-
+// Uma mudança de status, como a API registra
 export type EventoHistorico = {
   de: Status | null;
   para: Status;
@@ -26,6 +23,11 @@ export type EventoHistorico = {
   em: string;
 };
 
+// A solicitação com o histórico, como vem da API no detalhe
 export type SolicitacaoDetalhada = Solicitacao & {
-  historico: EventoHistorico[]
+  historico: EventoHistorico[];
 };
+
+// O que o formulário entrega: a solicitação sem número, data e status,
+// que são definidos por quem registra
+export type NovaSolicitacao = Omit<Solicitacao, "numero" | "abertura" | "status">;

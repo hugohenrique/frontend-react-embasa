@@ -6,6 +6,7 @@ type HistoricoSolicitacaoProps = {
   eventos: EventoHistorico[];
 };
 
+// A linha do tempo da solicitação: cada mudança de status, da mais antiga para a mais nova
 export function HistoricoSolicitacao({ eventos }: HistoricoSolicitacaoProps) {
   return (
     <ol className="historico">

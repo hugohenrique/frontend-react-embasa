@@ -169,6 +169,20 @@ th { background: #F1F4F7; }
 .erro-carregamento p { margin: 0; }
 .erro-carregamento button { margin-top: 12px; }
 
+/* ===== Encontro 11: o status como selo ===== */
+.selo {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: .8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.selo-aberta { background: #E3EEF9; color: #123B5A; }
+.selo-em-atendimento { background: #FFF1D6; color: #7A4B00; }
+.selo-concluida { background: #E2F4EA; color: #14532D; }
+.selo-cancelada { background: #ECEEF1; color: #4A5563; }
+
 /* ===== Encontro 11: erro de um campo, vindo da API ===== */
 [aria-invalid="true"] { border-color: #B3261E; box-shadow: 0 0 0 1px #B3261E; }
 .erro-campo { margin: 6px 0 0; color: #B3261E; font-size: .875rem; font-weight: 600; }
@@ -176,40 +190,102 @@ th { background: #F1F4F7; }
 form > .erro-carregamento { margin-bottom: 16px; }
 button:disabled { background: #8FA3B5; cursor: not-allowed; }
 
-.selo {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 999px;
-    font-size: .8125rem;
-    font-weight: 700;
-    white-space: nowrap;
+/* ===== Encontro 11: aviso flutuante ===== */
+.avisos { position: fixed; right: 16px; bottom: 16px; z-index: 20; }
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 360px;
+  padding: 12px 12px 12px 16px;
+  border-left: 5px solid #1E7B4F;
+  border-radius: 8px;
+  background: #14532D;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(16, 40, 64, .25);
+  animation: aviso-entra .2s ease-out;
 }
-
-.selo-aberta {
-    background: #e3eef9;
-    color: #123b5a;
+.aviso p { margin: 0; }
+.aviso-fechar {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  line-height: 1;
 }
+.aviso-fechar:hover { background: rgba(255, 255, 255, .15); }
+@keyframes aviso-entra { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .aviso { animation: none; } }
 
-.selo-em-atendimento {
-    background: #fff1d6;
-    color: #7a4b00;
-}
-
-.selo-concluida {
-    background: #e2f4ea;
-    color: #14532d;
-}
-
-.selo-cancelada {
-    background: #eceef1;
-    color: #4a5563;
-}
-
+/* ===== Encontro 11: lista e detalhe lado a lado ===== */
+.pagina { max-width: 1200px; }
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.botao-linha {
+  width: auto;
+  min-height: 36px;
+  padding: 4px 14px;
+  border: 1px solid #1B6CA8;
+  background: #fff;
+  color: #1B6CA8;
+}
+.botao-linha:hover, .botao-linha[aria-pressed="true"] { background: #1B6CA8; color: #fff; }
+tr.selecionada td { background: #EEF5FB; }
+
+.detalhe-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.detalhe-topo h2 { margin: 0; font-size: 1.25rem; white-space: nowrap; }
+.detalhe h3 { margin: 24px 0 8px; font-size: 1rem; }
+
+.ficha { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 16px 0 0; }
+.ficha dt { color: #5B6878; }
+.ficha dd { margin: 0; font-weight: 600; }
+
+.historico { margin: 0; padding: 0; list-style: none; border-left: 3px solid #DCE3EA; }
+.historico li { position: relative; padding: 0 0 14px 18px; }
+.historico li::before {
+  content: "";
+  position: absolute; left: -8px; top: 5px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: #1B6CA8; border: 2px solid #fff;
+}
+.historico .historico-em-atendimento::before { background: #C98A00; }
+.historico .historico-concluida::before { background: #1E7B4F; }
+.historico .historico-cancelada::before { background: #6B7684; }
+.historico b { display: block; }
+.historico time { color: #5B6878; font-size: .875rem; }
+.historico p { margin: 4px 0 0; }
+
+@media (min-width: 1100px) {
+  .mestre-detalhe.com-detalhe { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  .mestre-detalhe .detalhe { position: sticky; top: 16px; padding: 24px; }
+  /* Com o painel aberto, a tabela fica mais estreita: células mais justas e texto quebrando */
+  .com-detalhe table { min-width: 0; }
+  .com-detalhe table { font-size: .875rem; }
+  .com-detalhe th, .com-detalhe td { padding: 8px 6px; white-space: normal; }
+  .com-detalhe td:first-child { white-space: nowrap; }
+}
+
+/* ===== Encontro 11: ações do detalhe ===== */
+.detalhe-acoes { margin-top: 20px; padding: 16px; border-radius: 8px; background: #F6F8FA; }
+.detalhe-acoes h3 { margin: 0 0 4px; }
+.detalhe-acoes label { display: block; margin: 12px 0 6px; font-weight: 600; }
+.detalhe-acoes .contador { text-align: left; }
+
+/* ===== Encontro 12: paginação ===== */
+.paginacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-weight: 600;
+}
+.paginacao .botao-linha:disabled {
+  border-color: #C5CED8;
+  background: #fff;
+  color: #8A95A3;
 }

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist da etapa 3</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Checklist da entrega da etapa 3</h1>
+  <p class="dica">Use no seu projeto central-de-solicitacoes, com a API rodando. Marque cada item depois de conferir. As marcações não são salvas.</p>
+  <p id="placar" role="status">0 de 6 itens conferidos.</p>
+
+  <div class="cartao">
+    <label class="item"><input type="checkbox"><div><b>1. Só o api.ts chama fetch</b>
+      <span>Procure no projeto (<code>Ctrl + Shift + F</code>) por <code>fetch(</code>. Aparece só nos arquivos <code>api.ts</code> de cada feature. Páginas e componentes chamam funções como <code>listarOrdens</code>, nunca o <code>fetch</code>.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>2. Carregando, erro e pronto em toda lista</b>
+      <span>Pare a API (<code>Ctrl + C</code>) e recarregue cada área: aparece a mensagem de erro com “Tentar de novo”, e não uma lista vazia. Rode a API com <code>--atraso 3000</code>: aparece “Carregando…”.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>3. 422 no campo; 409 com a tela atualizada</b>
+      <span>Crie uma ordem sem equipe: o erro aparece embaixo do campo, e o que foi digitado continua lá. Com duas janelas, mude o status da mesma ordem nas duas: a segunda mostra a mensagem e a lista se atualiza.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>4. Filtro e página vão para a API; filtro novo, página 1</b>
+      <span>Na aba Network, troque o filtro: o endereço do pedido leva <code>status=</code> e <code>pagina=</code>. Vá para a página 5 e troque o filtro: a lista volta para a página 1.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>5. Outra feature, só pelo index.ts</b>
+      <span>Procure por <code>from "../solicitacoes/</code> (com a barra no fim): não deve aparecer nada. A feature de ordens importa de <code>../solicitacoes</code>, a porta de entrada. Nada em <code>shared</code> importa de <code>features</code>.</span></div></label>
+
+    <label class="item"><input type="checkbox"><div><b>6. npm run lint e npm run build sem erros</b>
+      <span>Num terminal novo do VS Code, rode <code>npm run lint</code> e depois <code>npm run build</code>. O build termina com “built in”.</span></div></label>
+  </div>
+
+  <h2>Para a revisão ao vivo</h2>
+  <div class="cartao">
+    <p><b>Quem mostra:</b> compartilha a tela, mostra a pasta <code>ordens-de-servico</code> e um arquivo de que gostou. Cinco minutos.</p>
+    <p><b>Quem assiste:</b> escolhe um item deste checklist e escreve no chat um ponto forte e uma sugestão.</p>
+    <p class="dica">Comenta-se o código, nunca a pessoa.</p>
+  </div>
+</main>
+<script>
+  const caixas = [...document.querySelectorAll('input[type="checkbox"]')];
+  const placar = document.getElementById("placar");
+  caixas.forEach((c) => c.addEventListener("change", () => {
+    const feitos = caixas.filter((x) => x.checked).length;
+    placar.textContent = feitos + " de " + caixas.length + " itens conferidos." + (feitos === caixas.length ? " Pronto para a revisão." : "");
+  }));
+</script>
+</body>
+</html>

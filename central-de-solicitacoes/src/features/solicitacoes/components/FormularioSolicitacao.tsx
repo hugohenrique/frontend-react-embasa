@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import type { ErrosDosCampos } from "../api";
 import type { NovaSolicitacao, Prioridade, TipoServico } from "../tipos";
-import type { ErrosCampos } from "../api";
 
 const municipios = [
   "Salvador",
@@ -16,7 +16,7 @@ const LIMITE_RELATO = 500;
 
 type FormularioSolicitacaoProps = {
   aoRegistrar: (nova: NovaSolicitacao) => Promise<boolean>;
-  erros: ErrosCampos;
+  erros: ErrosDosCampos;
   enviando: boolean;
 };
 
@@ -48,12 +48,9 @@ export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: Formular
     if (tipo === "" || prioridade === "") return;
 
     const registrou = await aoRegistrar({ tipo, municipio, bairro: bairro.trim(), prioridade, relato });
+    if (!registrou) return;
 
-    if (!registrou) {
-      return;
-    }
-
-    // Limpa o formulário para a próxima solicitação
+    // Só limpa o formulário se a API registrou
     setTipo("");
     setRuaToda(false);
     setMunicipio("");
@@ -79,6 +76,7 @@ export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: Formular
             <option value="religacao">Religação</option>
           </select>
         </div>
+
         <div className="campo">
           <label htmlFor="nova-municipio">Município</label>
           <select
@@ -112,6 +110,8 @@ export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: Formular
             id="nova-bairro"
             value={bairro}
             onChange={(evento) => setBairro(evento.target.value)}
+            aria-invalid={erros.bairro ? true : undefined}
+            aria-describedby={erros.bairro ? "nova-bairro-erro" : undefined}
           />
           {erros.bairro && <p className="erro-campo" id="nova-bairro-erro">{erros.bairro}</p>}
         </div>
@@ -163,7 +163,7 @@ export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: Formular
             value={relato}
             onChange={(evento) => setRelato(evento.target.value)}
             aria-invalid={erros.relato ? true : undefined}
-            aria-describedby={erros.relato ? "nova-relato-erro" : ""}
+            aria-describedby={erros.relato ? "nova-relato-erro" : undefined}
           />
           {erros.relato && <p className="erro-campo" id="nova-relato-erro">{erros.relato}</p>}
           <p className={relato.length >= 450 ? "contador contador-alerta" : "contador"}>
@@ -171,9 +171,10 @@ export function FormularioSolicitacao({ aoRegistrar, erros, enviando }: Formular
           </p>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={!podeRegistrar || enviando}>{enviando ? "Registrando..." : "Registrar solicitação"}</button>
+
+      <button type="submit" disabled={!podeRegistrar || enviando}>
+        {enviando ? "Registrando…" : "Registrar solicitação"}
+      </button>
     </form>
   );
 }

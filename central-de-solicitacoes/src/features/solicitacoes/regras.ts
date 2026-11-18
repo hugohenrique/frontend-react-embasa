@@ -1,6 +1,13 @@
 // Regras de negócio da Central de Solicitações.
 // Funções puras: recebem dados e devolvem dados. Não usam React e não mexem na tela.
-import type { NovaSolicitacao, Prioridade, Solicitacao } from "./tipos";
+import type { Prioridade, Solicitacao, Status } from "./tipos";
+
+const TRANSICOES: Record<Status, Status[]> = {
+  aberta: ["em-atendimento", "cancelada"],
+  "em-atendimento": ["concluida", "cancelada"],
+  concluida: [],
+  cancelada: []
+};
 
 export type FiltroPrioridade = Prioridade | "todas";
 
@@ -22,25 +29,14 @@ export function filtrarSolicitacoes(
   );
 }
 
-// Urgente, na Central, é prioridade alta
+// Urgente, na Central, é prioridade alta e ainda não resolvida
 export function ehUrgente(solicitacao: Solicitacao): boolean {
-  return solicitacao.prioridade === "alta" &&
-  (solicitacao.status === "aberta" || solicitacao.status === "em-atendimento");
+  return (
+    solicitacao.prioridade === "alta" &&
+    (solicitacao.status === "aberta" || solicitacao.status === "em-atendimento")
+  );
 }
 
-// O número seguinte ao maior da lista. Lista vazia: começa do 1.
-export function proximoNumero(lista: Solicitacao[]): string {
-  if (lista.length === 0) return "26-00001";
-  const numeros = lista.map((solicitacao) => Number(solicitacao.numero.slice(3)));
-  const maior = Math.max(...numeros);
-  return `26-${String(maior + 1).padStart(5, "0")}`;
-}
-
-// A solicitação nova, completa: com número e data de abertura
-export function completarSolicitacao(
-  nova: NovaSolicitacao,
-  lista: Solicitacao[],
-  hoje: string
-): Solicitacao {
-  return { ...nova, numero: proximoNumero(lista), abertura: hoje, status: "aberta" };
+export function proximoStatus(status: Status): Status[] {
+  return TRANSICOES[status];
 }

@@ -65,6 +65,7 @@ Para concluir ou cancelar, a observação é obrigatória (5+ caracteres).
 
 ```
 npm run api -- --reiniciar     apaga o banco e volta aos dados iniciais
+npm run api -- --volume 5000   completa o banco até 5000 solicitações fictícias
 npm run api -- --atraso 3000   cada resposta demora 3 s (padrão: 300 ms)
 npm run api -- --falha 50      metade das respostas falha com 503
 npm run api -- --porta 4000    outra porta (padrão: 3333)

@@ -5,15 +5,18 @@ export const nomesDosTipos = {
   religacao: "Religação",
 };
 
-export const nomesDasPrioridades = {
-  baixa: "Baixa",
-  media: "Média",
-  alta: "Alta"
-};
+export const nomesDasPrioridades = { baixa: "Baixa", media: "Média", alta: "Alta" };
 
 export const nomesDosStatus = {
-  "aberta": "Aberta",
+  aberta: "Aberta",
   "em-atendimento": "Em atendimento",
-  "concluida": "Concluída",
-  "cancelada": "Cancelada"
+  concluida: "Concluída",
+  cancelada: "Cancelada",
+};
+
+export const acoesDosStatus = {
+  aberta: "Abrir",
+  "em-atendimento": "Iniciar atendimento",
+  concluida: "Concluir",
+  cancelada: "Cancelar",
 };

@@ -1,0 +1,19 @@
+PONTOS DE CONTROLE DO ENCONTRO 13
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio       ponto de partida: o final do encontro 12
+  1-estrutura    a feature ordens-de-servico, o api.ts e as abas no App (slide 13)
+  2-tabela       tabela, selo, filtro de status e paginação (slide 17)
+  3-nova-ordem   formulário de nova ordem, com 422 e 409 (slide 22)
+  4-status       as ações da ordem: mudar o status (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+A API precisa estar rodando, na versão de hoje: veja api-central/LEIA-ME.txt.

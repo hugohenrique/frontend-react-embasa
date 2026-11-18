@@ -31,9 +31,7 @@ export function TabelaSolicitacoes({ solicitacoes, total, selecionada, aoAbrir }
             <th scope="col">Prioridade</th>
             <th scope="col">Abertura</th>
             <th scope="col">Status</th>
-            <th scope="col">
-              <span className="sr-only">Ações</span>
-            </th>
+            <th scope="col"><span className="sr-only">Ações</span></th>
           </tr>
         </thead>
         <tbody>
