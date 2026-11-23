@@ -14,8 +14,9 @@ export const nomesDosStatus = {
   cancelada: "Cancelada",
 };
 
+// O texto do botão que leva a cada status
 export const acoesDosStatus = {
-  aberta: "Abrir",
+  aberta: "Reabrir",
   "em-atendimento": "Iniciar atendimento",
   concluida: "Concluir",
   cancelada: "Cancelar",

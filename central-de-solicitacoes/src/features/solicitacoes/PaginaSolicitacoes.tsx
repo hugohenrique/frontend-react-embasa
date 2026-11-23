@@ -3,16 +3,17 @@ import { DicasAtendimento, TentativasDeContato } from "../atendimento";
 import { Aviso } from "../../shared/ui/Aviso";
 import { Cartao } from "../../shared/ui/Cartao";
 import { MensagemDeErro } from "../../shared/ui/MensagemDeErro";
+import { Paginacao } from "../../shared/ui/Paginacao";
 import { FiltrosSolicitacoes } from "./components/FiltrosSolicitacoes";
 import { FormularioSolicitacao } from "./components/FormularioSolicitacao";
 import { TabelaSolicitacoes } from "./components/TabelaSolicitacoes";
 import { listarSolicitacoes, POR_PAGINA, registrarSolicitacao } from "./api";
 import { DetalheSolicitacao } from "./DetalheSolicitacao";
 import type { ErrosDosCampos } from "./api";
+import { nomesDosStatus } from "./nomes";
 import { ehUrgente } from "./regras";
 import type { Filtros } from "./regras";
 import type { NovaSolicitacao, Solicitacao } from "./tipos";
-import { Paginacao } from "../../shared/ui/Paginacao";
 
 const FILTROS_INICIAIS: Filtros = { prioridade: "todas", busca: "" };
 
@@ -23,6 +24,8 @@ type Situacao = "carregando" | "erro" | "pronto";
 // As regras vêm de regras.ts; a apresentação, dos componentes.
 export function PaginaSolicitacoes() {
   const [lista, setLista] = useState<Solicitacao[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pagina, setPagina] = useState(1);
   const [situacao, setSituacao] = useState<Situacao>("carregando");
   const [tentativa, setTentativa] = useState(0);
   const [aviso, setAviso] = useState("");
@@ -31,13 +34,9 @@ export function PaginaSolicitacoes() {
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
   const [selecionada, setSelecionada] = useState<string | null>(null);
 
-  // paginacao
-  const [total, setTotal] = useState(0);
-  const [pagina, setPagina] = useState(1);
-
-  let totalDePaginas = Math.ceil(total / POR_PAGINA);
-
+  // A lista já vem filtrada da API: as urgentes são as desta página
   const urgentes = lista.filter(ehUrgente);
+  const totalDePaginas = Math.ceil(total / POR_PAGINA);
 
   // Envia para a API. Devolve true se registrou, para o formulário saber se limpa os campos.
   async function registrar(nova: NovaSolicitacao): Promise<boolean> {
@@ -50,8 +49,9 @@ export function PaginaSolicitacoes() {
         return false;
       }
       const registrada = resultado.solicitacao;
-      // Depois de um await, a lista pode ter mudado: a função recebe a lista atual
-      setLista((atual) => [registrada, ...atual]);
+      // A nova é a mais recente: volta para a página 1 e busca de novo
+      setPagina(1);
+      setTentativa((atual) => atual + 1);
       setAviso(`Solicitação ${registrada.numero} registrada.`);
       return true;
     } catch (erro) {
@@ -63,6 +63,13 @@ export function PaginaSolicitacoes() {
     }
   }
 
+  // O painel avisa que a solicitação mudou: a lista troca só aquela, sem buscar tudo de novo
+  function aoAlterar(alterada: Solicitacao) {
+    setLista((atual) => atual.map((s) => (s.numero === alterada.numero ? alterada : s)));
+    setAviso(`Solicitação ${alterada.numero}: ${nomesDosStatus[alterada.status].toLowerCase()}.`);
+  }
+
+  // Filtro novo, resultado novo: volta para a página 1
   function mudarFiltros(novos: Filtros) {
     setFiltros(novos);
     setPagina(1);
@@ -74,19 +81,14 @@ export function PaginaSolicitacoes() {
     setTentativa(tentativa + 1);
   }
 
-  // Carrega a lista da API quando a página aparece, e a cada nova tentativa
+  // Carrega da API a página pedida, com os filtros. Roda de novo quando um deles muda.
   useEffect(() => {
     let ignorar = false;
 
     async function carregar() {
       try {
-        const resposta = await listarSolicitacoes({
-          ...filtros,
-          pagina
-        });
-        if (ignorar) {
-          return;
-        }
+        const resposta = await listarSolicitacoes({ ...filtros, pagina });
+        if (ignorar) return;
         setLista(resposta.itens);
         setTotal(resposta.total);
         setSituacao("pronto");
@@ -101,18 +103,16 @@ export function PaginaSolicitacoes() {
     return () => {
       ignorar = true;
     };
-  }, [tentativa, filtros, pagina]);
+  }, [filtros, pagina, tentativa]);
 
   // O aviso some sozinho depois de 5 segundos. Um aviso novo reinicia a contagem.
   useEffect(() => {
-    if (aviso === "") {
-      return;
-    }
+    if (aviso === "") return;
     const relogio = setTimeout(() => setAviso(""), 5000);
     return () => clearTimeout(relogio);
   }, [aviso]);
 
-  // Título da aba com o número de urgentes
+  // Título da aba com o número de urgentes desta página
   useEffect(() => {
     document.title = `(${urgentes.length}) Central de Solicitações`;
   }, [urgentes.length]);
@@ -159,21 +159,14 @@ export function PaginaSolicitacoes() {
           )}
           {situacao === "pronto" && (
             <>
-              <FiltrosSolicitacoes
-                filtros={filtros}
-                aoMudar={mudarFiltros}
-              />
+              <FiltrosSolicitacoes filtros={filtros} aoMudar={mudarFiltros} />
               <TabelaSolicitacoes
                 solicitacoes={lista}
                 total={total}
                 selecionada={selecionada}
                 aoAbrir={setSelecionada}
               />
-              <Paginacao
-                pagina={pagina}
-                totalDePaginas={totalDePaginas}
-                aoMudar={setPagina}
-              />
+              <Paginacao pagina={pagina} totalDePaginas={totalDePaginas} aoMudar={setPagina} />
             </>
           )}
         </Cartao>
@@ -184,6 +177,7 @@ export function PaginaSolicitacoes() {
             key={selecionada}
             numero={selecionada}
             aoFechar={() => setSelecionada(null)}
+            aoAlterar={aoAlterar}
           />
         )}
       </div>

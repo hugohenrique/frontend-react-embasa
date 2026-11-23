@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 14</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 14</h1>
+  <p class="dica">Opcional. Comece do ponto <code>9-solicitacoes</code>, com a API rodando.</p>
+
+  <div class="cartao">
+    <h2>O componente Campo</h2>
+    <p>No <code>FormularioOrdem</code>, cada campo repete o mesmo desenho: uma <code>div</code> com a classe <code>campo</code>, o <code>label</code>, o campo e, se houver, o erro embaixo. Crie em <code>src/shared/ui</code> um componente <code>Campo</code> que cuide dessa parte:</p>
+    <ul>
+      <li>Props: <code>id</code>, <code>rotulo</code>, <code>erro</code> (opcional) e <code>children</code>, que é o <code>input</code> ou o <code>select</code>.</li>
+      <li>O erro aparece num parágrafo com a classe <code>erro-campo</code> e o id <code>{id}-erro</code>, o mesmo que o <code>aria-describedby</code> do campo aponta.</li>
+      <li>Use o <code>Campo</code> nos três campos do <code>FormularioOrdem</code>.</li>
+    </ul>
+    <p class="dica">Para testar: na aba de ordens, tente criar uma ordem para a 26-08817, sem equipe e com uma data no passado. Os três erros aparecem embaixo dos campos, como antes.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Para pensar</h2>
+    <p>O <code>input</code> ainda escreve o <code>aria-invalid</code> e o <code>aria-describedby</code> sozinho. Como o <code>Campo</code> poderia cuidar disso também? E o formulário de solicitação, que tem um campo com contador de caracteres, caberia no mesmo <code>Campo</code>?</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>. A tela deve ficar exatamente igual: o que muda é o código.</p>
+  </div>
+</main>
+</body>
+</html>

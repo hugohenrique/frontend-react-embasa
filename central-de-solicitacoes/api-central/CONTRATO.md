@@ -70,3 +70,51 @@ npm run api -- --atraso 3000   cada resposta demora 3 s (padrão: 300 ms)
 npm run api -- --falha 50      metade das respostas falha com 503
 npm run api -- --porta 4000    outra porta (padrão: 3333)
 ```
+
+---
+
+# Ordens de serviço (encontro 13)
+
+Módulo fictício do curso: o trabalho da equipe de campo que resolve uma solicitação.
+
+## OrdemDeServico
+
+| Campo        | Tipo                                                          |
+|--------------|---------------------------------------------------------------|
+| `numero`     | texto, ex.: `"OS-04150"` (definido pela API)                  |
+| `solicitacao`| número da solicitação de origem                               |
+| `equipe`     | id da equipe, ex.: `"E04"`                                    |
+| `nomeEquipe` | ex.: `"Equipe 04 · Camaçari"`                                 |
+| `previsao`   | data prevista, ex.: `"2026-11-20"`                            |
+| `status`     | `"programada"`, `"em-execucao"`, `"concluida"` ou `"impedida"` |
+| `observacao` | texto da última conclusão ou impedimento                      |
+| `criada`, `atualizada` | data e hora, ex.: `"2026-11-12T08:00"`           |
+| `tipo`, `municipio`, `bairro`, `prioridade` | resumo da solicitação de origem |
+
+## GET /api/ordens
+
+Parâmetros opcionais: `status`, `equipe`, `busca` (número da ordem, número da solicitação ou bairro), `pagina`, `porPagina` (até 100).
+
+- **200** `{ "itens": OrdemDeServico[], "total", "pagina", "porPagina" }`
+
+## POST /api/ordens
+
+Corpo: `{ "solicitacao": "26-08818", "equipe": "E07", "previsao": "2026-12-01" }`
+
+- **201** a ordem criada, com status `"programada"`
+- **422** `campos`: a solicitação não existe ou não está em atendimento; a equipe não existe; a data é inválida ou no passado
+- **409** já existe uma ordem em aberto (programada, em execução ou impedida) para a solicitação
+
+## PATCH /api/ordens/{numero}/status
+
+Corpo: `{ "status": StatusOrdem, "observacao": texto }`
+
+Caminhos: `programada → em-execucao | impedida`; `em-execucao → concluida | impedida`; `impedida → programada`. Concluída é final.
+Concluir ou registrar impedimento exige observação (5+ caracteres).
+**Concluir a ordem conclui a solicitação de origem**, com a observação e o número da ordem no histórico.
+
+- **200** a ordem atualizada · **409** transição não permitida · **422** observação ausente
+
+## GET /api/equipes
+
+- **200** `[{ "id": "E01", "nome": "Equipe 01", "base": "Salvador" }, ...]`

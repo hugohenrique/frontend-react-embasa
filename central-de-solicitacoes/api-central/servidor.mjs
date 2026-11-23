@@ -2,6 +2,8 @@
 // Guarda os dados num banco SQLite (dados/central.db), usando só o Node.
 // NÃO é a API da Embasa: os dados são fictícios.
 //
+// A partir do encontro 13, também guarda as ordens de serviço (ordens.mjs).
+//
 // Como rodar, num terminal próprio, de dentro da pasta central-de-solicitacoes:
 //   npm run api                    (com o script no package.json)
 //   node api-central/servidor.mjs  (sem o script)
@@ -23,6 +25,7 @@ if (maior < 22 || (maior === 22 && menor < 13)) {
 
 const { abrirBanco, agoraISO, garantirVolume, ARQUIVO } = await import("./banco.mjs");
 const { validarNovaSolicitacao, validarMudancaDeStatus, STATUS, PRIORIDADES } = await import("./regras.mjs");
+const { criarTabelaOrdens, semearOrdens, criarRotasOrdens } = await import("./ordens.mjs");
 
 const { values: opcoes } = parseArgs({
   options: {
@@ -39,6 +42,8 @@ const FALHA = Number(opcoes.falha);
 
 const { banco, novo } = abrirBanco({ reiniciar: opcoes.reiniciar });
 const gerados = garantirVolume(banco, Number(opcoes.volume));
+criarTabelaOrdens(banco);
+const ordensCriadas = semearOrdens(banco);
 
 // ---------- Consultas ----------
 const sql = {
@@ -118,6 +123,9 @@ async function lerJson(requisicao) {
 const naoAceito = (resposta, metodo) =>
   enviar(resposta, 405, { mensagem: `O método ${metodo} não é aceito neste endereço.` });
 
+// As rotas de ordens de serviço e de equipes moram no ordens.mjs
+let atenderOrdens;
+
 async function atender(requisicao, resposta) {
   await esperar(ATRASO);
   const url = new URL(requisicao.url, "http://localhost");
@@ -130,6 +138,9 @@ async function atender(requisicao, resposta) {
   if (FALHA > 0 && Math.random() * 100 < FALHA) {
     return enviar(resposta, 503, { mensagem: "Serviço indisponível (falha simulada pela opção --falha)." });
   }
+
+  // /api/ordens e /api/equipes
+  if (await atenderOrdens(partes, metodo, url, requisicao, resposta)) return;
 
   // GET /api/resumo
   if (partes[1] === "resumo" && partes.length === 2) {
@@ -195,6 +206,8 @@ async function atender(requisicao, resposta) {
   return enviar(resposta, 200, detalhar(numero));
 }
 
+atenderOrdens = criarRotasOrdens({ banco, agoraISO, enviar, lerJson, naoAceito });
+
 const servidor = createServer((requisicao, resposta) => {
   const inicio = Date.now();
   resposta.on("finish", () => {
@@ -219,6 +232,7 @@ servidor.listen(PORTA, () => {
   console.log(`API da Central rodando em http://localhost:${PORTA}/api/solicitacoes`);
   console.log(`Banco: ${ARQUIVO}${novo ? " (criado agora, com os dados iniciais)" : ""}`);
   if (gerados > 0) console.log(`Volume: ${gerados} solicitações fictícias geradas agora.`);
+  if (ordensCriadas > 0) console.log(`Ordens de serviço: ${ordensCriadas} criadas agora, a partir das solicitações atendidas.`);
   const { total } = banco.prepare("SELECT COUNT(*) AS total FROM solicitacoes").get();
   console.log(`Solicitações no banco: ${total}`);
   console.log(`Atraso: ${ATRASO} ms · Falha simulada: ${FALHA}% · Ctrl + C para parar`);

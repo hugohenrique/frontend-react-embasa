@@ -1,0 +1,24 @@
+PONTOS DE CONTROLE DO ENCONTRO 14
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio               ponto de partida: o final do encontro 13
+  1-selo                 o Selo de shared e o SeloStatus usando o Selo (slide 7)
+  2-selo-ordem           o SeloOrdem com o Selo (slide 9)
+  3-carregamento         o componente Carregamento na lista de ordens (slide 11)
+  4-carregamento-todas   o Carregamento também em solicitações e no painel (slide 13)
+  5-use-aviso            o hook useAviso nas ordens (slide 18)
+  6-aviso-solicitacoes   o useAviso também em solicitações (slide 20)
+  7-use-carregar         o hook useCarregar na lista de ordens e nas equipes (slide 24)
+  8-detalhe              o painel com o useCarregar (slide 26)
+  9-solicitacoes         a lista de solicitações com o useCarregar (final da aula)
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+A API é a mesma do encontro 13: não há nada para atualizar nela hoje.

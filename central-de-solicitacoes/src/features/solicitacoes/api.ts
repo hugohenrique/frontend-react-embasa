@@ -5,13 +5,20 @@ import type { NovaSolicitacao, Solicitacao, SolicitacaoDetalhada, Status } from 
 
 const ENDERECO = "/api/solicitacoes";
 
+// Quantas solicitações vêm em cada página
 export const POR_PAGINA = 20;
 
+// O que a tela pede à API: os filtros e a página
+export type Consulta = Filtros & {
+  pagina: number;
+};
+
+// Uma página da lista, como a API devolve
 export type PaginaDeSolicitacoes = {
-  itens: Solicitacao[],
-  total: number,
-  pagina: number,
-  porPagina: number
+  itens: Solicitacao[];
+  total: number;
+  pagina: number;
+  porPagina: number;
 };
 
 // Os erros por campo que a API devolve com o status 422
@@ -22,36 +29,26 @@ export type ResultadoRegistro =
   | { tipo: "registrada"; solicitacao: Solicitacao }
   | { tipo: "recusada"; campos: ErrosDosCampos };
 
+// O resultado de uma mudança de status: mudou, a API recusou um campo,
+// ou houve conflito (outra pessoa já mudou o status antes)
 export type ResultadoMudanca =
-  | { tipo: "alterada", solicitacao: SolicitacaoDetalhada }
-  | { tipo: "recusada", campos: ErrosDosCampos }
-  | { tipo: "conflito", mensagem: string };
+  | { tipo: "alterada"; solicitacao: SolicitacaoDetalhada }
+  | { tipo: "recusada"; campos: ErrosDosCampos }
+  | { tipo: "conflito"; mensagem: string };
 
-export type Consulta = Filtros & {
-  pagina: number;
-};
-
-// Busca a lista de solicitações. Se a API responder com erro, lança um Error.
+// Busca uma página da lista, já filtrada pela API. Se a API responder com erro, lança um Error.
 export async function listarSolicitacoes(consulta: Consulta): Promise<PaginaDeSolicitacoes> {
   // Monta o fim do endereço: ?pagina=1&porPagina=20&prioridade=alta&busca=Pituba
-  const params = new URLSearchParams();
-  params.set("pagina", String(consulta.pagina));
-  params.set("porPagina", String(POR_PAGINA));
+  const parametros = new URLSearchParams();
+  parametros.set("pagina", String(consulta.pagina));
+  parametros.set("porPagina", String(POR_PAGINA));
+  if (consulta.prioridade !== "todas") parametros.set("prioridade", consulta.prioridade);
+  if (consulta.busca.trim() !== "") parametros.set("busca", consulta.busca.trim());
 
-  if (consulta.prioridade !== "todas") {
-    params.set("prioridade", consulta.prioridade);
-  }
-
-  if (consulta.busca.trim() !== "") {
-    params.set("busca", consulta.busca);
-  }
-
-  const resposta = await fetch(`${ENDERECO}?${params}`);
-
+  const resposta = await fetch(`${ENDERECO}?${parametros}`);
   if (!resposta.ok) {
     throw new Error(`A API respondeu ${resposta.status} ao listar as solicitações.`);
   }
-
   return (await resposta.json()) as PaginaDeSolicitacoes;
 }
 
@@ -82,19 +79,17 @@ export async function buscarSolicitacao(numero: string): Promise<SolicitacaoDeta
   return (await resposta.json()) as SolicitacaoDetalhada;
 }
 
+// Muda o status de uma solicitação. 422 e 409 são respostas, não falhas.
 export async function mudarStatus(
   numero: string,
   status: Status,
   observacao: string
 ): Promise<ResultadoMudanca> {
-  const resposta = await fetch(
-    `${ENDERECO}/${encodeURIComponent(numero)}/status`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, observacao }),
-    }
-  );
+  const resposta = await fetch(`${ENDERECO}/${encodeURIComponent(numero)}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status, observacao }),
+  });
   if (resposta.status === 422) {
     const corpo = (await resposta.json()) as { campos: ErrosDosCampos };
     return { tipo: "recusada", campos: corpo.campos };
@@ -103,9 +98,9 @@ export async function mudarStatus(
     const corpo = (await resposta.json()) as { mensagem: string };
     return { tipo: "conflito", mensagem: corpo.mensagem };
   }
+  if (!resposta.ok) {
+    throw new Error(`A API respondeu ${resposta.status} ao mudar o status de ${numero}.`);
+  }
   const solicitacao = (await resposta.json()) as SolicitacaoDetalhada;
-  return {
-    tipo: "alterada",
-    solicitacao
-  };
+  return { tipo: "alterada", solicitacao };
 }

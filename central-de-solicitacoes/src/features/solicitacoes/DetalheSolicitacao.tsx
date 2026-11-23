@@ -5,8 +5,8 @@ import { buscarSolicitacao, mudarStatus } from "./api";
 import { HistoricoSolicitacao } from "./components/HistoricoSolicitacao";
 import { SeloStatus } from "./components/SeloStatus";
 import { acoesDosStatus, nomesDasPrioridades, nomesDosTipos } from "./nomes";
+import { proximosStatus } from "./regras";
 import type { Solicitacao, SolicitacaoDetalhada, Status } from "./tipos";
-import { proximoStatus } from "./regras";
 
 type Situacao = "carregando" | "erro" | "pronto";
 
@@ -23,33 +23,8 @@ export function DetalheSolicitacao({ numero, aoFechar, aoAlterar }: DetalheSolic
   const [situacao, setSituacao] = useState<Situacao>("carregando");
   const [tentativa, setTentativa] = useState(0);
   const [salvando, setSalvando] = useState(false);
-  const [errosAcao, setErrosAcao] = useState("");
-
-  async function mudarPara(status: Status) {
-    setSalvando(true);
-    setErrosAcao("");
-
-    try {
-      const resultado = await mudarStatus(numero, status, "");
-      if (resultado.tipo === "alterada") {
-        setDetalhe(resultado.solicitacao);
-        aoAlterar(resultado.solicitacao);
-      } else if (resultado.tipo === "recusada") {
-        setErrosAcao(Object.values(resultado.campos).join(" "));
-      } else {
-        // Conflito
-        setErrosAcao(resultado.mensagem);
-        const atual = await buscarSolicitacao(numero);
-        setDetalhe(atual);
-        aoAlterar(atual);
-      }
-    } catch (e) {
-      console.log(e);
-      setErrosAcao("Não foi possível salvar agora. Tente novamente mais tarde.");
-    } finally {
-      setSalvando(false);
-    }
-  }
+  const [erroDaAcao, setErroDaAcao] = useState("");
+  const [observacao, setObservacao] = useState("");
 
   // O mesmo padrão de ontem: carregar, com ignorar e tentativa
   useEffect(() => {
@@ -79,6 +54,33 @@ export function DetalheSolicitacao({ numero, aoFechar, aoAlterar }: DetalheSolic
     setTentativa(tentativa + 1);
   }
 
+  // Pede a mudança à API e mostra o que ela respondeu
+  async function mudarPara(status: Status) {
+    setSalvando(true);
+    setErroDaAcao("");
+    try {
+      const resultado = await mudarStatus(numero, status, observacao);
+      if (resultado.tipo === "alterada") {
+        setDetalhe(resultado.solicitacao);
+        aoAlterar(resultado.solicitacao);
+        setObservacao("");
+      } else if (resultado.tipo === "recusada") {
+        setErroDaAcao(Object.values(resultado.campos).join(" "));
+      } else {
+        // Conflito: outra pessoa mudou antes. Mostra o aviso e busca a versão atual.
+        setErroDaAcao(resultado.mensagem);
+        const atual = await buscarSolicitacao(numero);
+        setDetalhe(atual);
+        aoAlterar(atual);
+      }
+    } catch (erro) {
+      console.error(erro);
+      setErroDaAcao("Não foi possível salvar agora. Tente de novo em instantes.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
   return (
     <section className="cartao detalhe" aria-labelledby="detalhe-titulo">
       <div className="detalhe-topo">
@@ -100,12 +102,26 @@ export function DetalheSolicitacao({ numero, aoFechar, aoAlterar }: DetalheSolic
             <dt>Abertura</dt><dd>{formatarData(detalhe.abertura)}</dd>
             <dt>Relato</dt><dd>{detalhe.relato || "Sem relato."}</dd>
           </dl>
-          {proximoStatus(detalhe.status).length > 0 && (
+          {proximosStatus(detalhe.status).length > 0 && (
             <div className="detalhe-acoes">
               <h3>O que fazer agora</h3>
-              {errosAcao && <p className="erroCampo" role="alert">{errosAcao}</p>}
+              <label htmlFor="detalhe-observacao">Observação</label>
+              <textarea
+                id="detalhe-observacao"
+                rows={3}
+                maxLength={300}
+                value={observacao}
+                onChange={(evento) => setObservacao(evento.target.value)}
+                aria-invalid={erroDaAcao ? true : undefined}
+                aria-describedby={erroDaAcao ? "detalhe-observacao-erro" : "detalhe-observacao-dica"}
+              />
+              {erroDaAcao ? (
+                <p className="erro-campo" id="detalhe-observacao-erro" role="alert">{erroDaAcao}</p>
+              ) : (
+                <p className="contador" id="detalhe-observacao-dica">Obrigatória para concluir ou cancelar.</p>
+              )}
               <div className="acoes">
-                {proximoStatus(detalhe.status).map((proximo) => (
+                {proximosStatus(detalhe.status).map((proximo) => (
                   <button
                     key={proximo}
                     type="button"
@@ -119,6 +135,7 @@ export function DetalheSolicitacao({ numero, aoFechar, aoAlterar }: DetalheSolic
               </div>
             </div>
           )}
+
           <h3>Histórico</h3>
           <HistoricoSolicitacao eventos={detalhe.historico} />
         </>

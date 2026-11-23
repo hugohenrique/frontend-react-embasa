@@ -1,0 +1,24 @@
+API DA CENTRAL (versão do encontro 12)
+
+Uma API REST do curso, com banco de dados SQLite. NÃO é a API da Embasa.
+Usa só o Node (22.13 ou mais novo): não precisa instalar nada.
+
+O QUE MUDOU DESDE O ENCONTRO 11
+A opção --volume, que completa o banco com solicitações fictícias
+para a Central ficar com o tamanho de uma central de verdade.
+
+COMO ATUALIZAR (slide 18 da aula)
+1. Pare a API (Ctrl + C no terminal dela).
+2. Copie os arquivos desta pasta para dentro da sua pasta api-central,
+   substituindo os que já existem. A sua pasta dados continua lá.
+3. Rode:
+     npm run api -- --volume 5000
+
+QUEM AINDA NÃO TEM A API
+Siga os passos do encontro 11: copie esta pasta para dentro de
+central-de-solicitacoes, ao lado da src, e acrescente no package.json,
+dentro de "scripts":
+     "api": "node api-central/servidor.mjs"
+
+Para voltar aos dados iniciais: npm run api -- --reiniciar
+O que a API aceita e devolve está em CONTRATO.md.

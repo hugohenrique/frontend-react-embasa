@@ -6,9 +6,7 @@ type PaginacaoProps = {
 
 // Anterior, "Página 3 de 250" e Próxima. Não sabe o que está sendo paginado.
 export function Paginacao({ pagina, totalDePaginas, aoMudar }: PaginacaoProps) {
-  if (totalDePaginas <= 1) {
-    return null;
-  }
+  if (totalDePaginas <= 1) return null;
 
   return (
     <nav className="paginacao" aria-label="Páginas da lista">
