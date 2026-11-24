@@ -178,10 +178,12 @@ th { background: #F1F4F7; }
   font-weight: 700;
   white-space: nowrap;
 }
-.selo-aberta { background: #E3EEF9; color: #123B5A; }
-.selo-em-atendimento { background: #FFF1D6; color: #7A4B00; }
-.selo-concluida { background: #E2F4EA; color: #14532D; }
-.selo-cancelada { background: #ECEEF1; color: #4A5563; }
+/* Encontro 14: a cor pelo que ela comunica, e não pelo status */
+.selo-informacao { background: #E3EEF9; color: #123B5A; }
+.selo-andamento { background: #FFF1D6; color: #7A4B00; }
+.selo-sucesso { background: #E2F4EA; color: #14532D; }
+.selo-neutro { background: #ECEEF1; color: #4A5563; }
+.selo-perigo { background: #FBE4E2; color: #8C1D18; }
 
 /* ===== Encontro 11: erro de um campo, vindo da API ===== */
 [aria-invalid="true"] { border-color: #B3261E; box-shadow: 0 0 0 1px #B3261E; }
@@ -317,8 +319,11 @@ tr.selecionada td { background: #EEF5FB; }
   margin-bottom: -1px;
 }
 
-/* ===== Encontro 13: status da ordem ===== */
-.selo-ordem-programada { background: #E3EEF9; color: #123B5A; }
-.selo-ordem-em-execucao { background: #FFF1D6; color: #7A4B00; }
-.selo-ordem-concluida { background: #E2F4EA; color: #14532D; }
-.selo-ordem-impedida { background: #FBE4E2; color: #8C1D18; }
+/* ===== Encontro 13: ações da ordem ===== */
+.acoes-ordem { margin: 0 0 20px; padding: 16px 20px; border-left: 5px solid #1B6CA8; border-radius: 8px; background: #F6F8FA; }
+.acoes-ordem h3 { margin: 0; font-size: 1.05rem; }
+.acoes-ordem label { display: block; margin: 12px 0 6px; font-weight: 600; }
+.acoes-ordem .contador { text-align: left; }
+
+/* O botão do formulário de ordem, longe dos campos */
+form .campos + button { margin-top: 20px; }

@@ -1,0 +1,25 @@
+PONTOS DE CONTROLE DO ENCONTRO 15
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio                ponto de partida: o final do encontro 14
+  1-rotas                 React Router, Layout e abas com NavLink (slide 10)
+  2-nao-encontrada        a página não encontrada (slide 12)
+  3-painel-na-url         o painel no endereço: /solicitacoes/26-08815 (slide 14)
+  4-filtro-na-url         o filtro e a página das ordens no endereço (slide 21)
+  5-avisos                o aviso num Context, na página de ordens (slide 26)
+  6-avisos-solicitacoes   o Context também nas solicitações (final da aula)
+
+ATENÇÃO: A PARTIR DO 1-rotas, O PROJETO PRECISA DO REACT ROUTER.
+Num terminal do VS Code, dentro de central-de-solicitacoes, rode uma vez:
+  npm i react-router
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+A API é a mesma do encontro 13: não há nada para atualizar nela.

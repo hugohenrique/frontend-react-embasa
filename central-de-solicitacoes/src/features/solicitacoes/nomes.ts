@@ -1,3 +1,6 @@
+import type { Tom } from "../../shared/ui/Selo";
+import type { Status } from "./tipos";
+
 // Os nomes de exibição dos tipos e das prioridades
 export const nomesDosTipos = {
   vazamento: "Vazamento",
@@ -12,6 +15,13 @@ export const nomesDosStatus = {
   "em-atendimento": "Em atendimento",
   concluida: "Concluída",
   cancelada: "Cancelada",
+};
+
+export const tonsDosStatus: Record<Status, Tom> = {
+  aberta: "informacao",
+  "em-atendimento": "andamento",
+  concluida: "sucesso",
+  cancelada: "neutro"
 };
 
 // O texto do botão que leva a cada status

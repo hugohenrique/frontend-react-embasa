@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 15</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 15</h1>
+  <p class="dica">Opcional. Comece do ponto <code>6-avisos-solicitacoes</code>, com a API rodando e o <code>react-router</code> instalado.</p>
+
+  <div class="cartao">
+    <h2>Os filtros de solicitações no endereço</h2>
+    <p>Na aula, o filtro e a página das ordens foram para o endereço. Faça o mesmo na página de solicitações:</p>
+    <ul>
+      <li>A prioridade, a busca e a página ficam no endereço, por exemplo <code>/solicitacoes?prioridade=alta&amp;busca=Pituba&amp;pagina=2</code>.</li>
+      <li>Uma prioridade que não existe no endereço vira “todas”, como o <code>lerFiltroStatus</code> das ordens.</li>
+      <li>Filtro novo, página 1. O Esc continua limpando os filtros.</li>
+    </ul>
+    <p class="dica">Para testar: filtre, aperte F5 e mande o endereço para você mesmo noutra aba. O filtro tem que continuar.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Três armadilhas</h2>
+    <ul>
+      <li>Abrir uma solicitação leva para <code>/solicitacoes/26-08815</code>, sem nada depois do <code>?</code>: o filtro some. Como o link do Abrir pode levar junto o que está depois do <code>?</code>? Dica: o hook <code>useLocation</code>.</li>
+      <li>A busca muda a cada letra. Depois de digitar “Pituba”, aperte o Voltar do navegador: o que acontece? Procure a opção <code>replace</code> do <code>setSearchParams</code>.</li>
+      <li>Digite rápido na busca, ou no meio do texto: alguma letra se perde? Um campo de texto controlado pelo endereço sofre com isso. Procure a propriedade <code>useTransitions</code> do <code>BrowserRouter</code>.</li>
+    </ul>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm run lint</code> e <code>npm run build</code>.</p>
+  </div>
+</main>
+</body>
+</html>
