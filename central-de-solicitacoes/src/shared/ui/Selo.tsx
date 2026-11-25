@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
+// O tom diz o que a cor comunica. O selo não sabe se é de solicitação ou de ordem.
 export type Tom = "informacao" | "andamento" | "sucesso" | "neutro" | "perigo";
 
 type SeloProps = {
@@ -7,6 +8,6 @@ type SeloProps = {
   children: ReactNode;
 };
 
-export default function Selo({ tom, children }: SeloProps) {
+export function Selo({ tom, children }: SeloProps) {
   return <span className={`selo selo-${tom}`}>{children}</span>;
-};
+}

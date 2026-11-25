@@ -4,8 +4,6 @@ import type { Equipe, NovaOrdem, OrdemDeServico, StatusOrdem } from "./tipos";
 const ENDERECO = "/api/ordens";
 export const POR_PAGINA = 20;
 
-export type ErrosDosCampos = Record<string, string>;
-
 export type FiltroStatusOrdem = StatusOrdem | "todos";
 
 // O que a tela pede à API
@@ -13,6 +11,21 @@ export type ConsultaOrdens = {
   status: FiltroStatusOrdem;
   pagina: number;
 };
+
+// Os erros por campo que a API devolve com o 422
+export type ErrosDosCampos = Record<string, string>;
+
+// Criar uma ordem tem três respostas: criada, campos recusados (422) ou conflito (409)
+export type ResultadoCriacao =
+  | { tipo: "criada"; ordem: OrdemDeServico }
+  | { tipo: "recusada"; campos: ErrosDosCampos }
+  | { tipo: "conflito"; mensagem: string };
+
+// Mudar o status: mudou, campo recusado (422) ou conflito (409)
+export type ResultadoMudanca =
+  | { tipo: "alterada"; ordem: OrdemDeServico }
+  | { tipo: "recusada"; campos: ErrosDosCampos }
+  | { tipo: "conflito"; mensagem: string };
 
 // Uma página da lista, como a API devolve
 export type PaginaDeOrdens = {
@@ -22,16 +35,20 @@ export type PaginaDeOrdens = {
   porPagina: number;
 };
 
-export type ResultadoCriacao =
-  | { tipo: "criada", ordem: OrdemDeServico }
-  | { tipo: "recusada", campos: ErrosDosCampos }
-  | { tipo: "conflito", mensagem: string };
+export async function listarOrdens(consulta: ConsultaOrdens): Promise<PaginaDeOrdens> {
+  const parametros = new URLSearchParams();
+  parametros.set("pagina", String(consulta.pagina));
+  parametros.set("porPagina", String(POR_PAGINA));
+  if (consulta.status !== "todos") parametros.set("status", consulta.status);
 
-export type ResultadoMudanca =
-  | { tipo: "alterada"; ordem: OrdemDeServico }
-  | { tipo: "recusada"; campos: ErrosDosCampos }
-  | { tipo: "conflito"; mensagem: string };
+  const resposta = await fetch(`${ENDERECO}?${parametros}`);
+  if (!resposta.ok) {
+    throw new Error(`A API respondeu ${resposta.status} ao listar as ordens.`);
+  }
+  return (await resposta.json()) as PaginaDeOrdens;
+}
 
+// As equipes de campo, para o select do formulário
 export async function listarEquipes(): Promise<Equipe[]> {
   const resposta = await fetch("/api/equipes");
   if (!resposta.ok) {
@@ -40,59 +57,28 @@ export async function listarEquipes(): Promise<Equipe[]> {
   return (await resposta.json()) as Equipe[];
 }
 
-export async function listarOrdens(consulta: ConsultaOrdens): Promise<PaginaDeOrdens> {
-  const parametros = new URLSearchParams();
-  parametros.set("pagina", String(consulta.pagina));
-  parametros.set("porPagina", String(POR_PAGINA));
-
-  if (consulta.status !== "todos") {
-    parametros.set("status", consulta.status);
-  }
-
-  const resposta = await fetch(`${ENDERECO}?${parametros}`);
-  if (!resposta.ok) {
-    throw new Error(`A API respondeu ${resposta.status} ao listar as ordens.`);
-  }
-
-  return (await resposta.json()) as PaginaDeOrdens;
-}
-
+// Cria uma ordem para uma solicitação em atendimento
 export async function criarOrdem(nova: NovaOrdem): Promise<ResultadoCriacao> {
-  const resposta = await fetch(
-    ENDERECO,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nova)
-    }
-  );
-
+  const resposta = await fetch(ENDERECO, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(nova),
+  });
   if (resposta.status === 422) {
     const corpo = (await resposta.json()) as { campos: ErrosDosCampos };
-    return {
-      tipo: "recusada",
-      campos: corpo.campos
-    };
+    return { tipo: "recusada", campos: corpo.campos };
   }
-
   if (resposta.status === 409) {
     const corpo = (await resposta.json()) as { mensagem: string };
-    return {
-      tipo: "conflito",
-      mensagem: corpo.mensagem
-    };
+    return { tipo: "conflito", mensagem: corpo.mensagem };
   }
-
   if (!resposta.ok) {
-    throw new Error("A API respondeu " + resposta.status + " ao criar a ordem");
+    throw new Error(`A API respondeu ${resposta.status} ao criar a ordem.`);
   }
-
-  return {
-    tipo: "criada",
-    ordem: (await resposta.json()) as OrdemDeServico
-  };
+  return { tipo: "criada", ordem: (await resposta.json()) as OrdemDeServico };
 }
 
+// Muda o status de uma ordem. 422 e 409 são respostas, não falhas.
 export async function mudarStatusDaOrdem(
   numero: string,
   status: StatusOrdem,
@@ -103,20 +89,16 @@ export async function mudarStatusDaOrdem(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status, observacao }),
   });
-
   if (resposta.status === 422) {
     const corpo = (await resposta.json()) as { campos: ErrosDosCampos };
     return { tipo: "recusada", campos: corpo.campos };
   }
-
   if (resposta.status === 409) {
     const corpo = (await resposta.json()) as { mensagem: string };
     return { tipo: "conflito", mensagem: corpo.mensagem };
   }
-
   if (!resposta.ok) {
     throw new Error(`A API respondeu ${resposta.status} ao mudar a ordem ${numero}.`);
   }
-
   return { tipo: "alterada", ordem: (await resposta.json()) as OrdemDeServico };
 }

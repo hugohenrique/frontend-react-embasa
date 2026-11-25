@@ -1,0 +1,30 @@
+PONTOS DE CONTROLE DO ENCONTRO 16
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio                  ponto de partida: o final do encontro 15, com o aviso
+                            também nas solicitações (o exercício que ficou de ontem)
+  1-sessao-fixa             Context API: o nome de quem entrou, fixo, no cabeçalho (slide 6)
+  2-segunda-tela            o painel da solicitação também lê a sessão (slide 8)
+  3-entrar-e-sair           ProvedorDeSessao, tela de entrar e botão Sair (slide 10)
+  4-rota-protegida          as telas só abrem com login (slide 12)
+  5-perfil                  o Cancelar só para o supervisor (slide 14)
+  6-validacao               a validação das ordens antes da API (slide 20)
+  7-foco                    o foco vai para o primeiro campo com erro (slide 22)
+  8-validacao-solicitacao   a validação das solicitações (final da aula)
+
+O projeto precisa do React Router, instalado no encontro 15.
+Se aparecer o erro "Failed to resolve import react-router", rode uma vez,
+num terminal do VS Code, dentro de central-de-solicitacoes:
+  npm i react-router
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+O login de hoje é de demonstração: não tem senha e some com F5.
+A API é a mesma do encontro 13: não há nada para atualizar nela.

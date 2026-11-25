@@ -11,6 +11,7 @@ type FormularioOrdemProps = {
   aoCriar: (nova: NovaOrdem) => Promise<boolean>;
 };
 
+// Mesmo padrão do formulário de solicitação: campos controlados, erros vindos da API
 export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: FormularioOrdemProps) {
   const [solicitacao, setSolicitacao] = useState("");
   const [equipe, setEquipe] = useState("");
@@ -19,9 +20,7 @@ export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: Formulari
   async function criar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     const criou = await aoCriar({ solicitacao: solicitacao.trim(), equipe, previsao });
-    if (!criou) {
-      return;
-    }
+    if (!criou) return;
     setSolicitacao("");
     setEquipe("");
     setPrevisao(hojeISO());
@@ -72,7 +71,7 @@ export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: Formulari
           {erros.previsao && <p className="erro-campo" id="ordem-previsao-erro">{erros.previsao}</p>}
         </div>
       </div>
-      <button style={{ marginTop: '16px' }} type="submit" disabled={enviando}>
+      <button type="submit" disabled={enviando}>
         {enviando ? "Criando…" : "Criar ordem de serviço"}
       </button>
     </form>

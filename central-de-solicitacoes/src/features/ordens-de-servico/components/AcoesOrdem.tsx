@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { nomesDosStatusDaOrdem } from "../nomes";
+import { acoesDaOrdem } from "../nomes";
 import { exigeObservacao, proximosStatusDaOrdem } from "../regras";
 import type { OrdemDeServico, StatusOrdem } from "../tipos";
 import { SeloOrdem } from "./SeloOrdem";
@@ -59,7 +59,7 @@ export function AcoesOrdem({ ordem, salvando, erro, aoMudar, aoFechar }: AcoesOr
                 disabled={salvando}
                 onClick={() => aoMudar(proximo, observacao)}
               >
-                {nomesDosStatusDaOrdem[proximo]}
+                {acoesDaOrdem[proximo]}
               </button>
             ))}
           </div>

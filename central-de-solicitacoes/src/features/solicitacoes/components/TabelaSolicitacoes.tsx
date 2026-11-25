@@ -5,11 +5,10 @@ type TabelaSolicitacoesProps = {
   solicitacoes: Solicitacao[];
   total: number;
   selecionada: string | null;
-  aoAbrir: (numero: string) => void;
 };
 
 // Só apresenta: recebe a lista pronta e desenha. Não filtra, não guarda estado.
-export function TabelaSolicitacoes({ solicitacoes, total, selecionada, aoAbrir }: TabelaSolicitacoesProps) {
+export function TabelaSolicitacoes({ solicitacoes, total, selecionada }: TabelaSolicitacoesProps) {
   if (solicitacoes.length === 0) {
     return (
       <p className="vazio" role="status">
@@ -40,7 +39,6 @@ export function TabelaSolicitacoes({ solicitacoes, total, selecionada, aoAbrir }
               key={solicitacao.numero}
               solicitacao={solicitacao}
               selecionada={solicitacao.numero === selecionada}
-              aoAbrir={aoAbrir}
             />
           ))}
         </tbody>

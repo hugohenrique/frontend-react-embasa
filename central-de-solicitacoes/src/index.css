@@ -236,6 +236,9 @@ button:disabled { background: #8FA3B5; cursor: not-allowed; }
   color: #1B6CA8;
 }
 .botao-linha:hover, .botao-linha[aria-pressed="true"] { background: #1B6CA8; color: #fff; }
+/* Encontro 15: Abrir e Fechar viraram links com cara de botão */
+a.botao-linha { display: inline-flex; align-items: center; border-radius: 6px; text-decoration: none; font-weight: 600; }
+a.botao-linha[aria-current="page"] { background: #1B6CA8; color: #fff; }
 tr.selecionada td { background: #EEF5FB; }
 
 .detalhe-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -301,18 +304,21 @@ tr.selecionada td { background: #EEF5FB; }
   padding: 12px 16px 0;
   border-bottom: 1px solid #DCE3EA;
 }
-.areas button {
-  width: auto;
+/* Encontro 15: as abas viraram links. O NavLink põe a classe active no link do endereço atual. */
+.areas a {
+  display: inline-flex;
+  align-items: center;
   min-height: 44px;
   padding: 8px 18px;
   border-radius: 8px 8px 0 0;
   border: 1px solid transparent;
   border-bottom: 0;
-  background: transparent;
   color: #1B6CA8;
+  font-weight: 600;
+  text-decoration: none;
 }
-.areas button:hover { background: #EEF5FB; }
-.areas button[aria-pressed="true"] {
+.areas a:hover { background: #EEF5FB; }
+.areas a.active {
   border-color: #DCE3EA;
   background: #fff;
   color: #1D2733;
@@ -327,3 +333,6 @@ tr.selecionada td { background: #EEF5FB; }
 
 /* O botão do formulário de ordem, longe dos campos */
 form .campos + button { margin-top: 20px; }
+
+/* Encontro 14: o erro das equipes, longe dos campos */
+.erro-carregamento + form { margin-top: 16px; }

@@ -27,9 +27,7 @@ export function TabelaOrdens({ ordens, total, selecionada, aoSelecionar }: Tabel
             <th scope="col">Equipe</th>
             <th scope="col">Previsão</th>
             <th scope="col">Status</th>
-            <th>
-              <span className="sr-only">Ações</span>
-            </th>
+            <th scope="col"><span className="sr-only">Ações</span></th>
           </tr>
         </thead>
         <tbody>
@@ -43,11 +41,12 @@ export function TabelaOrdens({ ordens, total, selecionada, aoSelecionar }: Tabel
               <td><SeloOrdem status={ordem.status} /></td>
               <td>
                 <button
-                  className="botao-linha"
                   type="button"
+                  className="botao-linha"
                   aria-pressed={ordem.numero === selecionada}
-                  onClick={() => aoSelecionar(ordem.numero)}>
-                  Atualizar<span className="sr-only"> a ordem {ordem.numero}</span>
+                  onClick={() => aoSelecionar(ordem.numero)}
+                >
+                  Atualizar<span className="sr-only"> a {ordem.numero}</span>
                 </button>
               </td>
             </tr>

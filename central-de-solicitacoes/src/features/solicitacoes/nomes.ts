@@ -17,11 +17,12 @@ export const nomesDosStatus = {
   cancelada: "Cancelada",
 };
 
+// A cor de cada status, pelo que ela comunica
 export const tonsDosStatus: Record<Status, Tom> = {
   aberta: "informacao",
   "em-atendimento": "andamento",
   concluida: "sucesso",
-  cancelada: "neutro"
+  cancelada: "neutro",
 };
 
 // O texto do botão que leva a cada status

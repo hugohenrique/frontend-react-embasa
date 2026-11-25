@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
-import { MensagemDeErro } from './MensagemDeErro';
+import type { ReactNode } from "react";
+import { MensagemDeErro } from "./MensagemDeErro";
 
+// Em que pé está um carregamento: um valor só, nunca dois ao mesmo tempo
 export type Situacao = "carregando" | "erro" | "pronto";
 
 type CarregamentoProps = {
@@ -11,7 +12,8 @@ type CarregamentoProps = {
   children: ReactNode;
 };
 
-export default function Carregamento({ situacao, carregando, erro, aoTentarDeNovo, children }: CarregamentoProps) {
+// Mostra o carregando ou o erro. Pronto, mostra o que veio dentro dele (children).
+export function Carregamento({ situacao, carregando, erro, aoTentarDeNovo, children }: CarregamentoProps) {
   if (situacao === "carregando") {
     return <p className="vazio" role="status">{carregando}</p>;
   }
@@ -19,4 +21,4 @@ export default function Carregamento({ situacao, carregando, erro, aoTentarDeNov
     return <MensagemDeErro texto={erro} aoTentarDeNovo={aoTentarDeNovo} />;
   }
   return <>{children}</>;
-};
+}

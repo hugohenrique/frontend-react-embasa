@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { DicasAtendimento, TentativasDeContato } from "../atendimento";
+import { useAviso } from "../../shared/hooks/useAviso";
+import { useCarregar } from "../../shared/hooks/useCarregar";
 import { Aviso } from "../../shared/ui/Aviso";
+import { Carregamento } from "../../shared/ui/Carregamento";
 import { Cartao } from "../../shared/ui/Cartao";
 import { Paginacao } from "../../shared/ui/Paginacao";
 import { FiltrosSolicitacoes } from "./components/FiltrosSolicitacoes";
@@ -13,9 +17,6 @@ import { nomesDosStatus } from "./nomes";
 import { ehUrgente } from "./regras";
 import type { Filtros } from "./regras";
 import type { NovaSolicitacao, Solicitacao } from "./tipos";
-import Carregamento from "../../shared/ui/Carregamento";
-import { useAviso } from "../../shared/hooks/useAviso";
-import useCarregar from "../../shared/hooks/useCarregar";
 
 const FILTROS_INICIAIS: Filtros = { prioridade: "todas", busca: "" };
 
@@ -23,19 +24,18 @@ const FILTROS_INICIAIS: Filtros = { prioridade: "todas", busca: "" };
 // As regras vêm de regras.ts; a apresentação, dos componentes.
 export function PaginaSolicitacoes() {
   const [pagina, setPagina] = useState(1);
+  const [aviso, setAviso] = useAviso();
   const [enviando, setEnviando] = useState(false);
   const [errosDoFormulario, setErrosDoFormulario] = useState<ErrosDosCampos>({});
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
-  const [selecionada, setSelecionada] = useState<string | null>(null);
 
-  const [aviso, setAviso] = useAviso(8000);
+  const { numero } = useParams();
+  const navigate = useNavigate();
+  const selecionada = numero ?? null;
 
+  // A consulta vira a chave: mudou um filtro ou a página, o hook busca de novo
   const consulta = { ...filtros, pagina };
-  const solicitacoes = useCarregar(
-    JSON.stringify(consulta),
-    () => listarSolicitacoes(consulta)
-  );
-
+  const solicitacoes = useCarregar(JSON.stringify(consulta), () => listarSolicitacoes(consulta));
   const lista = solicitacoes.dados?.itens ?? [];
   const total = solicitacoes.dados?.total ?? 0;
 
@@ -56,8 +56,9 @@ export function PaginaSolicitacoes() {
       const registrada = resultado.solicitacao;
       // A nova é a mais recente: volta para a página 1 e busca de novo
       setPagina(1);
-      setTentativa((atual) => atual + 1);
+      solicitacoes.recarregar();
       setAviso(`Solicitação ${registrada.numero} registrada.`);
+      navigate(`/solicitacoes/${registrada.numero}`)
       return true;
     } catch (erro) {
       console.error(erro);
@@ -68,10 +69,10 @@ export function PaginaSolicitacoes() {
     }
   }
 
+  // O painel avisa que a solicitação mudou: a lista troca só aquela, sem buscar tudo de novo
   function aoAlterar(alterada: Solicitacao) {
-    solicitacoes.setDados(
-      (atual) => atual &&
-        { ...atual, itens: atual.itens.map((s) => (s.numero === alterada.numero ? alterada : s)) },
+    solicitacoes.setDados((atual) =>
+      atual && { ...atual, itens: atual.itens.map((s) => (s.numero === alterada.numero ? alterada : s)) },
     );
     setAviso(`Solicitação ${alterada.numero}: ${nomesDosStatus[alterada.status].toLowerCase()}.`);
   }
@@ -122,17 +123,15 @@ export function PaginaSolicitacoes() {
             situacao={solicitacoes.situacao}
             carregando="Carregando as solicitações…"
             erro="Não foi possível carregar as solicitações."
-            aoTentarDeNovo={solicitacoes.tentarDeNovo}>
-            <>
-              <FiltrosSolicitacoes filtros={filtros} aoMudar={mudarFiltros} />
-              <TabelaSolicitacoes
-                solicitacoes={lista}
-                total={total}
-                selecionada={selecionada}
-                aoAbrir={setSelecionada}
-              />
-              <Paginacao pagina={pagina} totalDePaginas={totalDePaginas} aoMudar={setPagina} />
-            </>
+            aoTentarDeNovo={solicitacoes.tentarDeNovo}
+          >
+            <FiltrosSolicitacoes filtros={filtros} aoMudar={mudarFiltros} />
+            <TabelaSolicitacoes
+              solicitacoes={lista}
+              total={total}
+              selecionada={selecionada}
+            />
+            <Paginacao pagina={pagina} totalDePaginas={totalDePaginas} aoMudar={setPagina} />
           </Carregamento>
         </Cartao>
 
@@ -141,7 +140,6 @@ export function PaginaSolicitacoes() {
           <DetalheSolicitacao
             key={selecionada}
             numero={selecionada}
-            aoFechar={() => setSelecionada(null)}
             aoAlterar={aoAlterar}
           />
         )}
@@ -159,11 +157,6 @@ export function PaginaSolicitacoes() {
           )}
         </Cartao>
       )}
-
-      {/* A região existe sempre, para o leitor de tela anunciar quando o aviso aparecer */}
-      <div className="avisos" role="status">
-        {aviso && <Aviso texto={aviso} aoFechar={() => setAviso("")} />}
-      </div>
     </>
   );
 }
