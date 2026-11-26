@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist da etapa 4</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Checklist da etapa 4</h1>
+  <p class="dica">Para revisar em casa. Para cada item, tente fazer sem olhar; se travar, o encontro indicado tem o passo a passo nos pontos de controle.</p>
+
+  <div class="cartao">
+    <h2>Componentes e hooks (E14)</h2>
+    <ul>
+      <li>Consigo transformar um trecho de tela repetido num componente, com Props.</li>
+      <li>Sei explicar o que o <code>useCarregar</code> faz: a chave diz quando buscar; a função diz como.</li>
+    </ul>
+  </div>
+  <div class="cartao">
+    <h2>Rotas (E15)</h2>
+    <ul>
+      <li>Sei criar uma rota e um parâmetro, como <code>/solicitacoes/:numero?</code>.</li>
+      <li>Sei guardar um filtro no endereço com <code>useSearchParams</code>, e por que isso sobrevive ao F5.</li>
+      <li>Sei quando usar <code>Link</code> (a pessoa clica) e quando usar <code>useNavigate</code> (o código decide ir).</li>
+    </ul>
+  </div>
+  <div class="cartao">
+    <h2>Context API (E15 e E16)</h2>
+    <ul>
+      <li>Sei as três peças: <code>createContext</code>, o provedor com <code>value</code>, e o <code>useContext</code> dentro de um hook.</li>
+      <li>Sei decidir onde mora um dado: servidor, endereço, componente ou Context.</li>
+      <li>Sei proteger uma rota com a sessão, e por que esconder um botão não é segurança.</li>
+    </ul>
+  </div>
+  <div class="cartao">
+    <h2>Formulários (E17)</h2>
+    <ul>
+      <li>Sei escrever um esquema do Zod, com <code>refine</code>, e tirar o tipo dele com <code>z.infer</code>.</li>
+      <li>Sei ligar um formulário ao esquema com <code>useForm</code>, <code>register</code> e <code>handleSubmit</code>.</li>
+      <li>Sei mostrar no campo o erro que a API devolveu, com <code>setError</code>.</li>
+      <li>Sei o que a biblioteca não faz por mim: <code>label</code>, <code>aria-invalid</code>, <code>aria-describedby</code>.</li>
+    </ul>
+  </div>
+  <div class="cartao">
+    <h2>Testes (E17 e E18)</h2>
+    <ul>
+      <li>Sei escrever um teste com <code>describe</code>, <code>test</code> e <code>expect</code>, e ler a saída vermelha.</li>
+      <li>Sei testar um formulário como o usuário usa: <code>render</code>, <code>userEvent</code> e <code>screen</code>.</li>
+      <li>Sei usar uma função de mentira (<code>vi.fn</code>) para conferir o que o formulário enviou.</li>
+    </ul>
+  </div>
+  <div class="cartao">
+    <h2>Convenções (E18)</h2>
+    <ul>
+      <li>Sei as regras de nomes da Central: sem conectivos, verbo + objeto nas funções, <code>ao</code> nas props de evento, <code>eh</code>/<code>esta</code>/<code>tem</code>/<code>pode</code> nos booleanos.</li>
+      <li>Sei guardar valores fixos num objeto <code>as const</code> e tirar o tipo dele.</li>
+      <li>Sei renomear com segurança com o F2 do VS Code, e conferir no painel Problemas que o TypeScript não acusou nada.</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>

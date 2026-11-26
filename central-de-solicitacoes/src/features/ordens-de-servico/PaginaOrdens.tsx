@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useMostrarAviso } from "../../shared/avisos/useMostrarAviso";
-import { hojeISO } from "../../shared/datas";
 import { useCarregar } from "../../shared/hooks/useCarregar";
 import { Carregamento } from "../../shared/ui/Carregamento";
 import { Cartao } from "../../shared/ui/Cartao";
@@ -13,7 +12,7 @@ import { AcoesOrdem } from "./components/AcoesOrdem";
 import { FormularioOrdem } from "./components/FormularioOrdem";
 import { TabelaOrdens } from "./components/TabelaOrdens";
 import { nomesDosStatusDaOrdem } from "./nomes";
-import { lerFiltroStatus, validarNovaOrdem } from "./regras";
+import { lerFiltroStatus } from "./regras";
 import type { NovaOrdem, StatusOrdem } from "./tipos";
 
 // A página das ordens de serviço: guarda o estado e conversa com a API pelo api.ts
@@ -24,8 +23,6 @@ export function PaginaOrdens() {
   // O que não for um inteiro positivo vira a página 1
   const numeroPagina = Number(parametros.get("pagina"));
   const pagina = Number.isInteger(numeroPagina) && numeroPagina >= 1 ? numeroPagina : 1;
-  const [erros, setErros] = useState<ErrosDosCampos>({});
-  const [enviando, setEnviando] = useState(false);
   const mostrarAviso = useMostrarAviso();
   const [selecionada, setSelecionada] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
@@ -42,38 +39,25 @@ export function PaginaOrdens() {
   // A ordem selecionada é procurada na página atual; se sumir da página, as ações fecham
   const ordemSelecionada = lista.find((ordem) => ordem.numero === selecionada) ?? null;
 
-  // Envia para a API. Devolve true se criou, para o formulário saber se limpa os campos.
-  async function criar(nova: NovaOrdem): Promise<boolean> {
-    // Primeiro o navegador confere o que dá para conferir aqui. Achou erro, nem chama a API.
-    const errosLocais = validarNovaOrdem(nova, hojeISO());
-    if (Object.keys(errosLocais).length > 0) {
-      setErros(errosLocais);
-      return false;
-    }
-
-    setEnviando(true);
-    setErros({});
+  async function criar(nova: NovaOrdem): Promise<ErrosDosCampos> {
     try {
       const resultado = await criarOrdem(nova);
       if (resultado.tipo === "recusada") {
-        setErros(resultado.campos);
-        return false;
+        return resultado.campos;
       }
       if (resultado.tipo === "conflito") {
-        setErros({ solicitacao: resultado.mensagem });
-        return false;
+        return {
+          solicitacao: resultado.mensagem
+        };
       }
       mostrarAviso(`${resultado.ordem.numero} criada para a ${resultado.ordem.nomeEquipe}.`);
       // A nova é a mais recente: endereço limpo mostra todas, a partir da página 1
       setParametros(new URLSearchParams());
       ordens.recarregar();
-      return true;
+      return {};
     } catch (erro) {
       console.error(erro);
-      setErros({ geral: "Não foi possível criar a ordem agora. Tente de novo em instantes." });
-      return false;
-    } finally {
-      setEnviando(false);
+      return { geral: "Não foi possível criar a ordem agora. Tente de novo em instantes." };
     }
   }
 
@@ -133,7 +117,7 @@ export function PaginaOrdens() {
         {equipes.situacao === "erro" && (
           <MensagemDeErro texto="Não foi possível carregar as equipes." aoTentarDeNovo={equipes.tentarDeNovo} />
         )}
-        <FormularioOrdem equipes={equipes.dados ?? []} erros={erros} enviando={enviando} aoCriar={criar} />
+        <FormularioOrdem equipes={equipes.dados ?? []} aoCriar={criar} />
       </Cartao>
 
       <Cartao titulo="Ordens de serviço de campo">

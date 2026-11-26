@@ -1,0 +1,39 @@
+PONTOS DE CONTROLE DO ENCONTRO 18
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio               ponto de partida: onde paramos no encontro 17
+  1-testes-ordem         os quatro testes do esquema das ordens (slide 3)
+  2-testes-solicitacao   os testes do esquema das solicitações (slide 5)
+  3-nomes                a Central com as convenções de nomes (slide 7)
+  4-constantes           TipoServico e Prioridade numa constante (slide 9)
+  5-teste-tela           o primeiro teste de tela (slide 13)
+  6-teste-envio          o teste do envio (slide 15)
+  7-teste-erro-api       o teste do erro da API no campo (final da aula)
+  extra-1-filtro         atividade extra 1
+  extra-2-transicoes     atividade extra 2
+
+ATENÇÃO NO PONTO 3-nomes
+A pasta das ordens mudou de nome: ordens-de-servico virou ordens-servico.
+Apague a sua src inteira antes de colar a do ponto, para não ficar com
+as duas pastas misturadas.
+
+PACOTES DE HOJE
+A partir do ponto 5-teste-tela, rode uma vez, num terminal do VS Code,
+dentro de central-de-solicitacoes:
+  npm i -D @testing-library/react @testing-library/dom @testing-library/user-event @testing-library/jest-dom jsdom
+
+Os pacotes do encontro 17 continuam necessários (react-hook-form, zod,
+@hookform/resolvers e vitest), e a linha "test": "vitest", no package.json.
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+mova a sua pasta src para fora de central-de-solicitacoes (por exemplo,
+para a Área de Trabalho). Uma cópia dentro do projeto faz o Vitest
+contar os testes em dobro.
+
+A API é a mesma do encontro 13: não há nada para atualizar nela.

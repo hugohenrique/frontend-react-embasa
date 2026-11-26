@@ -1,6 +1,8 @@
 // Os tipos das ordens de serviço, como a API da Central devolve (módulo fictício do curso).
 import type { Prioridade, TipoServico } from "../solicitacoes";
 
+export type { NovaOrdem } from "./esquemas";
+
 export type StatusOrdem = "programada" | "em-execucao" | "concluida" | "impedida";
 
 // Uma equipe de campo, como a API lista em /api/equipes
@@ -10,13 +12,13 @@ export type Equipe = {
   base: string;
 };
 
-// O que o formulário manda para criar uma ordem
+/*
 export type NovaOrdem = {
   solicitacao: string;
   equipe: string;
   previsao: string;
 };
-
+*/
 // Uma ordem de serviço: o trabalho de campo que resolve uma solicitação
 export type OrdemDeServico = {
   numero: string;

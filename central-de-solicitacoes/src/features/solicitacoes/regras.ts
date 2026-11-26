@@ -32,16 +32,12 @@ export function proximosStatus(status: Status): Status[] {
   return TRANSICOES[status];
 }
 
-export function validarNovaSolicitacao(nova: NovaSolicitacao) {
+// As duas regras da API que o navegador consegue conferir antes de enviar
+export function validarNovaSolicitacao(nova: NovaSolicitacao): ErrosDosCampos {
   const erros: ErrosDosCampos = {};
-
-  if (nova.bairro.trim().length < 3) {
-    erros.bairro = "Informe o bairro, com pelo menos 3 letras.";
-  }
-
+  if (nova.bairro.trim().length < 3) erros.bairro = "Informe o bairro, com pelo menos 3 letras.";
   if (nova.prioridade === "alta" && (nova.relato ?? "").trim().length < 10) {
     erros.relato = "Prioridade alta exige um relato com pelo menos 10 caracteres.";
   }
-
   return erros;
 }

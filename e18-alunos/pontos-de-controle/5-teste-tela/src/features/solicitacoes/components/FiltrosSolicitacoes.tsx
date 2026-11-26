@@ -1,0 +1,56 @@
+import { Prioridade } from "../constantes";
+import { nomesPrioridades } from "../nomes";
+import type { Filtros, FiltroPrioridade } from "../regras";
+
+type FiltrosSolicitacoesProps = {
+  filtros: Filtros;
+  aoMudar: (filtros: Filtros) => void;
+};
+
+// Campos controlados por quem usa o componente: ele mostra os filtros e avisa quando mudam
+export function FiltrosSolicitacoes({ filtros, aoMudar }: FiltrosSolicitacoesProps) {
+  return (
+    <>
+      <div className="filtros">
+        <div>
+          <label htmlFor="filtro-prioridade">Prioridade</label>
+          <select
+            id="filtro-prioridade"
+            value={filtros.prioridade}
+            onChange={(evento) =>
+              aoMudar({ ...filtros, prioridade: evento.target.value as FiltroPrioridade })
+            }
+          >
+            <option value="todas">Todas</option>
+            <option value={Prioridade.ALTA}>{nomesPrioridades[Prioridade.ALTA]}</option>
+            <option value={Prioridade.MEDIA}>{nomesPrioridades[Prioridade.MEDIA]}</option>
+            <option value={Prioridade.BAIXA}>{nomesPrioridades[Prioridade.BAIXA]}</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="busca-bairro">Buscar por bairro</label>
+          <input
+            type="search"
+            id="busca-bairro"
+            value={filtros.busca}
+            onChange={(evento) => aoMudar({ ...filtros, busca: evento.target.value })}
+          />
+        </div>
+      </div>
+      <div className="acoes">
+        <button
+          type="button"
+          className="botao-secundario"
+          onClick={() => aoMudar({ prioridade: "todas", busca: "" })}
+        >
+          Limpar filtros
+        </button>
+      </div>
+      <p className="total" aria-live="polite">
+        {filtros.prioridade === "todas"
+          ? "Mostrando todas as prioridades."
+          : `Mostrando só a prioridade ${nomesPrioridades[filtros.prioridade]}.`}
+      </p>
+    </>
+  );
+}

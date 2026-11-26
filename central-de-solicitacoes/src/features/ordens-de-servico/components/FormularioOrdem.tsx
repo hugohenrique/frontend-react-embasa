@@ -1,92 +1,92 @@
-import { useEffect, useRef, useState } from "react";
-import type { FormEvent } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { hojeISO } from "../../../shared/datas";
 import type { ErrosDosCampos } from "../api";
 import type { Equipe, NovaOrdem } from "../tipos";
+import { esquemaNovaOrdem } from "../esquemas";
 
 type FormularioOrdemProps = {
   equipes: Equipe[];
-  erros: ErrosDosCampos;
-  enviando: boolean;
-  aoCriar: (nova: NovaOrdem) => Promise<boolean>;
+  aoCriar: (nova: NovaOrdem) => Promise<ErrosDosCampos>;
 };
 
-// Mesmo padrão do formulário de solicitação: campos controlados, erros vindos da API
-export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: FormularioOrdemProps) {
-  const [solicitacao, setSolicitacao] = useState("");
-  const [equipe, setEquipe] = useState("");
-  const [previsao, setPrevisao] = useState(hojeISO());
+export function FormularioOrdem({ equipes, aoCriar }: FormularioOrdemProps) {
+  const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting } } = useForm({
+    resolver: zodResolver(esquemaNovaOrdem),
+    defaultValues: {
+      solicitacao: "",
+      equipe: "",
+      previsao: hojeISO()
+    }
+  });
 
-  // 1. OK criar uma ref para um elemento
-  // 2. OK quando os erros mudarem/existem, eu vou levar o foco para o PRIMEIRO campo com erro
-  // 3. OK quem usa o teclado ou leitor de tela vai direto ao erro/problema
+  async function criar(nova: NovaOrdem) {
+    const errosApi = await aoCriar(nova);
 
-  const formulario = useRef<HTMLFormElement>(null);
+    if (Object.keys(errosApi).length === 0) {
+      reset();
+      return;
+    }
 
-  useEffect(
-    () => {
-      const primeiroComErro = formulario.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
-      primeiroComErro?.focus();
-    },
-    [erros]
-  );
-
-  async function criar(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault();
-    const criou = await aoCriar({ solicitacao: solicitacao.trim(), equipe, previsao });
-    if (!criou) return;
-    setSolicitacao("");
-    setEquipe("");
-    setPrevisao(hojeISO());
+    Object.entries(errosApi).forEach(
+      ([campo, mensagem], posicao) => {
+        const nome = campo === "geral" ? "root" : (campo as keyof NovaOrdem)
+        setError(
+          nome,
+          { message: mensagem },
+          { shouldFocus: posicao === 0 }
+        );
+      }
+    );
   }
 
   return (
-    <form ref={formulario} onSubmit={criar}>
-      {erros.geral && <p className="erro-carregamento" role="alert">{erros.geral}</p>}
+    <form onSubmit={handleSubmit(criar)}>
+      {errors.root && <p className="erro-carregamento" role="alert">{errors.root.message}</p>}
       <div className="campos">
         <div className="campo">
           <label htmlFor="ordem-solicitacao">Número da solicitação</label>
           <input
             id="ordem-solicitacao"
-            value={solicitacao}
-            onChange={(evento) => setSolicitacao(evento.target.value)}
             placeholder="26-08815"
-            aria-invalid={erros.solicitacao ? true : undefined}
-            aria-describedby={erros.solicitacao ? "ordem-solicitacao-erro" : undefined}
+            aria-invalid={errors.solicitacao ? true : undefined}
+            aria-describedby={errors.solicitacao ? "ordem-solicitacao-erro" : undefined}
+            {...register("solicitacao")}
           />
-          {erros.solicitacao && <p className="erro-campo" id="ordem-solicitacao-erro">{erros.solicitacao}</p>}
+          {errors.solicitacao &&
+            <p className="erro-campo" id="ordem-solicitacao-erro">{errors.solicitacao.message}</p>}
         </div>
         <div className="campo">
           <label htmlFor="ordem-equipe">Equipe</label>
           <select
             id="ordem-equipe"
-            value={equipe}
-            onChange={(evento) => setEquipe(evento.target.value)}
-            aria-invalid={erros.equipe ? true : undefined}
-            aria-describedby={erros.equipe ? "ordem-equipe-erro" : undefined}
+            aria-invalid={errors.equipe ? true : undefined}
+            aria-describedby={errors.equipe ? "ordem-equipe-erro" : undefined}
+            {...register("equipe")}
           >
             <option value="">Escolha a equipe</option>
             {equipes.map((item) => (
               <option key={item.id} value={item.id}>{item.nome} · {item.base}</option>
             ))}
           </select>
-          {erros.equipe && <p className="erro-campo" id="ordem-equipe-erro">{erros.equipe}</p>}
+          {errors.equipe &&
+            <p className="erro-campo" id="ordem-equipe-erro">{errors.equipe.message}</p>}
         </div>
         <div className="campo">
           <label htmlFor="ordem-previsao">Data prevista</label>
           <input
             id="ordem-previsao"
             type="date"
-            value={previsao}
-            onChange={(evento) => setPrevisao(evento.target.value)}
-            aria-invalid={erros.previsao ? true : undefined}
-            aria-describedby={erros.previsao ? "ordem-previsao-erro" : undefined}
+            aria-invalid={errors.previsao ? true : undefined}
+            aria-describedby={errors.previsao ? "ordem-previsao-erro" : undefined}
+            {...register("previsao")}
           />
-          {erros.previsao && <p className="erro-campo" id="ordem-previsao-erro">{erros.previsao}</p>}
+          {errors.previsao &&
+            <p className="erro-campo" id="ordem-previsao-erro">{errors.previsao.message}</p>}
         </div>
       </div>
-      <button type="submit" disabled={enviando}>
-        {enviando ? "Criando…" : "Criar ordem de serviço"}
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Criando…" : "Criar ordem de serviço"}
       </button>
     </form>
   );

@@ -45,11 +45,13 @@ export function PaginaSolicitacoes() {
 
   // Envia para a API. Devolve true se registrou, para o formulário saber se limpa os campos.
   async function registrar(nova: NovaSolicitacao): Promise<boolean> {
+    // O mesmo das ordens: confere aqui primeiro; achou erro, nem chama a API
     const errosLocais = validarNovaSolicitacao(nova);
     if (Object.keys(errosLocais).length > 0) {
       setErrosDoFormulario(errosLocais);
       return false;
     }
+
     setEnviando(true);
     setErrosDoFormulario({});
     try {

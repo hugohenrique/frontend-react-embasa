@@ -66,7 +66,10 @@ export async function criarOrdem(nova: NovaOrdem): Promise<ResultadoCriacao> {
   });
   if (resposta.status === 422) {
     const corpo = (await resposta.json()) as { campos: ErrosDosCampos };
-    return { tipo: "recusada", campos: corpo.campos };
+    return {
+      tipo: "recusada",
+      campos: corpo.campos
+    };
   }
   if (resposta.status === 409) {
     const corpo = (await resposta.json()) as { mensagem: string };

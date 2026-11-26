@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 18</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 18</h1>
+  <p class="dica">Opcional. Comece do ponto <code>7-teste-erro-api</code>, com os pacotes instalados e a API rodando.</p>
+
+  <div class="cartao">
+    <h2>O status das solicitações numa constante</h2>
+    <p>Faça com o <code>Status</code> das solicitações o que fizemos com o <code>TipoServico</code> e a <code>Prioridade</code>:</p>
+    <ul>
+      <li>No <code>constantes.ts</code> de solicitações, crie o objeto <code>Status</code> com <code>as const</code> (<code>ABERTA</code>, <code>EM_ATENDIMENTO</code>, <code>CONCLUIDA</code>, <code>CANCELADA</code>) e tire o tipo dele.</li>
+      <li>No <code>tipos.ts</code>, o <code>Status</code> escrito à mão sai; ele passa a vir da constante.</li>
+      <li>Troque os textos <code>"aberta"</code>, <code>"em-atendimento"</code>, <code>"concluida"</code> e <code>"cancelada"</code> pela constante no <code>nomes.ts</code>, no <code>regras.ts</code> e no <code>DetalheSolicitacao.tsx</code>.</li>
+    </ul>
+    <p class="dica">Dica: para achar todos os lugares, use a busca do VS Code (Ctrl + Shift + F) com <code>cancelada</code>, sem as aspas: assim ela acha também as chaves do <code>nomes.ts</code> e do <code>regras.ts</code>. Não mexa na pasta <code>ordens-servico</code>: as ordens têm os status delas.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm test</code>, <code>npm run lint</code> e <code>npm run build</code>. No Chrome, entre como Carlos, abra uma solicitação aberta e confira os botões “Iniciar atendimento” e “Cancelar”.</p>
+  </div>
+</main>
+</body>
+</html>

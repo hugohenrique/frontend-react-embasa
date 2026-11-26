@@ -1,4 +1,4 @@
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useSessao } from "../shared/sessao/SessaoContext";
 import type { Usuario } from "../shared/sessao/SessaoContext";
 
@@ -7,14 +7,13 @@ const ATENDENTE: Usuario = { nome: "Ana Souza", perfil: "atendente" };
 const SUPERVISOR: Usuario = { nome: "Carlos Lima", perfil: "supervisor" };
 
 export function PaginaEntrar() {
-  const { entrar, usuario } = useSessao();
+  const { entrar } = useSessao();
+  const navigate = useNavigate();
 
-  if (usuario !== null) {
-    return <Navigate to="/solicitacoes" replace />;
-  }
-
+  // Entrou: o código decide ir para a lista (useNavigate, como depois de registrar)
   function entrarComo(usuario: Usuario) {
     entrar(usuario);
+    navigate("/solicitacoes");
   }
 
   return (
