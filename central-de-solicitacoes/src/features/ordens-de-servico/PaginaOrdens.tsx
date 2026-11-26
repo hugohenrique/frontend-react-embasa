@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import { useAviso } from "../../shared/hooks/useAviso";
+import { useMostrarAviso } from "../../shared/avisos/useMostrarAviso";
+import { hojeISO } from "../../shared/datas";
 import { useCarregar } from "../../shared/hooks/useCarregar";
 import { Carregamento } from "../../shared/ui/Carregamento";
 import { Cartao } from "../../shared/ui/Cartao";
@@ -12,24 +13,23 @@ import { AcoesOrdem } from "./components/AcoesOrdem";
 import { FormularioOrdem } from "./components/FormularioOrdem";
 import { TabelaOrdens } from "./components/TabelaOrdens";
 import { nomesDosStatusDaOrdem } from "./nomes";
+import { lerFiltroStatus, validarNovaOrdem } from "./regras";
 import type { NovaOrdem, StatusOrdem } from "./tipos";
-import { lerFiltroStatus } from "./regras";
-import useMostrarAviso from "../../shared/avisos/useMostrarAviso";
 
 // A página das ordens de serviço: guarda o estado e conversa com a API pelo api.ts
 export function PaginaOrdens() {
+  // O filtro e a página moram no endereço: /ordens?status=programada&pagina=2
+  const [parametros, setParametros] = useSearchParams();
+  const status = lerFiltroStatus(parametros.get("status"));
+  // O que não for um inteiro positivo vira a página 1
+  const numeroPagina = Number(parametros.get("pagina"));
+  const pagina = Number.isInteger(numeroPagina) && numeroPagina >= 1 ? numeroPagina : 1;
   const [erros, setErros] = useState<ErrosDosCampos>({});
   const [enviando, setEnviando] = useState(false);
+  const mostrarAviso = useMostrarAviso();
   const [selecionada, setSelecionada] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
   const [erroDaAcao, setErroDaAcao] = useState("");
-
-  const mostrarAviso = useMostrarAviso();
-  const [parametros, setParametros] = useSearchParams();
-  const status = lerFiltroStatus(parametros.get("status"));
-
-  const numeroPagina = Number(parametros.get("pagina"));
-  const pagina = Number.isInteger(numeroPagina) && numeroPagina > 1 ? numeroPagina : 1;
 
   // A consulta vira a chave: mudou o status ou a página, o hook busca de novo
   const consulta = { status, pagina };
@@ -44,6 +44,13 @@ export function PaginaOrdens() {
 
   // Envia para a API. Devolve true se criou, para o formulário saber se limpa os campos.
   async function criar(nova: NovaOrdem): Promise<boolean> {
+    // Primeiro o navegador confere o que dá para conferir aqui. Achou erro, nem chama a API.
+    const errosLocais = validarNovaOrdem(nova, hojeISO());
+    if (Object.keys(errosLocais).length > 0) {
+      setErros(errosLocais);
+      return false;
+    }
+
     setEnviando(true);
     setErros({});
     try {
@@ -57,7 +64,7 @@ export function PaginaOrdens() {
         return false;
       }
       mostrarAviso(`${resultado.ordem.numero} criada para a ${resultado.ordem.nomeEquipe}.`);
-      // A nova é a mais recente: mostra todas, a partir da página 1
+      // A nova é a mais recente: endereço limpo mostra todas, a partir da página 1
       setParametros(new URLSearchParams());
       ordens.recarregar();
       return true;
@@ -104,17 +111,16 @@ export function PaginaOrdens() {
     }
   }
 
-  // Filtro novo, resultado novo: volta para a página 1 (a lição do exercício de ontem)
+  // Filtro novo: um endereço novo, só com o status. Sem pagina no endereço, é a página 1.
   function mudarStatus(novo: FiltroStatusOrdem) {
     const novos = new URLSearchParams();
-    if (novo !== "todos") {
-      novos.set("status", novo);
-    }
+    if (novo !== "todos") novos.set("status", novo);
     setParametros(novos);
   }
 
+  // Outra página: mantém o que está no endereço e troca só a página
   function irParaPagina(novaPagina: number) {
-    const novos = new URLSearchParams();
+    const novos = new URLSearchParams(parametros);
     novos.set("pagina", String(novaPagina));
     setParametros(novos);
   }
@@ -169,11 +175,7 @@ export function PaginaOrdens() {
             selecionada={selecionada}
             aoSelecionar={selecionar}
           />
-          <Paginacao
-            pagina={pagina}
-            totalDePaginas={Math.ceil(total / POR_PAGINA)}
-            aoMudar={irParaPagina}
-          />
+          <Paginacao pagina={pagina} totalDePaginas={Math.ceil(total / POR_PAGINA)} aoMudar={irParaPagina} />
         </Carregamento>
       </Cartao>
     </>

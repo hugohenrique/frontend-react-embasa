@@ -20,6 +20,7 @@ export function LinhaSolicitacao({ solicitacao, selecionada }: LinhaSolicitacaoP
       <td><time dateTime={solicitacao.abertura}>{formatarData(solicitacao.abertura)}</time></td>
       <td><SeloStatus status={solicitacao.status} /></td>
       <td>
+        {/* Abrir agora é um link: muda o endereço, e a página lê o número de lá */}
         <Link
           to={`/solicitacoes/${solicitacao.numero}`}
           className="botao-linha"

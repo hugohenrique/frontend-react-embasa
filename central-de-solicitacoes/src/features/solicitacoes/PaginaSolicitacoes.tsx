@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { DicasAtendimento, TentativasDeContato } from "../atendimento";
-import { useAviso } from "../../shared/hooks/useAviso";
+import { useMostrarAviso } from "../../shared/avisos/useMostrarAviso";
 import { useCarregar } from "../../shared/hooks/useCarregar";
-import { Aviso } from "../../shared/ui/Aviso";
 import { Carregamento } from "../../shared/ui/Carregamento";
 import { Cartao } from "../../shared/ui/Cartao";
 import { Paginacao } from "../../shared/ui/Paginacao";
@@ -14,7 +13,7 @@ import { listarSolicitacoes, POR_PAGINA, registrarSolicitacao } from "./api";
 import { DetalheSolicitacao } from "./DetalheSolicitacao";
 import type { ErrosDosCampos } from "./api";
 import { nomesDosStatus } from "./nomes";
-import { ehUrgente } from "./regras";
+import { ehUrgente, validarNovaSolicitacao } from "./regras";
 import type { Filtros } from "./regras";
 import type { NovaSolicitacao, Solicitacao } from "./tipos";
 
@@ -24,14 +23,15 @@ const FILTROS_INICIAIS: Filtros = { prioridade: "todas", busca: "" };
 // As regras vêm de regras.ts; a apresentação, dos componentes.
 export function PaginaSolicitacoes() {
   const [pagina, setPagina] = useState(1);
-  const [aviso, setAviso] = useAviso();
+  const mostrarAviso = useMostrarAviso();
   const [enviando, setEnviando] = useState(false);
   const [errosDoFormulario, setErrosDoFormulario] = useState<ErrosDosCampos>({});
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIAIS);
 
+  // A solicitação aberta vem do endereço: /solicitacoes/26-08815
   const { numero } = useParams();
-  const navigate = useNavigate();
   const selecionada = numero ?? null;
+  const navigate = useNavigate();
 
   // A consulta vira a chave: mudou um filtro ou a página, o hook busca de novo
   const consulta = { ...filtros, pagina };
@@ -45,6 +45,11 @@ export function PaginaSolicitacoes() {
 
   // Envia para a API. Devolve true se registrou, para o formulário saber se limpa os campos.
   async function registrar(nova: NovaSolicitacao): Promise<boolean> {
+    const errosLocais = validarNovaSolicitacao(nova);
+    if (Object.keys(errosLocais).length > 0) {
+      setErrosDoFormulario(errosLocais);
+      return false;
+    }
     setEnviando(true);
     setErrosDoFormulario({});
     try {
@@ -54,11 +59,11 @@ export function PaginaSolicitacoes() {
         return false;
       }
       const registrada = resultado.solicitacao;
-      // A nova é a mais recente: volta para a página 1 e busca de novo
+      // A nova é a mais recente: volta para a página 1, busca de novo e abre o painel dela
       setPagina(1);
       solicitacoes.recarregar();
-      setAviso(`Solicitação ${registrada.numero} registrada.`);
-      navigate(`/solicitacoes/${registrada.numero}`)
+      mostrarAviso(`Solicitação ${registrada.numero} registrada.`);
+      navigate(`/solicitacoes/${registrada.numero}`);
       return true;
     } catch (erro) {
       console.error(erro);
@@ -74,7 +79,7 @@ export function PaginaSolicitacoes() {
     solicitacoes.setDados((atual) =>
       atual && { ...atual, itens: atual.itens.map((s) => (s.numero === alterada.numero ? alterada : s)) },
     );
-    setAviso(`Solicitação ${alterada.numero}: ${nomesDosStatus[alterada.status].toLowerCase()}.`);
+    mostrarAviso(`Solicitação ${alterada.numero}: ${nomesDosStatus[alterada.status].toLowerCase()}.`);
   }
 
   // Filtro novo, resultado novo: volta para a página 1

@@ -1,14 +1,16 @@
-import { type ReactNode } from "react";
-import { AvisosContext } from "./useMostrarAviso";
+import type { ReactNode } from "react";
 import { useAviso } from "../hooks/useAviso";
 import { Aviso } from "../ui/Aviso";
+import { AvisosContext } from "./useMostrarAviso";
 
 type ProvedorDeAvisosProps = {
-  children: ReactNode
+  children: ReactNode;
 };
 
-export default function ProvedorDeAvisos({ children }: ProvedorDeAvisosProps) {
+// Um aviso só, para a Central inteira. Ele mora acima das rotas: trocar de tela não o apaga.
+export function ProvedorDeAvisos({ children }: ProvedorDeAvisosProps) {
   const [aviso, setAviso] = useAviso();
+
   return (
     <AvisosContext value={setAviso}>
       {children}

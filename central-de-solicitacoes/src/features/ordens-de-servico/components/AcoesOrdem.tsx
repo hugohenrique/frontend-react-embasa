@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { acoesDaOrdem } from "../nomes";
 import { exigeObservacao, proximosStatusDaOrdem } from "../regras";
 import type { OrdemDeServico, StatusOrdem } from "../tipos";
@@ -28,7 +29,11 @@ export function AcoesOrdem({ ordem, salvando, erro, aoMudar, aoFechar }: AcoesOr
       <p><SeloOrdem status={ordem.status} /> {ordem.nomeEquipe}</p>
 
       {proximos.length === 0 ? (
-        <p>Ordem concluída. {ordem.observacao}</p>
+        <>
+          <p>Ordem concluída. {ordem.observacao}</p>
+          {/* Um link para a outra área: só um endereço, sem importar nada da feature de solicitações */}
+          <p><Link to={`/solicitacoes/${ordem.solicitacao}`}>Ver a solicitação {ordem.solicitacao}</Link></p>
+        </>
       ) : (
         <>
           {proximos.some(exigeObservacao) && (

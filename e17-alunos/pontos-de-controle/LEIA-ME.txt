@@ -1,0 +1,34 @@
+PONTOS DE CONTROLE DO ENCONTRO 17
+
+Cada pasta guarda a src e o vite.config.ts como ficam num momento da aula.
+
+  0-inicio                ponto de partida: o final do encontro 16
+  1-esquema               o esquema das ordens, com o Zod (slide 7)
+  2-formulario            o formulário de ordens com React Hook Form (slide 11)
+  3-esquema-solicitacao   o esquema das solicitações (slide 17)
+  4-primeiro-teste        o primeiro teste, com o Vitest (slide 21)
+  5-testes-ordem          os testes do esquema das ordens (slide 22)
+  6-testes-solicitacao    os testes do esquema das solicitações (final da aula)
+  extra-1-filtro          atividade extra 1
+  extra-2-transicoes      atividade extra 2
+
+PACOTES DE HOJE
+A partir do ponto 1-esquema, rode uma vez, num terminal do VS Code,
+dentro de central-de-solicitacoes:
+  npm i react-hook-form zod @hookform/resolvers
+
+A partir do ponto 4-primeiro-teste, rode também:
+  npm i -D vitest
+e acrescente esta linha em "scripts", no package.json:
+  "test": "vitest",
+Para rodar os testes: npm test (a tecla q sai).
+
+COMO USAR
+1. No VS Code, apague a pasta src do seu projeto (botão direito > Delete).
+2. Copie a pasta src do ponto escolhido e cole dentro de central-de-solicitacoes.
+3. Copie também o vite.config.ts para a raiz do projeto, substituindo o que existe.
+
+Atenção: isso substitui o que você escreveu. Para guardar a sua versão,
+renomeie a sua pasta src para src-minha antes de colar.
+
+A API é a mesma do encontro 13: não há nada para atualizar nela.

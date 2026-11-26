@@ -47,10 +47,14 @@ body {
   color: #fff;
 }
 .marca { margin: 0; font-size: 1.25rem; font-weight: 700; }
-.menu { display: flex; flex-wrap: wrap; gap: 0 16px; margin: 0; padding: 0; list-style: none; }
-.menu a { display: inline-block; padding: 8px 0; color: #fff; text-decoration: none; border-bottom: 3px solid transparent; }
-.menu a:hover { border-bottom-color: rgba(255, 255, 255, .6); }
-.menu a[aria-current="page"] { font-weight: 700; border-bottom-color: #5CC8E6; }
+/* Encontro 16: no lugar do menu antigo, quem está usando a Central */
+.sessao { display: flex; align-items: center; gap: 12px; margin: 0; font-weight: 600; }
+.sessao .botao-linha { color: #fff; border-color: rgba(255, 255, 255, .6); }
+
+/* Encontro 16: a tela de entrar, fora do Layout */
+.entrar { max-width: 420px; margin: 80px auto; padding: 32px; display: grid; gap: 12px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(16, 24, 40, .12); }
+.entrar h1 { margin: 0; }
+.entrar p { margin: 0 0 8px; color: #4A5563; }
 
 /* 5. Conteúdo e cartões */
 .pagina { max-width: 960px; margin: 24px auto; padding: 0 16px; }

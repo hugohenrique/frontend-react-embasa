@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { hojeISO } from "../../../shared/datas";
 import type { ErrosDosCampos } from "../api";
@@ -17,6 +17,20 @@ export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: Formulari
   const [equipe, setEquipe] = useState("");
   const [previsao, setPrevisao] = useState(hojeISO());
 
+  // 1. OK criar uma ref para um elemento
+  // 2. OK quando os erros mudarem/existem, eu vou levar o foco para o PRIMEIRO campo com erro
+  // 3. OK quem usa o teclado ou leitor de tela vai direto ao erro/problema
+
+  const formulario = useRef<HTMLFormElement>(null);
+
+  useEffect(
+    () => {
+      const primeiroComErro = formulario.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+      primeiroComErro?.focus();
+    },
+    [erros]
+  );
+
   async function criar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     const criou = await aoCriar({ solicitacao: solicitacao.trim(), equipe, previsao });
@@ -27,7 +41,7 @@ export function FormularioOrdem({ equipes, erros, enviando, aoCriar }: Formulari
   }
 
   return (
-    <form onSubmit={criar}>
+    <form ref={formulario} onSubmit={criar}>
       {erros.geral && <p className="erro-carregamento" role="alert">{erros.geral}</p>}
       <div className="campos">
         <div className="campo">

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio — Encontro 17</title>
+<style>
+  body{margin:0;font:17px/1.6 "Segoe UI",system-ui,Arial,sans-serif;color:#1D2733;background:#F1F4F7}
+  main{max-width:780px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+  h2{font-size:1.2rem;margin:28px 0 8px}
+  .cartao{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,40,64,.12);margin:0 0 16px}
+  code{font-family:Consolas,"Cascadia Mono",monospace;background:#E8EDF2;padding:1px 5px;border-radius:4px}
+  pre{font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:#1D2733;color:#E8EDF2;padding:14px 16px;border-radius:8px;overflow-x:auto}
+  .dica{color:#5B6878}
+  label.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E1E6EC;cursor:pointer}
+  label.item:first-of-type{border-top:0}
+  label.item input{width:22px;height:22px;margin-top:3px;flex:none}
+  label.item b{display:block}
+  label.item span{color:#3F4C59}
+  #placar{font-weight:700;color:#1B6CA8}
+  input:focus-visible{outline:3px solid #1B6CA8;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Desafio do encontro 17</h1>
+  <p class="dica">Opcional. Comece do ponto <code>6-testes-solicitacao</code>, com os pacotes de hoje instalados e a API rodando.</p>
+
+  <div class="cartao">
+    <h2>O formulário de solicitações com React Hook Form</h2>
+    <p>Faça com o <code>FormularioSolicitacao</code> o que fizemos com o de ordens, usando o <code>esquemaNovaSolicitacao</code> que você escreveu hoje:</p>
+    <ul>
+      <li>Troque os <code>useState</code> dos campos por <code>useForm</code> com <code>zodResolver(esquemaNovaSolicitacao)</code> e <code>register</code>.</li>
+      <li>Mostre a mensagem de cada campo com <code>errors</code>, com o <code>aria-invalid</code> e o <code>aria-describedby</code>, como no formulário de ordens.</li>
+      <li>Na <code>PaginaSolicitacoes</code>, o <code>registrar</code> passa a devolver os erros da API, como o <code>criar</code> das ordens. Apague o <code>validarNovaSolicitacao</code> do <code>regras.ts</code>.</li>
+      <li>O botão não fica mais desabilitado até tudo estar preenchido: a pessoa clica e vê o que falta.</li>
+    </ul>
+  </div>
+
+  <div class="cartao">
+    <h2>As três armadilhas</h2>
+    <ul>
+      <li><b>Os botões de rádio da prioridade:</b> cada um recebe o seu <code>value</code> (<code>"baixa"</code>, <code>"media"</code>, <code>"alta"</code>) e o mesmo <code>register("prioridade")</code>.</li>
+      <li><b>A caixa “rua toda”:</b> ela não vai para a API, então não é campo do esquema. Pode continuar num <code>useState</code> comum. Quando ela é marcada, a prioridade vira alta: procure o <code>setValue</code> na documentação do React Hook Form, e a opção <code>shouldValidate</code>, para o erro da prioridade sumir na hora.</li>
+      <li><b>O tipo e o contador do relato</b> precisam do valor atual do campo enquanto a pessoa digita. Procure o <code>useWatch</code> na documentação.</li>
+    </ul>
+    <p class="dica">Documentação: <code>react-hook-form.com/docs/useform/setvalue</code> e <code>react-hook-form.com/docs/usewatch</code>.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Antes de dar por pronto</h2>
+    <p>Rode <code>npm test</code> (os testes do esquema continuam passando), <code>npm run lint</code> e <code>npm run build</code>. No Chrome: registre com tudo vazio, com o bairro “Pi” e prioridade alta sem relato, e uma solicitação certa.</p>
+  </div>
+</main>
+</body>
+</html>

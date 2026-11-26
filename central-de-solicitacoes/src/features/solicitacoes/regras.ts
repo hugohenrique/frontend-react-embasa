@@ -1,6 +1,7 @@
 // Regras de negócio da Central de Solicitações.
 // Funções puras: recebem dados e devolvem dados. Não usam React e não mexem na tela.
-import type { Prioridade, Solicitacao, Status } from "./tipos";
+import type { ErrosDosCampos } from "./api";
+import type { NovaSolicitacao, Prioridade, Solicitacao, Status } from "./tipos";
 
 export type FiltroPrioridade = Prioridade | "todas";
 
@@ -29,4 +30,18 @@ const TRANSICOES: Record<Status, Status[]> = {
 
 export function proximosStatus(status: Status): Status[] {
   return TRANSICOES[status];
+}
+
+export function validarNovaSolicitacao(nova: NovaSolicitacao) {
+  const erros: ErrosDosCampos = {};
+
+  if (nova.bairro.trim().length < 3) {
+    erros.bairro = "Informe o bairro, com pelo menos 3 letras.";
+  }
+
+  if (nova.prioridade === "alta" && (nova.relato ?? "").trim().length < 10) {
+    erros.relato = "Prioridade alta exige um relato com pelo menos 10 caracteres.";
+  }
+
+  return erros;
 }
